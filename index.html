@@ -22,21 +22,52 @@
 
         /* Menu */
 
-        nav {
+        .menu {
             position: absolute;
-            top: 30px;
-            right: 40px;
+            top: 25px;
+            right: 30px;
         }
 
-        nav a {
-            margin-left: 25px;
+        .menu-button {
+            background: none;
+            border: none;
+            font-family: "Courier New", monospace;
+            font-size: 28px;
+            cursor: pointer;
+            color: #222;
+        }
+
+
+        /* Opções do menu */
+
+        .menu-content {
+            display: none;
+            position: absolute;
+            right: 0;
+            top: 40px;
+            background-color: #f3f0e8;
+            padding: 15px 20px;
+            border: 1px solid #222;
+            min-width: 180px;
+        }
+
+        .menu-content a {
+            display: block;
             text-decoration: none;
             color: #222;
             font-size: 15px;
+            padding: 8px 0;
         }
 
-        nav a:hover {
+        .menu-content a:hover {
             text-decoration: underline;
+        }
+
+
+        /* O menu aparece quando clicamos */
+
+        .menu:hover .menu-content {
+            display: block;
         }
 
 
@@ -87,18 +118,13 @@
 
         @media (max-width: 600px) {
 
-            nav {
-                position: static;
-                text-align: center;
-                padding-top: 25px;
-            }
-
-            nav a {
-                margin: 0 10px;
+            .menu {
+                top: 20px;
+                right: 20px;
             }
 
             main {
-                padding: 50px 20px;
+                padding: 80px 20px 50px;
             }
 
             h1 {
@@ -126,10 +152,19 @@
 
     <!-- MENU -->
 
-    <nav>
-        <a href="sobre.html">Sobre o projeto</a>
-        <a href="creditos.html">Créditos</a>
-    </nav>
+    <div class="menu">
+
+        <button class="menu-button">☰</button>
+
+        <div class="menu-content">
+
+            <a href="sobre.html">Sobre o projeto</a>
+
+            <a href="creditos.html">Créditos</a>
+
+        </div>
+
+    </div>
 
 
     <!-- CONTEÚDO PRINCIPAL -->
@@ -147,8 +182,6 @@
 
         <div class="video">
 
-            <!-- O link do vídeo será colocado aqui -->
-
             <iframe
                 src="COLOQUE-AQUI-O-LINK-DO-VIDEO"
                 title="Projeto Arrudas"
@@ -163,5 +196,3 @@
 </body>
 
 </html>
-```
-
