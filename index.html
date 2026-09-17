@@ -1,46 +1,168 @@
+```html
 <!DOCTYPE html>
 <html lang="pt-BR">
 
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Minha Peça Sonora</title>
+    <title>Projeto Arrudas</title>
 
-<style>
+    <style>
 
-body{
-    max-width:700px;
-    margin:auto;
-    padding:40px 20px;
-    font-family:Arial, sans-serif;
-    line-height:1.6;
-}
+        /* Configurações gerais da página */
 
-h1{
-    text-align:center;
-}
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            color: #222;
+            background-color: #ffffff;
+        }
 
-</style>
+
+        /* Menu */
+
+        nav {
+            position: absolute;
+            top: 30px;
+            right: 40px;
+        }
+
+        nav a {
+            margin-left: 25px;
+            text-decoration: none;
+            color: #222;
+            font-size: 15px;
+        }
+
+        nav a:hover {
+            text-decoration: underline;
+        }
+
+
+        /* Conteúdo principal */
+
+        main {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 100px 30px 60px;
+        }
+
+
+        /* Título */
+
+        h1 {
+            text-align: center;
+            font-size: 42px;
+            font-weight: normal;
+            margin-bottom: 10px;
+        }
+
+
+        /* Subtítulo */
+
+        .subtitulo {
+            text-align: center;
+            font-size: 20px;
+            margin-bottom: 60px;
+        }
+
+
+        /* Vídeo */
+
+        .video {
+            display: flex;
+            justify-content: center;
+        }
+
+        .video iframe {
+            width: 80%;
+            max-width: 900px;
+            aspect-ratio: 16 / 9;
+            border: none;
+        }
+
+
+        /* Ajustes para telas pequenas */
+
+        @media (max-width: 600px) {
+
+            nav {
+                position: static;
+                text-align: center;
+                padding-top: 25px;
+            }
+
+            nav a {
+                margin: 0 10px;
+            }
+
+            main {
+                padding: 50px 20px;
+            }
+
+            h1 {
+                font-size: 32px;
+            }
+
+            .subtitulo {
+                font-size: 18px;
+                margin-bottom: 40px;
+            }
+
+            .video iframe {
+                width: 100%;
+            }
+
+        }
+
+    </style>
 
 </head>
 
+
 <body>
 
-<h1>Minha Peça Sonora</h1>
 
-<p>
-Bem-vindo.
-</p>
+    <!-- MENU -->
 
-<p>
-Você acessou esta obra através de um QR Code.
-</p>
+    <nav>
+        <a href="sobre.html">Sobre o projeto</a>
+        <a href="creditos.html">Créditos</a>
+    </nav>
 
-<p>
-Em breve a peça sonora estará disponível aqui.
-</p>
+
+    <!-- CONTEÚDO PRINCIPAL -->
+
+    <main>
+
+        <h1>PROJETO ARRUDAS</h1>
+
+        <p class="subtitulo">
+            Uma investigação sonora sobre o Ribeirão Arrudas
+        </p>
+
+
+        <!-- VÍDEO -->
+
+        <div class="video">
+
+            <!-- O link do vídeo será colocado aqui -->
+
+            <iframe
+                src="COLOQUE-AQUI-O-LINK-DO-VIDEO"
+                title="Projeto Arrudas"
+                allowfullscreen>
+            </iframe>
+
+        </div>
+
+    </main>
+
 
 </body>
 
 </html>
+```
+
