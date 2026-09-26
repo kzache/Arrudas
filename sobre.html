@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="pt-BR">
 
@@ -10,6 +9,8 @@
 
     <style>
 
+        /* Configurações gerais da página */
+
         body {
             margin: 0;
             padding: 0;
@@ -18,11 +19,17 @@
             background-color: #f3f0e8;
         }
 
+
+        /* Conteúdo principal */
+
         main {
             max-width: 1000px;
             margin: 0 auto;
             padding: 100px 30px 60px;
         }
+
+
+        /* Título */
 
         h1 {
             text-align: center;
@@ -31,20 +38,85 @@
             margin-bottom: 50px;
         }
 
+
+        /* Texto */
+
         .texto {
             font-size: 17px;
             line-height: 1.7;
+        }
+
+
+        /* Imagem */
+
+        .imagem-projeto {
+            text-align: center;
+            margin: 50px 0;
+        }
+
+        .imagem-projeto img {
+            width: 100%;
+            max-width: 900px;
+            height: auto;
+        }
+
+
+        /* Fotos e vídeos */
+
+        .registros {
+            margin-top: 80px;
+        }
+
+        .registros h2 {
+            font-size: 28px;
+            font-weight: normal;
+            margin-bottom: 20px;
+        }
+
+        .registros p {
+            font-size: 17px;
+            line-height: 1.7;
+        }
+
+
+        /* Ajustes para telas pequenas */
+
+        @media (max-width: 600px) {
+
+            main {
+                padding: 80px 20px 50px;
+            }
+
+            h1 {
+                font-size: 32px;
+            }
+
+            .texto {
+                font-size: 16px;
+            }
+
+            .registros h2 {
+                font-size: 24px;
+            }
+
         }
 
     </style>
 
 </head>
 
+
 <body>
+
+
+    <!-- CONTEÚDO PRINCIPAL -->
 
     <main>
 
         <h1>SOBRE O PROJETO</h1>
+
+
+        <!-- TEXTO SOBRE O PROJETO -->
 
         <div class="texto">
 
@@ -54,7 +126,31 @@
 
         </div>
 
+
+        <!-- IMAGEM DO PROJETO -->
+
+        <div class="imagem-projeto">
+
+            <img src="imagem-sobre.jpg" alt="Descrição da imagem">
+
+        </div>
+
+
+        <!-- FOTOS E VÍDEOS -->
+
+        <section class="registros">
+
+            <h2>FOTOS E VÍDEOS</h2>
+
+            <p>
+                Registros do processo de pesquisa e de gravação do projeto.
+            </p>
+
+        </section>
+
+
     </main>
+
 
 </body>
 
