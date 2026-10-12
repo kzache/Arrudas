@@ -17,7 +17,7 @@
             font-family: "Courier New", monospace;
             color: #222;
             background-image: url("mapa-arrudas.png");
-            background-size: 100% 100%;
+            background-size: center;
             background-position: center;
             background-repeat: no-repeat;
             background-attachment: fixed;
@@ -122,29 +122,36 @@
 
         @media (max-width: 600px) {
 
-            .menu {
-                top: 20px;
-                right: 20px;
-            }
+    body {
+        background-size: contain;
+        background-position: center top;
+        background-attachment: scroll;
+        background-color: #f3f0e8;
+    }
 
-            main {
-                padding: 80px 20px 50px;
-            }
+    .menu {
+        top: 20px;
+        right: 20px;
+    }
 
-            h1 {
-                font-size: 32px;
-            }
+    main {
+        padding: 80px 20px 50px;
+    }
 
-            .subtitulo {
-                font-size: 18px;
-                margin-bottom: 40px;
-            }
+    h1 {
+        font-size: 32px;
+    }
 
-            .audio audio {
-                width: 100%;
-            }
+    .subtitulo {
+        font-size: 18px;
+        margin-bottom: 40px;
+    }
 
-        }
+    .audio audio {
+        width: 100%;
+    }
+
+}
 
     </style>
 
