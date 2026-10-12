@@ -8,12 +8,7 @@
 
     <title>Projeto Arrudas</title>
 
-
     <style>
-
-        /* =========================
-           CONFIGURAÇÕES GERAIS
-        ========================= */
 
         * {
             box-sizing: border-box;
@@ -30,47 +25,33 @@
             color: #222;
         }
 
-
-        /* =========================
-           MAPA
-        ========================= */
+        /* MAPA */
 
         .mapa {
             position: fixed;
             top: 0;
             left: 0;
-
             width: 100vw;
             height: 100vh;
-
             z-index: 1;
         }
 
         .mapa iframe {
             display: block;
-
             width: 100%;
             height: 100%;
-
             border: none;
             margin: 0;
             padding: 0;
         }
 
-
-        /* =========================
-           CAIXA DO TÍTULO
-        ========================= */
+        /* CAIXA DO TÍTULO */
 
         .titulo {
-
             position: fixed;
-
             top: 40px;
             left: 50%;
-
             transform: translateX(-50%);
-
             z-index: 10;
 
             background-color: rgba(243, 240, 232, 0.94);
@@ -84,42 +65,27 @@
             min-width: 420px;
         }
 
-
         .titulo h1 {
-
             margin: 0 0 10px;
-
             font-size: 38px;
-
             font-weight: normal;
         }
 
-
         .titulo p {
-
             margin: 0;
-
             font-size: 18px;
         }
 
-
-        /* =========================
-           MENU
-        ========================= */
+        /* MENU */
 
         .menu {
-
             position: fixed;
-
             top: 25px;
             right: 30px;
-
             z-index: 20;
         }
 
-
         .menu-button {
-
             width: 48px;
             height: 48px;
 
@@ -128,25 +94,16 @@
             border: 1px solid #222;
 
             font-family: "Courier New", monospace;
-
             font-size: 28px;
 
             cursor: pointer;
-
             color: #222;
         }
 
-
-        /* =========================
-           OPÇÕES DO MENU
-        ========================= */
-
         .menu-content {
-
             display: none;
 
             position: absolute;
-
             right: 0;
             top: 55px;
 
@@ -159,39 +116,25 @@
             min-width: 180px;
         }
 
-
         .menu-content a {
-
             display: block;
-
             text-decoration: none;
-
             color: #222;
-
             font-size: 15px;
-
             padding: 8px 0;
         }
 
-
         .menu-content a:hover {
-
             text-decoration: underline;
         }
 
-
         .menu:hover .menu-content {
-
             display: block;
         }
 
-
-        /* =========================
-           PLAYER DE ÁUDIO
-        ========================= */
+        /* PLAYER DE ÁUDIO */
 
         .audio {
-
             position: fixed;
 
             left: 50%;
@@ -205,22 +148,15 @@
             max-width: 800px;
         }
 
-
         .audio audio {
-
             width: 100%;
         }
 
-
-        /* =========================
-           CELULAR
-        ========================= */
+        /* CELULAR */
 
         @media (max-width: 600px) {
 
-
             .titulo {
-
                 top: 25px;
 
                 width: calc(100% - 100px);
@@ -230,41 +166,27 @@
                 padding: 18px 15px;
             }
 
-
             .titulo h1 {
-
                 font-size: 27px;
-
-                margin-bottom: 8px;
             }
 
-
             .titulo p {
-
                 font-size: 16px;
             }
 
-
             .menu {
-
                 top: 15px;
                 right: 15px;
             }
 
-
             .menu-button {
-
                 width: 42px;
                 height: 42px;
-
                 font-size: 24px;
             }
 
-
             .audio {
-
                 width: calc(100% - 40px);
-
                 bottom: 25px;
             }
 
@@ -274,13 +196,9 @@
 
 </head>
 
-
 <body>
 
-
-    <!-- =========================
-         MAPA
-    ========================= -->
+    <!-- MAPA -->
 
     <div class="mapa">
 
@@ -292,16 +210,11 @@
 
     </div>
 
-
-    <!-- =========================
-         TÍTULO E SUBTÍTULO
-    ========================= -->
+    <!-- TÍTULO -->
 
     <div class="titulo">
 
-        <h1>
-            PROJETO ARRUDAS
-        </h1>
+        <h1>PROJETO ARRUDAS</h1>
 
         <p>
             Uma investigação sonora sobre o Ribeirão Arrudas
@@ -309,35 +222,23 @@
 
     </div>
 
-
-    <!-- =========================
-         MENU
-    ========================= -->
+    <!-- MENU -->
 
     <div class="menu">
 
-        <button class="menu-button">
-            ☰
-        </button>
+        <button class="menu-button">☰</button>
 
         <div class="menu-content">
 
-            <a href="sobre.html">
-                Sobre o projeto
-            </a>
+            <a href="sobre.html">Sobre o projeto</a>
 
-            <a href="creditos.html">
-                Ficha técnica
-            </a>
+            <a href="creditos.html">Ficha técnica</a>
 
         </div>
 
     </div>
 
-
-    <!-- =========================
-         ÁUDIO
-    ========================= -->
+    <!-- ÁUDIO -->
 
     <div class="audio">
 
@@ -350,7 +251,6 @@
         </audio>
 
     </div>
-
 
 </body>
 
