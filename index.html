@@ -103,7 +103,21 @@
             margin-bottom: 60px;
         }
 
+/* Mapa */
 
+.mapa {
+    width: 100%;
+    max-width: 1200px;
+    height: 600px;
+    margin: 40px auto;
+}
+
+.mapa iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+}
+        
         /* Player de áudio */
 
         .audio {
@@ -182,25 +196,34 @@
 
     <main>
 
-        <h1>PROJETO ARRUDAS</h1>
+    <h1>PROJETO ARRUDAS</h1>
 
-        <p class="subtitulo">
-            Uma investigação sonora sobre o Ribeirão Arrudas
-        </p>
+    <p class="subtitulo">
+        Uma investigação sonora sobre o Ribeirão Arrudas
+    </p>
+
+    <!-- MAPA -->
+
+    <div class="mapa">
+        <iframe
+            src="https://umap.openstreetmap.fr/pt-br/map/mapa_1471708"
+            allowfullscreen
+            allow="geolocation">
+        </iframe>
+    </div>
 
 
-        <!-- PLAYER DE ÁUDIO -->
+    <!-- PLAYER DE ÁUDIO -->
 
-        <div class="audio">
+    <div class="audio">
 
-            <audio controls loop>
-                <source src="Arrudas_Peça Sonora_.mp3" type="audio/mpeg">
-            </audio>
+        <audio controls loop>
+            <source src="Arrudas_Peça Sonora_.mp3" type="audio/mpeg">
+        </audio>
 
-        </div>
+    </div>
 
-
-    </main>
+</main>
 
 
 </body>
