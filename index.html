@@ -9,7 +9,7 @@
 
     <style>
 
-        /* Configurações gerais da página */
+        /* CONFIGURAÇÕES GERAIS */
 
         body {
             margin: 0;
@@ -21,7 +21,7 @@
         }
 
 
-        /* Menu */
+        /* MENU */
 
         .menu {
             position: absolute;
@@ -40,7 +40,7 @@
         }
 
 
-        /* Opções do menu */
+        /* OPÇÕES DO MENU */
 
         .menu-content {
             display: none;
@@ -66,23 +66,23 @@
         }
 
 
-        /* O menu aparece quando clicamos */
+        /* MOSTRA O MENU AO PASSAR O MOUSE */
 
         .menu:hover .menu-content {
             display: block;
         }
 
 
-        /* Conteúdo principal */
+        /* CONTEÚDO PRINCIPAL */
 
         main {
-            max-width: none;
+            width: 100%;
             margin: 0;
             padding: 100px 0 60px;
         }
 
 
-        /* Título */
+        /* TÍTULO */
 
         h1 {
             text-align: center;
@@ -92,7 +92,7 @@
         }
 
 
-        /* Subtítulo */
+        /* SUBTÍTULO */
 
         .subtitulo {
             text-align: center;
@@ -101,7 +101,7 @@
         }
 
 
-        /* Mapa */
+        /* MAPA */
 
         .mapa {
             width: 100%;
@@ -110,14 +110,14 @@
         }
 
         .mapa iframe {
+            display: block;
             width: 100%;
             height: 100%;
             border: none;
-            display: block;
         }
 
 
-        /* Player de áudio */
+        /* PLAYER DE ÁUDIO */
 
         .audio {
             display: flex;
@@ -131,7 +131,7 @@
         }
 
 
-        /* Ajustes para telas pequenas */
+        /* CELULAR */
 
         @media (max-width: 600px) {
 
@@ -159,6 +159,10 @@
 
             .mapa {
                 height: 500px;
+            }
+
+            .audio {
+                padding: 0 20px;
             }
 
             .audio audio {
@@ -196,7 +200,13 @@
 
     <main>
 
+
+        <!-- TÍTULO -->
+
         <h1>PROJETO ARRUDAS</h1>
+
+
+        <!-- SUBTÍTULO -->
 
         <p class="subtitulo">
             Uma investigação sonora sobre o Ribeirão Arrudas
@@ -210,7 +220,7 @@
             <iframe
                 allowfullscreen
                 allow="geolocation"
-                src="//umap.openstreetmap.fr/pt-br/map/mapa_1471708?scaleControl=false&miniMapControl=false&scrollWheelZoom=false&zoomControl=true&editMode=disabled&moreControl=true&searchControl=null&tilelayersControl=null&embedControl=null&datalayersControl=true&onLoadPanel=none&captionBar=false&captionMenus=true">
+                src="https://umap.openstreetmap.fr/pt-br/map/mapa_1471708?scaleControl=false&miniMapControl=false&scrollWheelZoom=false&zoomControl=true&editMode=disabled&moreControl=true&searchControl=null&tilelayersControl=null&embedControl=null&datalayersControl=true&onLoadPanel=none&captionBar=false&captionMenus=true">
             </iframe>
 
         </div>
@@ -221,7 +231,11 @@
         <div class="audio">
 
             <audio controls loop>
-                <source src="Arrudas_Peça Sonora_.mp3" type="audio/mpeg">
+
+                <source
+                    src="Arrudas_Peça Sonora_.mp3"
+                    type="audio/mpeg">
+
             </audio>
 
         </div>
