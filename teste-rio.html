@@ -4,13 +4,13 @@
     <meta charset="UTF-8">
     <title>Posicionador do Rio Arrudas</title>
     
-    <!-- CSS e JavaScript oficiais do Leaflet -->
+    <!-- Bibliotecas Oficiais do Leaflet -->
     <link rel="stylesheet" href="https://unpkg.com" />
     <script src="https://unpkg.com"></script>
 
     <style>
         body, html { margin: 0; padding: 0; height: 100%; width: 100%; overflow: hidden; font-family: sans-serif; }
-        #map { width: 100vw; height: 100vh; position: absolute; z-index: 1; }
+        #map { width: 100vw; height: 100vh; position: absolute; z-index: 1; background: #e3eaec; }
         #painel-aviso {
             position: absolute; top: 10px; left: 60px; z-index: 1000;
             background: white; padding: 15px; border-radius: 8px;
@@ -22,55 +22,57 @@
 <body>
 
     <div id="painel-aviso">
-        <h4>Como posicionar seu Rio:</h4>
-        <p>1. O mapa já vai abrir focado no centro de <b>Belo Horizonte</b>.</p>
-        <p>2. Clique e <b>arraste a gotinha azul</b>. O seu PNG (`mapa_00.png`) vai se mover junto com ela.</p>
-        <p>3. Quando o traço do rio estiver encaixado perfeitamente no mapa real, clique abaixo:</p>
+        <h4>Ajuste do Rio Arrudas:</h4>
+        <p>1. O mapa abrirá no centro de <b>Belo Horizonte</b>.</p>
+        <p>2. Clique e <b>arraste o marcador azul</b> para mover o seu desenho.</p>
+        <p>3. Quando alinhar perfeitamente com o leito do rio, clique abaixo:</p>
         <button onclick="pegarCoordenadas()">Gerar Código do Rio</button>
     </div>
 
     <div id="map"></div>
 
     <script>
-        // Inicializa o mapa focado no centro de Belo Horizonte (perto do Arrudas)
-        var map = L.map('map').setView([-19.9212, -43.9346], 14);
+        // Coordenadas centrais de BH (Perto do leito do Arrudas na Av. dos Andradas)
+        var centroLat = -19.9212;
+        var centroLng = -43.9346;
 
-        // Mapa de fundo oficial do OpenStreetMap
+        // Inicializa o mapa focado na região
+        var map = L.map('map').setView([centroLat, centroLng], 14);
+
+        // Carrega o mapa base do OpenStreetMap
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '&copy; OpenStreetMap'
         }).addTo(map);
 
-        // Nome exato da sua imagem no repositório
+        // Nome correto do arquivo de imagem do rio
         var imagemDoRio = 'mapa_00.png'; 
 
-        // Define um tamanho inicial para o desenho cobrir uma área visível no zoom
-        var tamanhoInicial = 0.015; 
-        var centroInicial = [-19.9212, -43.9346];
+        // Define a escala inicial do desenho na tela (cerca de 1.5km de área)
+        var tamanho = 0.015; 
 
+        // Cálculo matemático corrigido dos cantos geográficos para o Leaflet
         var limites = [
-            [centroInicial[0] - tamanhoInicial, centroInicial[1] - tamanhoInicial],
-            [centroInicial[0] + tamanhoInicial, centroInicial[1] + tamanhoInicial]
+            [centroLat - tamanho, centroLng - tamanho], // Canto inferior esquerdo
+            [centroLat + tamanho, centroLng + tamanho]  // Canto superior direito
         ];
 
-        // Cria a sobreposição da sua imagem na tela
+        // Cria a imagem sobre o mapa
         var rioOverlay = L.imageOverlay(imagemDoRio, limites, { opacity: 0.85 }).addTo(map);
 
-        // Cria o marcador azul arrastável
-        var marcadorMovel = L.marker(centroInicial, { draggable: true }).addTo(map);
+        // Cria o marcador azul arrastável no centro exato da imagem
+        var marcadorMovel = L.marker([centroLat, centroLng], { draggable: true }).addTo(map);
 
-        // Atualiza a posição da imagem enquanto você arrasta a gotinha
+        // Movimenta o PNG sincronizado com o arrastar do mouse
         marcadorMovel.on('drag', function (e) {
             var novaPosicao = e.target.getLatLng();
-            
             var novosLimites = [
-                [novaPosicao.lat - tamanhoInicial, novaPosicao.lng - tamanhoInicial],
-                [novaPosicao.lat + tamanhoInicial, novaPosicao.lng + tamanhoInicial]
+                [novaPosicao.lat - tamanho, novaPosicao.lng - tamanho],
+                [novaPosicao.lat + tamanho, novaPosicao.lng + tamanho]
             ];
-            
             rioOverlay.setBounds(novosLimites);
         });
 
-        // Função para gerar as coordenadas finais
+        // Função para exportar as coordenadas obtidas no ajuste visual
         function pegarCoordenadas() {
             var cantosAtuais = rioOverlay.getBounds();
             var latSul = cantosAtuais.getSouthWest().lat.toFixed(6);
@@ -79,7 +81,6 @@
             var lonLeste = cantosAtuais.getNorthEast().lng.toFixed(6);
 
             var resultado = `var limitesDoRio = [ [${latSul}, ${lonOeste}], [${latNorte}, ${lonLeste}] ];`;
-            
             alert("COPIE ESTA LINHA:\n\n" + resultado);
             console.log(resultado);
         }
