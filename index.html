@@ -45,18 +45,37 @@
             padding: 0;
         }
 
-        /* TESTE DA CAMADA SOBRE O MAPA */
+        /* DESENHO DO ARRUDAS */
 
         .desenho-arrudas {
             position: absolute;
-            width: 900px;
+
+            width: 1400px;
             height: auto;
-            top: 50%;
-            left: 50%;
+
+            top: 42%;
+            left: 43%;
+
             transform: translate(-50%, -50%);
+
             z-index: 2;
             pointer-events: none;
-          
+
+            opacity: 0;
+
+            animation: entradaDesenho 1.8s ease-out 1.5s forwards;
+        }
+
+        @keyframes entradaDesenho {
+
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+
         }
 
         /* CAIXA DO TÍTULO */
@@ -204,6 +223,12 @@
                 bottom: 25px;
             }
 
+            .desenho-arrudas {
+                width: 900px;
+                top: 45%;
+                left: 40%;
+            }
+
         }
 
         /* COR DO MAPA */
@@ -228,11 +253,11 @@
             src="//umap.openstreetmap.fr/pt-br/map/mapa_1471708?scaleControl=false&miniMapControl=false&scrollWheelZoom=false&zoomControl=false&editMode=disabled&moreControl=false&searchControl=false&tilelayersControl=false&embedControl=false&datalayersControl=false&onLoadPanel=none&captionBar=false&captionMenus=false&fullscreenControl=false&locateControl=false&captionControl=false&printControl=false&measureControl=false">
         </iframe>
 
-    <img
-        class="desenho-arrudas"
-        src="desenho_mapa.svg"
-        alt=""
-   >
+        <img
+            class="desenho-arrudas"
+            src="desenho_mapa.svg"
+            alt=""
+        >
 
     </div>
 
