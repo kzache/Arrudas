@@ -45,7 +45,7 @@
             padding: 0;
         }
 
-        /* DESENHO DO ARRUDAS */
+        /* TESTE DA CAMADA SOBRE O MAPA */
 
         .desenho-arrudas {
             position: absolute;
@@ -55,6 +55,7 @@
             height: 100%;
             z-index: 2;
             pointer-events: none;
+            background: rgba(255, 0, 0, 0.3);
         }
 
         /* CAIXA DO TÍTULO */
@@ -226,11 +227,7 @@
             src="//umap.openstreetmap.fr/pt-br/map/mapa_1471708?scaleControl=false&miniMapControl=false&scrollWheelZoom=false&zoomControl=false&editMode=disabled&moreControl=false&searchControl=false&tilelayersControl=false&embedControl=false&datalayersControl=false&onLoadPanel=none&captionBar=false&captionMenus=false&fullscreenControl=false&locateControl=false&captionControl=false&printControl=false&measureControl=false">
         </iframe>
 
-        <img
-            class="desenho-arrudas"
-            src="https://raw.githubusercontent.com/kzache/Arrudas/main/desenho_mapa.svg"
-            alt=""
-        >
+        <div class="desenho-arrudas"></div>
 
     </div>
 
