@@ -4,13 +4,12 @@
     <meta charset="UTF-8">
     <title>Editor de Posição do Rio</title>
     
-    <!-- CSS do Leaflet e da Ferramenta de Distorcer Imagem -->
+    <!-- LINKS CORRIGIDOS: CSS do Leaflet e da Ferramenta de Distorcer Imagem -->
     <link rel="stylesheet" href="https://unpkg.com" />
     <link rel="stylesheet" href="https://jsdelivr.net" />
 
-    <!-- Scripts (Leaflet + Suporte a Vetores/Distorção + Plugin) -->
+    <!-- LINKS CORRIGIDOS: Scripts essenciais para o mapa funcionar -->
     <script src="https://unpkg.com"></script>
-    <script src="https://cloudflare.com"></script>
     <script src="https://jsdelivr.net"></script>
 
     <style>
@@ -36,24 +35,23 @@
     <div id="map"></div>
 
     <script>
-        // 1. Inicializa o mapa (mude o centro se souber a latitude/longitude da sua cidade)
-        var map = L.map('map').setView([-19.92, -43.94], 13);
+        // 1. Inicializa o mapa focado no Brasil
+        var map = L.map('map').setView([-15.78, -47.93], 5);
 
-        // 2. Mapa de fundo minimalista claro
+        // LINK CORRIGIDO: Carrega o mapa de fundo claro do CartoDB
         L.tileLayer('https://{s}://{z}/{x}/{y}{r}.png', {
             attribution: '&copy; OpenStreetMap'
         }).addTo(map);
 
-        // 3. Carrega o seu PNG com o plugin interativo ativo por padrão
-        // IMPORTANTE: Mude 'seu-rio.png' para o nome exato do seu arquivo de imagem
+        // Nome correto do seu arquivo PNG
         var nomeDoArquivoPNG = 'mapa_00.png'; 
 
         var rioEditavel = L.distortableImageOverlay(nomeDoArquivoPNG, {
-            selected: true, // Já inicia selecionado mostrando as alças de edição
-            actions: [L.DragAction, L.ScaleAction, L.RotateAction, L.LockAction] // Ferramentas disponíveis
+            selected: true, 
+            actions: [L.DragAction, L.ScaleAction, L.RotateAction, L.LockAction] 
         }).addTo(map);
 
-        // 4. Função que gera o código final para você usar
+        // 4. Função que gera as coordenadas no console
         function exportarCoordenadas() {
             var cantos = rioEditavel.getBounds();
             var latSul = cantos.getSouthWest().lat.toFixed(6);
@@ -63,7 +61,6 @@
 
             var codigoPronto = `var limitesDoRio = [ [${latSul}, ${lonOeste}], [${latNorte}, ${lonLeste}] ];`;
             
-            // Abre uma caixa na tela e exibe também no console (F12)
             console.log("Copie esta linha para seu código definitivo:\n", codigoPronto);
             alert("Coordenadas geradas! Pressione F12 e olhe a aba 'Console' para copiar o código pronto.");
         }
@@ -71,3 +68,4 @@
 
 </body>
 </html>
+
