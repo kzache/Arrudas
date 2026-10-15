@@ -33,7 +33,7 @@
             left: 0;
             width: 100vw;
             height: 100vh;
-            z-index: 1;      
+            z-index: 1;
         }
 
         .mapa iframe {
@@ -43,6 +43,18 @@
             border: none;
             margin: 0;
             padding: 0;
+        }
+
+        /* DESENHO DO ARRUDAS */
+
+        .desenho-arrudas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 2;
+            pointer-events: none;
         }
 
         /* CAIXA DO TÍTULO */
@@ -192,32 +204,35 @@
 
         }
 
-   
+        /* COR DO MAPA */
 
-   .mapa iframe {
-    filter: sepia(75%) saturate(65%) brightness(90%) contrast(95%) !important ;
-    }
+        .mapa iframe {
+            filter: sepia(75%) saturate(65%) brightness(90%) contrast(95%) !important;
+        }
 
-   </style>
+    </style>
 
-  
-
-   </head>        
-
+</head>
 
 <body>
 
     <!-- MAPA -->
 
     <div class="mapa">
-    <iframe
-        allowfullscreen
-        allow="geolocation"
-        src="//umap.openstreetmap.fr/pt-br/map/mapa_1471708?scaleControl=false&miniMapControl=false&scrollWheelZoom=false&zoomControl=false&editMode=disabled&moreControl=false&searchControl=false&tilelayersControl=false&embedControl=false&datalayersControl=false&onLoadPanel=none&captionBar=false&captionMenus=false&fullscreenControl=false&locateControl=false&captionControl=false&printControl=false&measureControl=false">
-    </iframe>
+
+        <iframe
+            allowfullscreen
+            allow="geolocation"
+            src="//umap.openstreetmap.fr/pt-br/map/mapa_1471708?scaleControl=false&miniMapControl=false&scrollWheelZoom=false&zoomControl=false&editMode=disabled&moreControl=false&searchControl=false&tilelayersControl=false&embedControl=false&datalayersControl=false&onLoadPanel=none&captionBar=false&captionMenus=false&fullscreenControl=false&locateControl=false&captionControl=false&printControl=false&measureControl=false">
+        </iframe>
+
+        <img
+            class="desenho-arrudas"
+            src="desenho_mapa.svg"
+            alt=""
+        >
 
     </div>
-    
 
     <!-- TÍTULO -->
 
