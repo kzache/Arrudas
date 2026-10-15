@@ -2,9 +2,9 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <title>Posicionador de Imagem Simples</title>
+    <title>Posicionador do Rio Arrudas</title>
     
-    <!-- CSS e JS do Leaflet Padrão -->
+    <!-- CSS e JavaScript oficiais do Leaflet -->
     <link rel="stylesheet" href="https://unpkg.com" />
     <script src="https://unpkg.com"></script>
 
@@ -23,42 +23,42 @@
 
     <div id="painel-aviso">
         <h4>Como posicionar seu Rio:</h4>
-        <p>1. Procure a <b>gotinha vermelha</b> no mapa.</p>
-        <p>2. Clique e <b>arraste a gotinha</b>. O seu PNG irá se mover junto com ela.</p>
-        <p>3. Quando o rio estiver no lugar certo, clique abaixo:</p>
+        <p>1. O mapa já vai abrir focado no centro de <b>Belo Horizonte</b>.</p>
+        <p>2. Clique e <b>arraste a gotinha azul</b>. O seu PNG (`mapa_00.png`) vai se mover junto com ela.</p>
+        <p>3. Quando o traço do rio estiver encaixado perfeitamente no mapa real, clique abaixo:</p>
         <button onclick="pegarCoordenadas()">Gerar Código do Rio</button>
     </div>
 
     <div id="map"></div>
 
     <script>
-        // Inicializa o mapa focado no Brasil
-        var map = L.map('map').setView([-15.78, -47.93], 5);
+        // Inicializa o mapa focado no centro de Belo Horizonte (perto do Arrudas)
+        var map = L.map('map').setView([-19.9212, -43.9346], 14);
 
-        // Mapa de fundo padrão do OpenStreetMap
+        // Mapa de fundo oficial do OpenStreetMap
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '&copy; OpenStreetMap'
         }).addTo(map);
 
-        // Nome do seu arquivo no GitHub
+        // Nome exato da sua imagem no repositório
         var imagemDoRio = 'mapa_00.png'; 
 
-        // Define um tamanho fixo inicial para o seu desenho (aproximadamente 2km de extensão)
-        var tamanhoInicial = 0.02; 
-        var centroInicial = [-15.78, -47.93];
+        // Define um tamanho inicial para o desenho cobrir uma área visível no zoom
+        var tamanhoInicial = 0.015; 
+        var centroInicial = [-19.9212, -43.9346];
 
         var limites = [
             [centroInicial[0] - tamanhoInicial, centroInicial[1] - tamanhoInicial],
             [centroInicial[0] + tamanhoInicial, centroInicial[1] + tamanhoInicial]
         ];
 
-        // Cria a sobreposição da imagem na tela
+        // Cria a sobreposição da sua imagem na tela
         var rioOverlay = L.imageOverlay(imagemDoRio, limites, { opacity: 0.85 }).addTo(map);
 
-        // Cria um pino vermelho ARRASTÁVEL bem no centro da imagem para você movê-la
+        // Cria o marcador azul arrastável
         var marcadorMovel = L.marker(centroInicial, { draggable: true }).addTo(map);
 
-        // Sempre que você arrastar o marcador, a imagem se move junto
+        // Atualiza a posição da imagem enquanto você arrasta a gotinha
         marcadorMovel.on('drag', function (e) {
             var novaPosicao = e.target.getLatLng();
             
@@ -70,7 +70,7 @@
             rioOverlay.setBounds(novosLimites);
         });
 
-        // Função que te dá a resposta final
+        // Função para gerar as coordenadas finais
         function pegarCoordenadas() {
             var cantosAtuais = rioOverlay.getBounds();
             var latSul = cantosAtuais.getSouthWest().lat.toFixed(6);
@@ -80,8 +80,7 @@
 
             var resultado = `var limitesDoRio = [ [${latSul}, ${lonOeste}], [${latNorte}, ${lonLeste}] ];`;
             
-            // Exibe um alerta visual com o código para facilitar caso o F12 não funcione
-            alert("COPIE O CÓDIGO ABAIXO:\n\n" + resultado);
+            alert("COPIE ESTA LINHA:\n\n" + resultado);
             console.log(resultado);
         }
     </script>
