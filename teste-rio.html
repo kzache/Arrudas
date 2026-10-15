@@ -2,90 +2,38 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <title>Posicionador do Rio Arrudas</title>
-    
-    <!-- Bibliotecas Oficiais do Leaflet -->
+    <title>Meu Mapa Artístico</title>
+    <!-- Importa o Leaflet básico -->
     <link rel="stylesheet" href="https://unpkg.com" />
     <script src="https://unpkg.com"></script>
-
     <style>
-        body, html { margin: 0; padding: 0; height: 100%; width: 100%; overflow: hidden; font-family: sans-serif; }
-        #map { width: 100vw; height: 100vh; position: absolute; z-index: 1; background: #e3eaec; }
-        #painel-aviso {
-            position: absolute; top: 10px; left: 60px; z-index: 1000;
-            background: white; padding: 15px; border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.3); max-width: 320px;
-        }
-        button { background: #28a745; color: white; border: none; padding: 8px 15px; border-radius: 4px; cursor: pointer; font-weight: bold; width: 100%; margin-top: 10px; }
+        body, html { margin: 0; padding: 0; height: 100%; width: 100%; overflow: hidden; background: #000; }
+        #map { width: 100vw; height: 100vh; }
     </style>
 </head>
 <body>
 
-    <div id="painel-aviso">
-        <h4>Ajuste do Rio Arrudas:</h4>
-        <p>1. O mapa abrirá no centro de <b>Belo Horizonte</b>.</p>
-        <p>2. Clique e <b>arraste o marcador azul</b> para mover o seu desenho.</p>
-        <p>3. Quando alinhar perfeitamente com o leito do rio, clique abaixo:</p>
-        <button onclick="pegarCoordenadas()">Gerar Código do Rio</button>
-    </div>
-
     <div id="map"></div>
 
     <script>
-        // Coordenadas centrais de BH (Perto do leito do Arrudas na Av. dos Andradas)
-        var centroLat = -19.9212;
-        var centroLng = -43.9346;
-
-        // Inicializa o mapa focado na região
-        var map = L.map('map').setView([centroLat, centroLng], 14);
-
-        // Carrega o mapa base do OpenStreetMap
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '&copy; OpenStreetMap'
-        }).addTo(map);
-
-        // Nome correto do arquivo de imagem do rio
-        var imagemDoRio = 'mapa_00.png'; 
-
-        // Define a escala inicial do desenho na tela (cerca de 1.5km de área)
-        var tamanho = 0.015; 
-
-        // Cálculo matemático corrigido dos cantos geográficos para o Leaflet
-        var limites = [
-            [centroLat - tamanho, centroLng - tamanho], // Canto inferior esquerdo
-            [centroLat + tamanho, centroLng + tamanho]  // Canto superior direito
-        ];
-
-        // Cria a imagem sobre o mapa
-        var rioOverlay = L.imageOverlay(imagemDoRio, limites, { opacity: 0.85 }).addTo(map);
-
-        // Cria o marcador azul arrastável no centro exato da imagem
-        var marcadorMovel = L.marker([centroLat, centroLng], { draggable: true }).addTo(map);
-
-        // Movimenta o PNG sincronizado com o arrastar do mouse
-        marcadorMovel.on('drag', function (e) {
-            var novaPosicao = e.target.getLatLng();
-            var novosLimites = [
-                [novaPosicao.lat - tamanho, novaPosicao.lng - tamanho],
-                [novaPosicao.lat + tamanho, novaPosicao.lng + tamanho]
-            ];
-            rioOverlay.setBounds(novosLimites);
+        // 1. Configura o Leaflet para trabalhar com uma imagem comum (Plana), em vez do globo terrestre
+        var map = L.map('map', {
+            crs: L.CRS.Simple,
+            minZoom: -2,
+            maxZoom: 3
         });
 
-        // Função para exportar as coordenadas obtidas no ajuste visual
-        function pegarCoordenadas() {
-            var cantosAtuais = rioOverlay.getBounds();
-            var latSul = cantosAtuais.getSouthWest().lat.toFixed(6);
-            var lonOeste = cantosAtuais.getSouthWest().lng.toFixed(6);
-            var latNorte = cantosAtuais.getNorthEast().lat.toFixed(6);
-            var lonLeste = cantosAtuais.getNorthEast().lng.toFixed(6);
+        // 2. Define o tamanho interno do mapa na tela
+        var limites = [[0, 0], [1000, 1000]];
 
-            var resultado = `var limitesDoRio = [ [${latSul}, ${lonOeste}], [${latNorte}, ${lonLeste}] ];`;
-            alert("COPIE ESTA LINHA:\n\n" + resultado);
-            console.log(resultado);
-        }
+        // 3. Carrega o seu desenho mapa_00.png como o fundo do mapa
+        var meuDesenho = L.imageOverlay('mapa_00.png', limites).addTo(map);
+
+        // 4. Centraliza o zoom no seu desenho
+        map.fitBounds(limites);
     </script>
 
 </body>
 </html>
+
 
