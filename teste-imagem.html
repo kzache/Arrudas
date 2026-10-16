@@ -33,17 +33,19 @@
             left: 0;
             width: 100vw;
             height: 100vh;
-            z-index: 1;      
+            z-index: 1;
         }
 
-        .mapa iframe {
+        .mapa img {
             display: block;
             width: 100%;
             height: 100%;
-            border: none;
+            object-fit: cover;
+            object-position: center;
             margin: 0;
             padding: 0;
         }
+
 
         /* CAIXA DO TÍTULO */
 
@@ -76,6 +78,7 @@
             font-size: 18px;
         }
 
+
         /* MENU */
 
         .menu {
@@ -95,7 +98,6 @@
 
             font-family: "Courier New", monospace;
             font-size: 28px;
-
             cursor: pointer;
             color: #222;
         }
@@ -132,6 +134,7 @@
             display: block;
         }
 
+
         /* PLAYER DE ÁUDIO */
 
         .audio {
@@ -141,7 +144,6 @@
             bottom: 35px;
 
             transform: translateX(-50%);
-
             z-index: 10;
 
             width: 70%;
@@ -151,6 +153,7 @@
         .audio audio {
             width: 100%;
         }
+
 
         /* CELULAR */
 
@@ -196,19 +199,20 @@
 
 </head>
 
+
 <body>
+
 
     <!-- MAPA -->
 
     <div class="mapa">
 
-        <iframe
-            allowfullscreen
-            allow="geolocation"
-            src="https://umap.openstreetmap.fr/pt-br/map/mapa_1471708?scaleControl=false&miniMapControl=false&scrollWheelZoom=false&zoomControl=true&editMode=disabled&moreControl=true&searchControl=null&tilelayersControl=null&embedControl=null&datalayersControl=true&onLoadPanel=none&captionBar=false&captionMenus=true">
-        </iframe>
+        <img
+            src="mapa-arrudas.svg"
+            alt="Mapa do Ribeirão Arrudas">
 
     </div>
+
 
     <!-- TÍTULO -->
 
@@ -221,6 +225,7 @@
         </p>
 
     </div>
+
 
     <!-- MENU -->
 
@@ -238,6 +243,7 @@
 
     </div>
 
+
     <!-- ÁUDIO -->
 
     <div class="audio">
@@ -251,6 +257,7 @@
         </audio>
 
     </div>
+
 
 </body>
 
