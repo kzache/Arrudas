@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="pt-BR">
 
@@ -111,7 +112,7 @@
 
             background-color: rgba(243, 240, 232, 0.94);
 
-            border: 1px solid #222;
+            /* SEM BORDA */
 
             padding: 15px 20px;
 
@@ -152,7 +153,8 @@
             padding: 16px 20px;
 
             background-color: #f3f0e8;
-            border: 1px solid #222;
+
+            /* SEM BORDA */
 
             font-family: "Courier New", monospace;
             font-size: 20px;
@@ -232,6 +234,8 @@
             height: 45px;
 
             cursor: pointer;
+
+            overflow: hidden;
         }
 
         /* LINHAS DA ONDA */
@@ -251,6 +255,8 @@
 
             align-items: center;
             justify-content: space-between;
+
+            z-index: 1;
         }
 
         .onda-linhas span {
@@ -260,7 +266,33 @@
 
             background-color: #222;
 
-            opacity: 0.75;
+            opacity: 0.35;
+
+            transition: opacity 0.1s linear;
+        }
+
+        /* ONDA PERCORRIDA */
+
+        .onda-progresso {
+            position: absolute;
+
+            top: 0;
+            left: 0;
+
+            width: 0%;
+            height: 100%;
+
+            background-color: rgba(133, 89, 60, 0.12);
+
+            pointer-events: none;
+
+            z-index: 2;
+        }
+
+        /* MARCA AS LINHAS JÁ PERCORRIDAS */
+
+        .onda-linhas span.tocada {
+            opacity: 1;
         }
 
         /* TEMPO */
@@ -430,6 +462,11 @@
                     id="onda">
 
                     <div
+                        class="onda-progresso"
+                        id="ondaProgresso">
+                    </div>
+
+                    <div
                         class="onda-linhas"
                         id="ondaLinhas">
                     </div>
@@ -489,6 +526,7 @@
         const botaoPlay = document.getElementById("botaoPlay");
         const onda = document.getElementById("onda");
         const ondaLinhas = document.getElementById("ondaLinhas");
+        const ondaProgresso = document.getElementById("ondaProgresso");
         const tempo = document.getElementById("tempo");
 
 
@@ -535,11 +573,45 @@
         });
 
 
-        /* ATUALIZA O TEMPO */
+        /* ATUALIZA O TEMPO E A ONDA */
 
         audio.addEventListener("timeupdate", function () {
 
             if (!audio.duration) return;
+
+            const progresso =
+                audio.currentTime / audio.duration;
+
+            /* ATUALIZA A MARCAÇÃO DE PROGRESSO */
+
+            ondaProgresso.style.width =
+                (progresso * 100) + "%";
+
+
+            /* MARCA AS LINHAS JÁ TOCADAS */
+
+            const linhas =
+                ondaLinhas.querySelectorAll("span");
+
+            linhas.forEach(function (linha, indice) {
+
+                const posicao =
+                    indice / linhas.length;
+
+                if (posicao <= progresso) {
+
+                    linha.classList.add("tocada");
+
+                } else {
+
+                    linha.classList.remove("tocada");
+
+                }
+
+            });
+
+
+            /* ATUALIZA O TEMPO */
 
             const minutos =
                 Math.floor(audio.currentTime / 60);
@@ -588,3 +660,4 @@
 </body>
 
 </html>
+```
