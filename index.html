@@ -112,8 +112,6 @@
 
             background-color: rgba(243, 240, 232, 0.94);
 
-            /* SEM BORDA */
-
             padding: 15px 20px;
 
             text-align: left;
@@ -154,8 +152,6 @@
 
             background-color: #f3f0e8;
 
-            /* SEM BORDA */
-
             font-family: "Courier New", monospace;
             font-size: 20px;
             font-weight: bold;
@@ -184,8 +180,6 @@
 
             padding: 15px 18px;
         }
-
-        /* PLAYER APARECE AO CLICAR EM ESCUTE */
 
         .audio.aberto {
             display: block;
@@ -224,7 +218,7 @@
             flex-shrink: 0;
         }
 
-        /* ÁREA DA ONDA */
+        /* ÁREA DO ESPECTROGRAMA */
 
         .onda {
             position: relative;
@@ -236,63 +230,35 @@
             cursor: pointer;
 
             overflow: hidden;
+
+            background-color: transparent;
         }
 
-        /* LINHAS DA ONDA */
+        /* CANVAS DO ESPECTROGRAMA */
 
-        .onda-linhas {
-            position: absolute;
-
-            top: 50%;
-            left: 0;
-            right: 0;
-
-            height: 45px;
-
-            transform: translateY(-50%);
-
-            display: flex;
-
-            align-items: center;
-            justify-content: space-between;
-
-            z-index: 1;
-        }
-
-        .onda-linhas span {
+        #espectrograma {
             display: block;
 
-            width: 2px;
-
-            background-color: #222;
-
-            opacity: 0.35;
-
-            transition: opacity 0.1s linear;
+            width: 100%;
+            height: 100%;
         }
 
-        /* ONDA PERCORRIDA */
+        /* LINHA DO MOMENTO ATUAL */
 
-        .onda-progresso {
+        .linha-atual {
             position: absolute;
 
             top: 0;
-            left: 0;
+            right: 0;
 
-            width: 0%;
+            width: 1px;
             height: 100%;
 
-            background-color: rgba(133, 89, 60, 0.12);
+            background-color: #222;
+
+            opacity: 0.8;
 
             pointer-events: none;
-
-            z-index: 2;
-        }
-
-        /* MARCA AS LINHAS JÁ PERCORRIDAS */
-
-        .onda-linhas span.tocada {
-            opacity: 1;
         }
 
         /* TEMPO */
@@ -405,8 +371,6 @@
 
         <p>Memórias Sonoras de um Território-Rio</p>
 
-        <!-- MENU LATERAL -->
-
         <div class="menu-links">
 
             <a href="sobre.html">Sobre o projeto</a>
@@ -461,14 +425,12 @@
                     class="onda"
                     id="onda">
 
-                    <div
-                        class="onda-progresso"
-                        id="ondaProgresso">
-                    </div>
+                    <canvas
+                        id="espectrograma">
+                    </canvas>
 
                     <div
-                        class="onda-linhas"
-                        id="ondaLinhas">
+                        class="linha-atual">
                     </div>
 
                 </div>
@@ -520,140 +482,370 @@
         });
 
 
-        /* PLAYER DE ONDA */
+        /* ELEMENTOS DO PLAYER */
 
         const audio = document.getElementById("audio");
         const botaoPlay = document.getElementById("botaoPlay");
         const onda = document.getElementById("onda");
-        const ondaLinhas = document.getElementById("ondaLinhas");
-        const ondaProgresso = document.getElementById("ondaProgresso");
+        const canvas = document.getElementById("espectrograma");
+        const contexto = canvas.getContext("2d");
         const tempo = document.getElementById("tempo");
 
 
-        /* CRIA A ONDA */
+        /* CONFIGURAÇÃO DO ESPECTROGRAMA */
 
-        const alturas = [
-            12, 22, 30, 18, 36, 25, 14, 32, 20, 40,
-            27, 16, 34, 23, 12, 29, 38, 20, 31, 17,
-            25, 35, 15, 28, 39, 22, 13, 30, 19, 34,
-            24, 16, 37, 27, 20, 32, 14, 25, 36, 18,
-            29, 21, 13, 33, 24, 38, 19, 28, 16, 31
-        ];
+        let analisador = null;
+        let dadosFrequencia = null;
+        let audioContext = null;
+        let fonteAudio = null;
+
+        let espectrogramaIniciado = false;
 
 
-        alturas.forEach(function (altura) {
+        /* AJUSTA O TAMANHO DO CANVAS */
 
-            const linha = document.createElement("span");
+        function ajustarCanvas() {
 
-            linha.style.height = altura + "px";
+            const largura =
+                onda.clientWidth;
 
-            ondaLinhas.appendChild(linha);
+            const altura =
+                onda.clientHeight;
 
-        });
+            const escala =
+                window.devicePixelRatio || 1;
+
+            canvas.width =
+                largura * escala;
+
+            canvas.height =
+                altura * escala;
+
+            canvas.style.width =
+                largura + "px";
+
+            canvas.style.height =
+                altura + "px";
+
+            contexto.setTransform(
+                escala,
+                0,
+                0,
+                escala,
+                0,
+                0
+            );
+
+        }
+
+
+        ajustarCanvas();
+
+        window.addEventListener(
+            "resize",
+            ajustarCanvas
+        );
+
+
+        /* CRIA A ANÁLISE DO ÁUDIO */
+
+        function iniciarAnalise() {
+
+            if (espectrogramaIniciado) {
+
+                return;
+
+            }
+
+
+            audioContext =
+                new (
+                    window.AudioContext ||
+                    window.webkitAudioContext
+                )();
+
+
+            analisador =
+                audioContext.createAnalyser();
+
+
+            analisador.fftSize = 256;
+
+            analisador.smoothingTimeConstant = 0.35;
+
+
+            dadosFrequencia =
+                new Uint8Array(
+                    analisador.frequencyBinCount
+                );
+
+
+            fonteAudio =
+                audioContext.createMediaElementSource(
+                    audio
+                );
+
+
+            fonteAudio.connect(analisador);
+
+            analisador.connect(
+                audioContext.destination
+            );
+
+
+            espectrogramaIniciado = true;
+
+        }
+
+
+        /* DESENHA UMA NOVA COLUNA */
+
+        function desenharEspectrograma() {
+
+            if (!analisador) {
+
+                return;
+
+            }
+
+
+            const largura =
+                onda.clientWidth;
+
+            const altura =
+                onda.clientHeight;
+
+
+            analisador.getByteFrequencyData(
+                dadosFrequencia
+            );
+
+
+            /*
+             * Move o espectrograma existente
+             * uma pequena distância para a esquerda.
+             */
+
+            contexto.drawImage(
+                canvas,
+                -1,
+                0,
+                largura,
+                altura
+            );
+
+
+            /*
+             * Limpa apenas a nova coluna
+             * que entrou pela direita.
+             */
+
+            contexto.clearRect(
+                largura - 2,
+                0,
+                2,
+                altura
+            );
+
+
+            /*
+             * Desenha as frequências do som
+             * na nova coluna.
+             */
+
+            const novaColuna =
+                largura - 2;
+
+
+            const quantidade =
+                dadosFrequencia.length;
+
+
+            const larguraFaixa =
+                altura / quantidade;
+
+
+            for (
+                let i = 0;
+                i < quantidade;
+                i++
+            ) {
+
+                const valor =
+                    dadosFrequencia[i];
+
+
+                /*
+                 * Inverte a frequência para que
+                 * as frequências graves fiquem
+                 * embaixo.
+                 */
+
+                const y =
+                    altura -
+                    ((i + 1) * larguraFaixa);
+
+
+                /*
+                 * Intensidade mínima para
+                 * evitar uma tela completamente vazia.
+                 */
+
+                const intensidade =
+                    valor / 255;
+
+
+                /*
+                 * Tons neutros/terrosos.
+                 * A intensidade do som controla
+                 * a transparência.
+                 */
+
+                contexto.fillStyle =
+                    "rgba(34, 34, 34, " +
+                    (intensidade * 0.9) +
+                    ")";
+
+
+                contexto.fillRect(
+                    novaColuna,
+                    y,
+                    2,
+                    Math.max(
+                        1,
+                        larguraFaixa + 0.5
+                    )
+                );
+
+            }
+
+
+            requestAnimationFrame(
+                desenharEspectrograma
+            );
+
+        }
 
 
         /* PLAY / PAUSA */
 
-        botaoPlay.addEventListener("click", function () {
+        botaoPlay.addEventListener(
+            "click",
+            async function () {
 
-            if (audio.paused) {
-
-                audio.play();
-
-                botaoPlay.textContent = "Ⅱ";
-
-            } else {
-
-                audio.pause();
-
-                botaoPlay.textContent = "▶";
-
-            }
-
-        });
+                iniciarAnalise();
 
 
-        /* ATUALIZA O TEMPO E A ONDA */
+                if (
+                    audioContext &&
+                    audioContext.state === "suspended"
+                ) {
 
-        audio.addEventListener("timeupdate", function () {
-
-            if (!audio.duration) return;
-
-            const progresso =
-                audio.currentTime / audio.duration;
-
-            /* ATUALIZA A MARCAÇÃO DE PROGRESSO */
-
-            ondaProgresso.style.width =
-                (progresso * 100) + "%";
-
-
-            /* MARCA AS LINHAS JÁ TOCADAS */
-
-            const linhas =
-                ondaLinhas.querySelectorAll("span");
-
-            linhas.forEach(function (linha, indice) {
-
-                const posicao =
-                    indice / linhas.length;
-
-                if (posicao <= progresso) {
-
-                    linha.classList.add("tocada");
-
-                } else {
-
-                    linha.classList.remove("tocada");
+                    await audioContext.resume();
 
                 }
 
-            });
+
+                if (audio.paused) {
+
+                    await audio.play();
+
+                    botaoPlay.textContent = "Ⅱ";
+
+                    desenharEspectrograma();
+
+                } else {
+
+                    audio.pause();
+
+                    botaoPlay.textContent = "▶";
+
+                }
+
+            }
+        );
 
 
-            /* ATUALIZA O TEMPO */
+        /* ATUALIZA O TEMPO */
 
-            const minutos =
-                Math.floor(audio.currentTime / 60);
+        audio.addEventListener(
+            "timeupdate",
+            function () {
 
-            const segundos =
-                Math.floor(audio.currentTime % 60);
+                if (!audio.duration) {
 
-            tempo.textContent =
-                String(minutos).padStart(2, "0") +
-                ":" +
-                String(segundos).padStart(2, "0");
+                    return;
 
-        });
+                }
 
 
-        /* CLICAR NA ONDA PARA AVANÇAR */
+                const minutos =
+                    Math.floor(
+                        audio.currentTime / 60
+                    );
 
-        onda.addEventListener("click", function (event) {
 
-            if (!audio.duration) return;
+                const segundos =
+                    Math.floor(
+                        audio.currentTime % 60
+                    );
 
-            const largura =
-                onda.getBoundingClientRect().width;
 
-            const posicao =
-                event.clientX -
-                onda.getBoundingClientRect().left;
+                tempo.textContent =
+                    String(minutos).padStart(
+                        2,
+                        "0"
+                    ) +
+                    ":" +
+                    String(segundos).padStart(
+                        2,
+                        "0"
+                    );
 
-            audio.currentTime =
-                (posicao / largura) *
-                audio.duration;
+            }
+        );
 
-        });
+
+        /* CLICAR NO ESPECTROGRAMA PARA AVANÇAR */
+
+        onda.addEventListener(
+            "click",
+            function (event) {
+
+                if (!audio.duration) {
+
+                    return;
+
+                }
+
+
+                const largura =
+                    onda.getBoundingClientRect().width;
+
+
+                const posicao =
+                    event.clientX -
+                    onda.getBoundingClientRect().left;
+
+
+                audio.currentTime =
+                    (posicao / largura) *
+                    audio.duration;
+
+            }
+        );
 
 
         /* QUANDO A PEÇA TERMINAR */
 
-        audio.addEventListener("ended", function () {
+        audio.addEventListener(
+            "ended",
+            function () {
 
-            botaoPlay.textContent = "▶";
+                botaoPlay.textContent = "▶";
 
-        });
+            }
+        );
 
     </script>
 
