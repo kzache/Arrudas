@@ -1,4 +1,3 @@
-```html
 <!DOCTYPE html>
 <html lang="pt-BR">
 
@@ -96,13 +95,24 @@
             font-size: 18px;
         }
 
+        /* BARRA LATERAL */
+
+        .barra-lateral {
+            position: fixed;
+            top: 25px;
+            left: 30px;
+            z-index: 30;
+
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 25px;
+        }
+
         /* MENU */
 
         .menu {
-            position: fixed;
-            top: 25px;
-            right: 30px;
-            z-index: 20;
+            position: relative;
         }
 
         .menu-button {
@@ -119,8 +129,8 @@
         .menu-content {
             display: none;
             position: absolute;
-            right: 0;
-            top: 55px;
+            left: 55px;
+            top: 0;
             background-color: #f3f0e8;
             padding: 15px 20px;
             border: 1px solid #222;
@@ -143,35 +153,29 @@
             display: block;
         }
 
-
         /* ABA ESCUTE */
 
         .escute {
-        position: fixed;
-        left: 0;
-        top: 50%;
-        transform: translateY(-50%);
+            position: relative;
 
-        z-index: 30;
+            width: 42px;
+            padding: 12px 8px;
 
-        width: 42px;
-        padding: 12px 8px;
+            background-color: #f3f0e8;
+            border: 1px solid #222;
 
-        background-color: #f3f0e8;
-        border: 1px solid #222;
+            font-family: "Courier New", monospace;
+            font-size: 18px;
+            line-height: 1.1;
+            text-align: center;
 
-        font-family: "Courier New", monospace;
-        font-size: 18px;
-        line-height: 1.1;
-        text-align: center;
-
-        cursor: pointer;
-    }
+            cursor: pointer;
+        }
 
         .escute span {
-        display: block;
-    }
-        
+            display: block;
+        }
+
         /* PLAYER DE ÁUDIO */
 
         .audio {
@@ -207,9 +211,9 @@
                 font-size: 16px;
             }
 
-            .menu {
+            .barra-lateral {
                 top: 15px;
-                right: 15px;
+                left: 15px;
             }
 
             .menu-button {
@@ -270,41 +274,52 @@
 
     </div>
 
-    <!-- MENU -->
+    <!-- BARRA LATERAL -->
 
-    <div class="menu">
+    <div class="barra-lateral">
 
-        <button class="menu-button">☰</button>
+        <!-- MENU -->
 
-        <div class="menu-content">
+        <div class="menu">
 
-            <a href="sobre.html">Sobre o projeto</a>
+            <button class="menu-button">☰</button>
 
-            <a href="creditos.html">Ficha técnica</a>
+            <div class="menu-content">
 
-    <!-- ABA ESCUTE -->
+                <a href="sobre.html">Sobre o projeto</a>
 
-    <div class="escute">
-    <span>ES</span>
-    <span>CU</span>
-    <span>TE</span>
-</div>
+                <a href="creditos.html">Ficha técnica</a>
 
-<!-- ÁUDIO -->
+            </div>
+
+        </div>
+
+        <!-- ABA ESCUTE -->
+
+        <div class="escute">
+
+            <span>ES</span>
+            <span>CU</span>
+            <span>TE</span>
+
+        </div>
+
+    </div>
+
+    <!-- ÁUDIO -->
 
     <div class="audio">
 
-    <audio controls loop>
+        <audio controls loop>
 
-    <source
-    src="Arrudas_Peça Sonora_.mp3"
-    type="audio/mpeg">
+            <source
+                src="Arrudas_Peça Sonora_.mp3"
+                type="audio/mpeg">
 
-    </audio>
+        </audio>
 
-</div>
+    </div>
 
 </body>
 
 </html>
-```
