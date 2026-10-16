@@ -69,7 +69,7 @@
             }
         }
 
-        /* CAIXA DO TÍTULO / MENU */
+        /* CAIXA DO TÍTULO */
 
         .titulo {
             position: fixed;
@@ -77,108 +77,129 @@
             left: 30px;
             z-index: 20;
 
-            display: flex;
-            align-items: stretch;
-
             background-color: rgba(243, 240, 232, 0.94);
 
-            padding: 0;
-
-            cursor: pointer;
-        }
-
-        /* PARTE PRINCIPAL — ARRUDAS */
-
-        .titulo-principal {
             padding: 25px 40px;
             text-align: center;
             min-width: 420px;
         }
 
         .titulo h1 {
-            margin: 0 0 10px;
+            margin: 0;
             font-size: 38px;
             font-weight: normal;
         }
 
         .titulo p {
-            margin: 0;
+            margin: 10px 0 0;
             font-size: 18px;
         }
 
-        /* EXTENSÃO DO MENU */
+        /* MENU DE TRÊS TRAÇOS */
+
+        .menu {
+            margin-top: 8px;
+        }
+
+        .menu-button {
+            width: 48px;
+            height: 35px;
+
+            background-color: transparent;
+            border: none;
+
+            font-family: "Courier New", monospace;
+            font-size: 25px;
+
+            color: #222;
+
+            cursor: pointer;
+        }
+
+        /* LINKS DO MENU */
 
         .menu-links {
             display: none;
 
-            padding: 25px 30px;
+            margin-top: 10px;
+            padding-top: 12px;
 
-            border-left: 1px solid #222;
-
-            min-width: 220px;
-
-            align-items: center;
+            border-top: 1px solid #222;
         }
 
-        .titulo.aberto .menu-links {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
+        .menu.aberto .menu-links {
+            display: block;
         }
 
         .menu-links a {
             display: block;
+
             text-decoration: none;
             color: #222;
+
             font-size: 15px;
-            padding: 8px 0;
+
+            padding: 7px 0;
         }
 
         .menu-links a:hover {
             text-decoration: underline;
         }
 
-        /* ABA ESCUTE */
+        /* ESCUTE */
 
         .escute {
             position: fixed;
+
             left: 30px;
-            top: 50%;
-            transform: translateY(-50%);
+            top: 190px;
 
             z-index: 30;
 
-            width: 42px;
-            padding: 12px 8px;
+            width: 420px;
+
+            padding: 16px 20px;
 
             background-color: #f3f0e8;
             border: 1px solid #222;
 
             font-family: "Courier New", monospace;
-            font-size: 18px;
-            line-height: 1.1;
+            font-size: 20px;
+            font-weight: bold;
+
             text-align: center;
 
             cursor: pointer;
         }
 
-        .escute span {
+        /* PLAYER */
+
+        .audio {
+            display: none;
+
+            position: fixed;
+
+            left: 30px;
+            top: 245px;
+
+            z-index: 30;
+
+            width: 420px;
+
+            background-color: #f3f0e8;
+            border: 1px solid #222;
+
+            padding: 12px 15px;
+        }
+
+        /* PLAYER APARECE SOMENTE AO CLICAR EM ESCUTE */
+
+        .audio.aberto {
             display: block;
         }
 
-        /* PLAYER DE ÁUDIO */
-
-        .audio {
-            position: fixed;
-            left: 50%;
-            bottom: 35px;
-            transform: translateX(-50%);
-            z-index: 10;
-            width: 70%;
-            max-width: 800px;
-        }
-
         .audio audio {
+            display: block;
             width: 100%;
         }
 
@@ -189,12 +210,11 @@
             .titulo {
                 top: 25px;
                 left: 15px;
-            }
 
-            .titulo-principal {
-                padding: 18px 15px;
+                width: calc(100% - 100px);
                 min-width: 0;
-                width: calc(100vw - 100px);
+
+                padding: 18px 15px;
             }
 
             .titulo h1 {
@@ -205,18 +225,24 @@
                 font-size: 16px;
             }
 
-            .menu-links {
-                min-width: 180px;
-                padding: 18px 20px;
+            .menu-button {
+                font-size: 22px;
             }
 
             .escute {
                 left: 15px;
+                top: 165px;
+
+                width: calc(100% - 30px);
+
+                font-size: 18px;
             }
 
             .audio {
-                width: calc(100% - 40px);
-                bottom: 25px;
+                left: 15px;
+                top: 215px;
+
+                width: calc(100% - 30px);
             }
 
             .desenho-arrudas {
@@ -257,43 +283,50 @@
     </div>
 
 
-    <!-- TÍTULO / MENU -->
+    <!-- TÍTULO -->
 
-    <div class="titulo" id="menuTitulo">
+    <div class="titulo">
 
-        <div class="titulo-principal">
+        <h1>Arrudas</h1>
 
-            <h1>Arrudas</h1>
+        <!-- MENU -->
 
-            <p>Memórias Sonoras de um Território-Rio</p>
+        <div class="menu" id="menu">
+
+            <button
+                class="menu-button"
+                id="menuButton"
+                aria-label="Abrir menu">
+                ☰
+            </button>
+
+            <div class="menu-links">
+
+                <a href="sobre.html">Sobre o projeto</a>
+
+                <a href="creditos.html">Ficha técnica</a>
+
+            </div>
 
         </div>
 
-        <div class="menu-links">
-
-            <a href="sobre.html">Sobre o projeto</a>
-
-            <a href="creditos.html">Ficha técnica</a>
-
-        </div>
+        <p>Memórias Sonoras de um Território-Rio</p>
 
     </div>
 
 
-    <!-- ABA ESCUTE -->
+    <!-- ESCUTE -->
 
-    <div class="escute">
+    <div class="escute" id="escute">
 
-        <span>ES</span>
-        <span>CU</span>
-        <span>TE</span>
+        ESCUTE
 
     </div>
 
 
-    <!-- ÁUDIO -->
+    <!-- PLAYER -->
 
-    <div class="audio">
+    <div class="audio" id="audioPlayer">
 
         <audio controls loop>
 
@@ -306,14 +339,33 @@
     </div>
 
 
-    <!-- ABRIR / FECHAR MENU -->
+    <!-- INTERAÇÕES -->
 
     <script>
 
-        const menuTitulo = document.getElementById("menuTitulo");
+        /* MENU */
 
-        menuTitulo.addEventListener("click", function () {
-            menuTitulo.classList.toggle("aberto");
+        const menu = document.getElementById("menu");
+        const menuButton = document.getElementById("menuButton");
+
+        menuButton.addEventListener("click", function (event) {
+
+            event.stopPropagation();
+
+            menu.classList.toggle("aberto");
+
+        });
+
+
+        /* ESCUTE / PLAYER */
+
+        const escute = document.getElementById("escute");
+        const audioPlayer = document.getElementById("audioPlayer");
+
+        escute.addEventListener("click", function () {
+
+            audioPlayer.classList.toggle("aberto");
+
         });
 
     </script>
