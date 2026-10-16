@@ -56,7 +56,7 @@
             pointer-events: none;
             opacity: 0;
             animation: entradaDesenho 1.8s ease-out 1.5s forwards;
-            transform: translate(-160px, 0px);
+            transform: translate(-150px, 0px);
         }
 
         @keyframes entradaDesenho {
@@ -69,19 +69,21 @@
             }
         }
 
-        /* CAIXA DO TÍTULO */
+        /* CAIXA DO TÍTULO / MENU */
 
         .titulo {
             position: fixed;
             top: 40px;
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 10;
+            left: 30px;
+            z-index: 20;
+
             background-color: rgba(243, 240, 232, 0.94);
             border: none;
             padding: 25px 40px;
             text-align: center;
             min-width: 420px;
+
+            cursor: pointer;
         }
 
         .titulo h1 {
@@ -95,49 +97,21 @@
             font-size: 18px;
         }
 
-        /* BARRA LATERAL */
+        /* CONTEÚDO DO MENU */
 
-        .barra-lateral {
-            position: fixed;
-            top: 25px;
-            left: 30px;
-            z-index: 30;
-
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 25px;
-        }
-
-        /* MENU */
-
-        .menu {
-            position: relative;
-        }
-
-        .menu-button {
-            width: 48px;
-            height: 48px;
-            background-color: #f3f0e8;
-            border: 1px solid #222;
-            font-family: "Courier New", monospace;
-            font-size: 28px;
-            cursor: pointer;
-            color: #222;
-        }
-
-        .menu-content {
+        .menu-links {
             display: none;
-            position: absolute;
-            left: 55px;
-            top: 0;
-            background-color: #f3f0e8;
-            padding: 15px 20px;
-            border: 1px solid #222;
-            min-width: 180px;
+
+            margin-top: 20px;
+            padding-top: 15px;
+            border-top: 1px solid #222;
         }
 
-        .menu-content a {
+        .titulo.aberto .menu-links {
+            display: block;
+        }
+
+        .menu-links a {
             display: block;
             text-decoration: none;
             color: #222;
@@ -145,18 +119,19 @@
             padding: 8px 0;
         }
 
-        .menu-content a:hover {
+        .menu-links a:hover {
             text-decoration: underline;
-        }
-
-        .menu:hover .menu-content {
-            display: block;
         }
 
         /* ABA ESCUTE */
 
         .escute {
-            position: relative;
+            position: fixed;
+            left: 30px;
+            top: 50%;
+            transform: translateY(-50%);
+
+            z-index: 30;
 
             width: 42px;
             padding: 12px 8px;
@@ -198,6 +173,7 @@
 
             .titulo {
                 top: 25px;
+                left: 15px;
                 width: calc(100% - 100px);
                 min-width: 0;
                 padding: 18px 15px;
@@ -211,15 +187,8 @@
                 font-size: 16px;
             }
 
-            .barra-lateral {
-                top: 15px;
+            .escute {
                 left: 15px;
-            }
-
-            .menu-button {
-                width: 42px;
-                height: 42px;
-                font-size: 24px;
             }
 
             .audio {
@@ -264,45 +233,31 @@
 
     </div>
 
-    <!-- TÍTULO -->
+    <!-- TÍTULO / MENU -->
 
-    <div class="titulo">
+    <div class="titulo" id="menuTitulo">
 
         <h1>Arrudas</h1>
 
         <p>Memórias Sonoras de um Território-Rio</p>
 
+        <div class="menu-links">
+
+            <a href="sobre.html">Sobre o projeto</a>
+
+            <a href="creditos.html">Ficha técnica</a>
+
+        </div>
+
     </div>
 
-    <!-- BARRA LATERAL -->
+    <!-- ABA ESCUTE -->
 
-    <div class="barra-lateral">
+    <div class="escute">
 
-        <!-- MENU -->
-
-        <div class="menu">
-
-            <button class="menu-button">☰</button>
-
-            <div class="menu-content">
-
-                <a href="sobre.html">Sobre o projeto</a>
-
-                <a href="creditos.html">Ficha técnica</a>
-
-            </div>
-
-        </div>
-
-        <!-- ABA ESCUTE -->
-
-        <div class="escute">
-
-            <span>ES</span>
-            <span>CU</span>
-            <span>TE</span>
-
-        </div>
+        <span>ES</span>
+        <span>CU</span>
+        <span>TE</span>
 
     </div>
 
@@ -319,6 +274,18 @@
         </audio>
 
     </div>
+
+    <!-- ABRIR / FECHAR MENU -->
+
+    <script>
+
+        const menuTitulo = document.getElementById("menuTitulo");
+
+        menuTitulo.addEventListener("click", function () {
+            menuTitulo.classList.toggle("aberto");
+        });
+
+    </script>
 
 </body>
 
