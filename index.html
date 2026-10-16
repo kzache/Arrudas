@@ -77,13 +77,22 @@
             left: 30px;
             z-index: 20;
 
+            display: flex;
+            align-items: stretch;
+
             background-color: rgba(243, 240, 232, 0.94);
-            border: none;
+
+            padding: 0;
+
+            cursor: pointer;
+        }
+
+        /* PARTE PRINCIPAL — ARRUDAS */
+
+        .titulo-principal {
             padding: 25px 40px;
             text-align: center;
             min-width: 420px;
-
-            cursor: pointer;
         }
 
         .titulo h1 {
@@ -97,18 +106,24 @@
             font-size: 18px;
         }
 
-        /* CONTEÚDO DO MENU */
+        /* EXTENSÃO DO MENU */
 
         .menu-links {
             display: none;
 
-            margin-top: 20px;
-            padding-top: 15px;
-            border-top: 1px solid #222;
+            padding: 25px 30px;
+
+            border-left: 1px solid #222;
+
+            min-width: 220px;
+
+            align-items: center;
         }
 
         .titulo.aberto .menu-links {
-            display: block;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
         }
 
         .menu-links a {
@@ -174,9 +189,12 @@
             .titulo {
                 top: 25px;
                 left: 15px;
-                width: calc(100% - 100px);
-                min-width: 0;
+            }
+
+            .titulo-principal {
                 padding: 18px 15px;
+                min-width: 0;
+                width: calc(100vw - 100px);
             }
 
             .titulo h1 {
@@ -185,6 +203,11 @@
 
             .titulo p {
                 font-size: 16px;
+            }
+
+            .menu-links {
+                min-width: 180px;
+                padding: 18px 20px;
             }
 
             .escute {
@@ -233,13 +256,18 @@
 
     </div>
 
+
     <!-- TÍTULO / MENU -->
 
     <div class="titulo" id="menuTitulo">
 
-        <h1>Arrudas</h1>
+        <div class="titulo-principal">
 
-        <p>Memórias Sonoras de um Território-Rio</p>
+            <h1>Arrudas</h1>
+
+            <p>Memórias Sonoras de um Território-Rio</p>
+
+        </div>
 
         <div class="menu-links">
 
@@ -251,6 +279,7 @@
 
     </div>
 
+
     <!-- ABA ESCUTE -->
 
     <div class="escute">
@@ -260,6 +289,7 @@
         <span>TE</span>
 
     </div>
+
 
     <!-- ÁUDIO -->
 
@@ -274,6 +304,7 @@
         </audio>
 
     </div>
+
 
     <!-- ABRIR / FECHAR MENU -->
 
