@@ -28,35 +28,23 @@ html, body {
 .mapa {
     position: fixed;
     inset: 0;
+
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color: #f3f0e8;
+
+    background-color: #85593c;
+
     z-index: 1;
 }
 
-
-/* MOLDURA AO REDOR DO MAPA */
-
-.moldura {
-    padding: 25px;
-    background-color: #85593c;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    max-width: 90vw;
-    max-height: 90vh;
-}
-
-
-/* IMAGEM DO MAPA */
-
-.moldura img {
+.mapa img {
     display: block;
-    max-width: 100%;
-    max-height: calc(90vh - 50px);
-    width: auto;
-    height: auto;
+
+    width: 80vmin;
+    height: 80vmin;
+
+    object-fit: contain;
 }
 
 
@@ -66,7 +54,9 @@ html, body {
     position: fixed;
     top: 40px;
     left: 50%;
+
     transform: translateX(-50%);
+
     z-index: 10;
 
     background-color: rgba(243, 240, 232, 0.94);
@@ -196,15 +186,9 @@ html, body {
 
 @media (max-width: 600px) {
 
-    .moldura {
-        padding: 15px;
-
-        max-width: 92vw;
-        max-height: 80vh;
-    }
-
-    .moldura img {
-        max-height: calc(80vh - 30px);
+    .mapa img {
+        width: 80vmin;
+        height: 80vmin;
     }
 
 
@@ -263,13 +247,9 @@ html, body {
 
 <div class="mapa">
 
-    <div class="moldura">
-
-        <img
-            src="mapa-arrudas.svg"
-            alt="Mapa do Ribeirão Arrudas">
-
-    </div>
+    <img
+        src="mapa-arrudas.svg"
+        alt="Mapa do Ribeirão Arrudas">
 
 </div>
 
