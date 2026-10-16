@@ -69,7 +69,7 @@
             }
         }
 
-        /* CAIXA DO TÍTULO */
+        /* CAIXA DO TÍTULO / MENU */
 
         .titulo {
             position: fixed;
@@ -82,6 +82,8 @@
             padding: 25px 40px;
             text-align: center;
             min-width: 420px;
+
+            cursor: pointer;
         }
 
         .titulo h1 {
@@ -95,39 +97,28 @@
             font-size: 18px;
         }
 
-        /* MENU DE TRÊS TRAÇOS */
-
-        .menu {
-            margin-top: 8px;
-        }
-
-        .menu-button {
-            width: 48px;
-            height: 35px;
-
-            background-color: transparent;
-            border: none;
-
-            font-family: "Courier New", monospace;
-            font-size: 25px;
-
-            color: #222;
-
-            cursor: pointer;
-        }
-
-        /* LINKS DO MENU */
+        /* MENU LATERAL */
 
         .menu-links {
+            position: absolute;
+
+            top: 0;
+            left: 100%;
+
             display: none;
 
-            margin-top: 10px;
-            padding-top: 12px;
+            width: 190px;
 
-            border-top: 1px solid #222;
+            background-color: rgba(243, 240, 232, 0.94);
+
+            border: 1px solid #222;
+
+            padding: 15px 20px;
+
+            text-align: left;
         }
 
-        .menu.aberto .menu-links {
+        .titulo.aberto .menu-links {
             display: block;
         }
 
@@ -225,8 +216,11 @@
                 font-size: 16px;
             }
 
-            .menu-button {
-                font-size: 22px;
+            .menu-links {
+                top: 100%;
+                left: 0;
+
+                width: 100%;
             }
 
             .escute {
@@ -283,34 +277,23 @@
     </div>
 
 
-    <!-- TÍTULO -->
+    <!-- TÍTULO / MENU -->
 
-    <div class="titulo">
+    <div class="titulo" id="titulo">
 
         <h1>Arrudas</h1>
 
-        <!-- MENU -->
+        <p>Memórias Sonoras de um Território-Rio</p>
 
-        <div class="menu" id="menu">
+        <!-- MENU LATERAL -->
 
-            <button
-                class="menu-button"
-                id="menuButton"
-                aria-label="Abrir menu">
-                ☰
-            </button>
+        <div class="menu-links">
 
-            <div class="menu-links">
+            <a href="sobre.html">Sobre o projeto</a>
 
-                <a href="sobre.html">Sobre o projeto</a>
-
-                <a href="creditos.html">Ficha técnica</a>
-
-            </div>
+            <a href="creditos.html">Ficha técnica</a>
 
         </div>
-
-        <p>Memórias Sonoras de um Território-Rio</p>
 
     </div>
 
@@ -343,16 +326,17 @@
 
     <script>
 
-        /* MENU */
+        /* CAIXA DO TÍTULO / MENU */
 
-        const menu = document.getElementById("menu");
-        const menuButton = document.getElementById("menuButton");
+        const titulo = document.getElementById("titulo");
 
-        menuButton.addEventListener("click", function (event) {
+        titulo.addEventListener("click", function (event) {
 
-            event.stopPropagation();
+            if (event.target.tagName !== "A") {
 
-            menu.classList.toggle("aberto");
+                titulo.classList.toggle("aberto");
+
+            }
 
         });
 
