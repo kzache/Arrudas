@@ -143,6 +143,35 @@
             display: block;
         }
 
+
+        /* ABA ESCUTE */
+
+        .escute {
+        position: fixed;
+        left: 0;
+        top: 50%;
+        transform: translateY(-50%);
+
+        z-index: 30;
+
+        width: 42px;
+        padding: 12px 8px;
+
+        background-color: #f3f0e8;
+        border: 1px solid #222;
+
+        font-family: "Courier New", monospace;
+        font-size: 18px;
+        line-height: 1.1;
+        text-align: center;
+
+        cursor: pointer;
+    }
+
+        .escute span {
+        display: block;
+    }
+        
         /* PLAYER DE ÁUDIO */
 
         .audio {
@@ -253,23 +282,27 @@
 
             <a href="creditos.html">Ficha técnica</a>
 
-        </div>
+    <!-- ABA ESCUTE -->
 
-    </div>
+    <div class="escute">
+    <span>ES</span>
+    <span>CU</span>
+    <span>TE</span>
+</div>
 
-    <!-- ÁUDIO -->
+<!-- ÁUDIO -->
 
     <div class="audio">
 
-        <audio controls loop>
+    <audio controls loop>
 
-            <source
-                src="Arrudas_Peça Sonora_.mp3"
-                type="audio/mpeg">
+    <source
+    src="Arrudas_Peça Sonora_.mp3"
+    type="audio/mpeg">
 
-        </audio>
+    </audio>
 
-    </div>
+</div>
 
 </body>
 
