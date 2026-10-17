@@ -1,14 +1,12 @@
+
 <!DOCTYPE html>
 <html lang="pt-BR">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <title>Arrudas</title>
 
     <style>
-
         * {
             box-sizing: border-box;
         }
@@ -42,6 +40,7 @@
             border: none;
             margin: 0;
             padding: 0;
+            filter: sepia(75%) saturate(65%) brightness(90%) contrast(95%) !important;
         }
 
         /* DESENHO DO ARRUDAS */
@@ -63,26 +62,22 @@
             from {
                 opacity: 0;
             }
-
             to {
                 opacity: 1;
             }
         }
 
-        /* CAIXA DO TÍTULO / MENU */
+        /* TÍTULO / MENU */
 
         .titulo {
             position: fixed;
             top: 40px;
             left: 30px;
             z-index: 20;
-
             background-color: rgba(243, 240, 232, 0.94);
-
             padding: 25px 40px;
             text-align: center;
             min-width: 420px;
-
             cursor: pointer;
         }
 
@@ -101,18 +96,12 @@
 
         .menu-links {
             position: absolute;
-
             top: 0;
             left: 100%;
-
             display: none;
-
             width: 190px;
-
             background-color: rgba(243, 240, 232, 0.94);
-
             padding: 15px 20px;
-
             text-align: left;
         }
 
@@ -122,12 +111,9 @@
 
         .menu-links a {
             display: block;
-
             text-decoration: none;
             color: #222;
-
             font-size: 15px;
-
             padding: 7px 0;
         }
 
@@ -139,24 +125,16 @@
 
         .escute {
             position: fixed;
-
             left: 30px;
             top: 190px;
-
             z-index: 30;
-
             width: 420px;
-
             padding: 16px 20px;
-
             background-color: #f3f0e8;
-
             font-family: "Courier New", monospace;
             font-size: 20px;
             font-weight: bold;
-
             text-align: center;
-
             cursor: pointer;
         }
 
@@ -164,27 +142,21 @@
 
         .audio {
             display: none;
-
             position: fixed;
-
             left: 30px;
             top: 245px;
-
             z-index: 30;
-
             width: 420px;
-
+            max-height: calc(100vh - 260px);
+            overflow-y: auto;
             background-color: #f3f0e8;
             border: 1px solid #222;
-
             padding: 15px 18px;
         }
 
         .audio.aberto {
             display: block;
         }
-
-        /* ESTRUTURA DO PLAYER */
 
         .player {
             width: 100%;
@@ -201,19 +173,13 @@
         .botao-play {
             width: 32px;
             height: 32px;
-
             padding: 0;
-
             background-color: #f3f0e8;
             border: 1px solid #222;
-
             font-family: "Courier New", monospace;
             font-size: 15px;
-
             color: #222;
-
             cursor: pointer;
-
             flex-shrink: 0;
         }
 
@@ -221,29 +187,20 @@
 
         .progresso {
             position: relative;
-
             flex: 1;
-
             height: 8px;
-
             background-color: rgba(34, 34, 34, 0.15);
-
             cursor: pointer;
-
             overflow: hidden;
         }
 
         .progresso-atual {
             position: absolute;
-
             top: 0;
             left: 0;
-
             width: 0%;
             height: 100%;
-
             background-color: #222;
-
             pointer-events: none;
         }
 
@@ -251,31 +208,65 @@
 
         .tempo {
             min-width: 42px;
-
             font-size: 13px;
-
             text-align: right;
-
             flex-shrink: 0;
         }
 
-        /* ESCONDE O ÁUDIO NATIVO */
+        /* ÁUDIO NATIVO OCULTO */
 
         #audio {
             display: none;
         }
 
+        /* WAVESURFER: ÁREA TÉCNICA DA FORMA DE ONDA */
+
+        .waveform-interno {
+            width: 100%;
+            height: 1px;
+            overflow: hidden;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        /* ESPECTROGRAMA */
+
+        .espectrograma-bloco {
+            margin-top: 18px;
+            padding-top: 12px;
+            border-top: 1px solid rgba(34, 34, 34, 0.35);
+        }
+
+        .espectrograma-titulo {
+            margin: 0 0 10px;
+            font-size: 13px;
+            font-weight: bold;
+            letter-spacing: 0.04em;
+        }
+
+        #espectrograma {
+            width: 100%;
+            min-height: 180px;
+            background: #ebe5d9;
+            border: 1px solid #85593c;
+            overflow: hidden;
+        }
+
+        #statusEspectrograma {
+            margin: 10px 0 0;
+            font-size: 11px;
+            line-height: 1.4;
+            font-weight: normal;
+        }
+
         /* CELULAR */
 
         @media (max-width: 600px) {
-
             .titulo {
                 top: 25px;
                 left: 15px;
-
                 width: calc(100% - 100px);
                 min-width: 0;
-
                 padding: 18px 15px;
             }
 
@@ -290,24 +281,21 @@
             .menu-links {
                 top: 100%;
                 left: 0;
-
                 width: 100%;
             }
 
             .escute {
                 left: 15px;
                 top: 165px;
-
                 width: calc(100% - 30px);
-
                 font-size: 18px;
             }
 
             .audio {
                 left: 15px;
                 top: 215px;
-
                 width: calc(100% - 30px);
+                max-height: calc(100vh - 230px);
             }
 
             .desenho-arrudas {
@@ -315,17 +303,8 @@
                 top: 45%;
                 left: 40%;
             }
-
         }
-
-        /* COR DO MAPA */
-
-        .mapa iframe {
-            filter: sepia(75%) saturate(65%) brightness(90%) contrast(95%) !important;
-        }
-
     </style>
-
 </head>
 
 <body>
@@ -333,7 +312,6 @@
     <!-- MAPA -->
 
     <div class="mapa">
-
         <iframe
             allowfullscreen
             allow="geolocation"
@@ -343,39 +321,26 @@
         <img
             class="desenho-arrudas"
             src="desenho_mapa.svg"
-            alt=""
-        >
-
+            alt="">
     </div>
-
 
     <!-- TÍTULO / MENU -->
 
     <div class="titulo" id="titulo">
-
         <h1>Arrudas</h1>
-
         <p>Memórias Sonoras de um Território-Rio</p>
 
         <div class="menu-links">
-
             <a href="sobre.html">Sobre o projeto</a>
-
             <a href="creditos.html">Ficha técnica</a>
-
         </div>
-
     </div>
-
 
     <!-- ESCUTE -->
 
     <div class="escute" id="escute">
-
         ESCUTE
-
     </div>
-
 
     <!-- PLAYER -->
 
@@ -391,9 +356,7 @@
                 <source
                     src="https://pub-0c523da3e80b4a0ab591837050bc71cb.r2.dev/arrudas_peca_sonora.wav"
                     type="audio/wav">
-
             </audio>
-
 
             <div class="player-controles">
 
@@ -401,31 +364,40 @@
                     class="botao-play"
                     id="botaoPlay"
                     aria-label="Reproduzir">
-
                     ▶
-
                 </button>
 
-
-                <div
-                    class="progresso"
-                    id="progresso">
-
+                <div class="progresso" id="progresso">
                     <div
                         class="progresso-atual"
                         id="progressoAtual">
                     </div>
-
                 </div>
 
+                <div class="tempo" id="tempo">
+                    00:00
+                </div>
+
+            </div>
+
+            <!-- ESPECTROGRAMA -->
+
+            <div class="espectrograma-bloco">
+
+                <p class="espectrograma-titulo">
+                    ESPECTROGRAMA
+                </p>
 
                 <div
-                    class="tempo"
-                    id="tempo">
-
-                    00:00
-
+                    id="waveformInterno"
+                    class="waveform-interno">
                 </div>
+
+                <div id="espectrograma"></div>
+
+                <p id="statusEspectrograma">
+                    Abra o player para carregar o espectrograma.
+                </p>
 
             </div>
 
@@ -433,179 +405,179 @@
 
     </div>
 
+    <!-- INTERAÇÕES E WAVESURFER -->
 
-    <!-- INTERAÇÕES -->
+    <script type="module">
+        import WaveSurfer from
+            'https://cdn.jsdelivr.net/npm/wavesurfer.js@8/dist/wavesurfer.esm.js';
 
-    <script>
+        import Spectrogram from
+            'https://cdn.jsdelivr.net/npm/wavesurfer.js@8/dist/plugins/spectrogram.esm.js';
 
-        /* CAIXA DO TÍTULO / MENU */
+        /* ELEMENTOS DO SITE */
 
         const titulo = document.getElementById("titulo");
-
-        titulo.addEventListener("click", function (event) {
-
-            if (event.target.tagName !== "A") {
-
-                titulo.classList.toggle("aberto");
-
-            }
-
-        });
-
-
-        /* ESCUTE / PLAYER */
-
         const escute = document.getElementById("escute");
         const audioPlayer = document.getElementById("audioPlayer");
-
-        escute.addEventListener("click", function () {
-
-            audioPlayer.classList.toggle("aberto");
-
-        });
-
-
-        /* ELEMENTOS DO PLAYER */
 
         const audio = document.getElementById("audio");
         const botaoPlay = document.getElementById("botaoPlay");
         const progresso = document.getElementById("progresso");
         const progressoAtual = document.getElementById("progressoAtual");
         const tempo = document.getElementById("tempo");
+        const statusEspectrograma =
+            document.getElementById("statusEspectrograma");
 
+        const audioUrl =
+            "https://pub-0c523da3e80b4a0ab591837050bc71cb.r2.dev/arrudas_peca_sonora.wav";
+
+        let wavesurfer = null;
+        let espectrogramaIniciado = false;
+
+        /* TÍTULO / MENU */
+
+        titulo.addEventListener("click", function (event) {
+            if (event.target.tagName !== "A") {
+                titulo.classList.toggle("aberto");
+            }
+        });
+
+        /* INICIALIZAÇÃO DO WAVESURFER */
+
+        function iniciarEspectrograma() {
+            if (espectrogramaIniciado) {
+                return;
+            }
+
+            espectrogramaIniciado = true;
+
+            statusEspectrograma.textContent =
+                "Carregando áudio e espectrograma...";
+
+            try {
+                wavesurfer = WaveSurfer.create({
+                    container: "#waveformInterno",
+                    media: audio,
+                    url: audioUrl,
+                    height: 1,
+                    waveColor: "#b5a18a",
+                    progressColor: "#85593c",
+                    cursorColor: "#222",
+                    normalize: false
+                });
+
+                wavesurfer.registerPlugin(
+                    Spectrogram.create({
+                        container: "#espectrograma",
+                        height: 200,
+                        labels: true,
+                        splitChannels: false,
+                        colorMap: "gray",
+                        rendering: "windowed"
+                    })
+                );
+
+                wavesurfer.on("ready", function () {
+                    statusEspectrograma.textContent =
+                        "Áudio carregado. Você já pode escutar.";
+                });
+
+                wavesurfer.on("error", function (erro) {
+                    statusEspectrograma.textContent =
+                        "Não foi possível carregar o espectrograma. " +
+                        "Verifique a conexão e o acesso ao áudio.";
+
+                    console.error("Erro no WaveSurfer:", erro);
+                });
+
+            } catch (erro) {
+                statusEspectrograma.textContent =
+                    "Erro ao iniciar o espectrograma. Consulte o console.";
+
+                console.error("Erro ao iniciar o WaveSurfer:", erro);
+            }
+        }
+
+        /* ESCUTE: ABRIR E FECHAR PLAYER */
+
+        escute.addEventListener("click", function () {
+            audioPlayer.classList.toggle("aberto");
+
+            if (audioPlayer.classList.contains("aberto")) {
+                requestAnimationFrame(function () {
+                    iniciarEspectrograma();
+                });
+            }
+        });
 
         /* PLAY / PAUSA */
 
-        botaoPlay.addEventListener(
-            "click",
-            async function () {
+        botaoPlay.addEventListener("click", async function () {
+            if (audio.paused) {
+                try {
+                    await audio.play();
+                    botaoPlay.textContent = "Ⅱ";
+                } catch (erro) {
+                    console.error("Erro ao reproduzir o áudio:", erro);
 
-                if (audio.paused) {
-
-                    try {
-
-                        await audio.play();
-
-                        botaoPlay.textContent = "Ⅱ";
-
-                    } catch (erro) {
-
-                        console.error(
-                            "Erro ao reproduzir o áudio:",
-                            erro
-                        );
-
-                    }
-
-                } else {
-
-                    audio.pause();
-
-                    botaoPlay.textContent = "▶";
-
+                    statusEspectrograma.textContent =
+                        "O áudio não conseguiu iniciar. Tente novamente.";
                 }
-
+            } else {
+                audio.pause();
+                botaoPlay.textContent = "▶";
             }
-        );
+        });
 
+        /* ATUALIZA TEMPO E PROGRESSO */
 
-        /* ATUALIZA O TEMPO E A BARRA */
+        audio.addEventListener("timeupdate", function () {
+            const minutos = Math.floor(audio.currentTime / 60);
+            const segundos = Math.floor(audio.currentTime % 60);
 
-        audio.addEventListener(
-            "timeupdate",
-            function () {
+            tempo.textContent =
+                String(minutos).padStart(2, "0") + ":" +
+                String(segundos).padStart(2, "0");
 
-                const minutos =
-                    Math.floor(
-                        audio.currentTime / 60
-                    );
+            if (audio.duration) {
+                const porcentagem =
+                    (audio.currentTime / audio.duration) * 100;
 
-
-                const segundos =
-                    Math.floor(
-                        audio.currentTime % 60
-                    );
-
-
-                tempo.textContent =
-                    String(minutos).padStart(
-                        2,
-                        "0"
-                    ) +
-                    ":" +
-                    String(segundos).padStart(
-                        2,
-                        "0"
-                    );
-
-
-                if (audio.duration) {
-
-                    const porcentagem =
-                        (audio.currentTime /
-                        audio.duration) *
-                        100;
-
-
-                    progressoAtual.style.width =
-                        porcentagem + "%";
-
-                }
-
+                progressoAtual.style.width = porcentagem + "%";
             }
-        );
+        });
 
+        /* AVANÇAR AO CLICAR NA BARRA */
 
-        /* CLICAR NA BARRA PARA AVANÇAR */
-
-        progresso.addEventListener(
-            "click",
-            function (event) {
-
-                if (!audio.duration) {
-
-                    return;
-
-                }
-
-
-                const area =
-                    progresso.getBoundingClientRect();
-
-
-                const posicao =
-                    event.clientX -
-                    area.left;
-
-
-                const proporcao =
-                    posicao /
-                    area.width;
-
-
-                audio.currentTime =
-                    proporcao *
-                    audio.duration;
-
+        progresso.addEventListener("click", function (event) {
+            if (!audio.duration) {
+                return;
             }
-        );
 
+            const area = progresso.getBoundingClientRect();
+            const posicao = event.clientX - area.left;
+            const proporcao = posicao / area.width;
+
+            audio.currentTime = proporcao * audio.duration;
+        });
 
         /* QUANDO A PEÇA TERMINAR */
 
-        audio.addEventListener(
-            "ended",
-            function () {
+        audio.addEventListener("ended", function () {
+            botaoPlay.textContent = "▶";
+            progressoAtual.style.width = "0%";
+        });
 
+        audio.addEventListener("play", function () {
+            botaoPlay.textContent = "Ⅱ";
+        });
+
+        audio.addEventListener("pause", function () {
+            if (!audio.ended) {
                 botaoPlay.textContent = "▶";
-
-                progressoAtual.style.width = "0%";
-
             }
-        );
-
+        });
     </script>
 
 </body>
-
 </html>
