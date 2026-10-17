@@ -198,7 +198,13 @@
             min-height: 180px;
         }
 
-        /* MÁSCARA: REVELAÇÃO PROGRESSIVA */
+        /*
+           MÁSCARA DE REVELAÇÃO
+
+           A máscara começa cobrindo a onda inteira.
+           Durante a reprodução, diminui da direita
+           para a esquerda, revelando o desenho.
+        */
 
         #mascaraWaveform {
             position: absolute;
@@ -331,7 +337,7 @@
         <iframe
             allowfullscreen
             allow="geolocation"
-            src="//umap.openstreetmap.fr/pt-br/map/mapa_1471708?scaleControl=false&miniMapControl=false&scrollWheelZoom=false&zoomControl=false&editMode=disabled&moreControl=false&searchControl=false&tilelayersControl=false&embedControl=false&datalayersControl=false&onLoadPanel=none&captionBar=false&captionMenus=false&fullscreenControl=false&locateControl=false&captionControl=false&printControl=false&measureControl=false">
+            src="//umap.openstreetmap.fr/pt-br/map/mapa_1471708?scaleControl=false&miniMapControl=false&scrollWheelZoom=false&zoomControl=false&editMode=disabled&moreControl=false&searchControl=false&tilelayersControl=false&embedControl=false&datalayersControl=false&onLoadPanel=none&captionBar=false&captionMenus=false&fullscreenControl=false&locateControl=false&printControl=false&measureControl=false">
         </iframe>
 
         <img
@@ -500,7 +506,12 @@
 
                     height: 180,
 
-                    waveColor: "#b5a18a",
+                    /*
+                       Traçado contínuo e orgânico.
+                       Sem barras verticais.
+                    */
+
+                    waveColor: "#85593c",
                     progressColor: "#85593c",
 
                     /* Remove a linha vertical do cursor */
@@ -508,9 +519,10 @@
 
                     normalize: false,
 
-                    barWidth: 2,
-                    barGap: 2,
-                    barRadius: 0,
+                    /* Forma contínua, simétrica em torno do centro */
+                    barWidth: undefined,
+                    barGap: undefined,
+                    barRadius: undefined,
 
                     /* A navegação por clique é controlada abaixo */
                     interact: false
@@ -522,15 +534,11 @@
                     statusWaveform.textContent =
                         "Áudio carregado. Você já pode escutar.";
 
-                    /* A onda começa totalmente encoberta */
+                    /* Começa com a onda totalmente encoberta */
                     mascaraWaveform.style.transition = "none";
                     mascaraWaveform.style.width = "100%";
 
                     atualizarWaveform();
-
-                    requestAnimationFrame(function () {
-                        mascaraWaveform.style.transition = "none";
-                    });
                 });
 
                 /* REVELAÇÃO DURANTE A REPRODUÇÃO */
