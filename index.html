@@ -59,17 +59,11 @@
         }
 
         @keyframes entradaDesenho {
-            from {
-                opacity: 0;
-            }
-
-            to {
-                opacity: 1;
-            }
+            from { opacity: 0; }
+            to { opacity: 1; }
         }
 
-        /* TÍTULO / MENU
-           POSIÇÃO E TAMANHO ORIGINAIS PRESERVADOS */
+        /* TÍTULO / MENU — POSIÇÃO ORIGINAL */
 
         .titulo {
             position: fixed;
@@ -123,7 +117,7 @@
             text-decoration: underline;
         }
 
-        /* ESCUTE: CENTRALIZADO E TRANSLÚCIDO */
+        /* ESCUTE */
 
         .escute {
             position: fixed;
@@ -148,7 +142,7 @@
             background-color: rgba(235, 229, 217, 0.78);
         }
 
-        /* PAINEL DO ESPECTROGRAMA: TRANSLÚCIDO */
+        /* PAINEL DO ESPECTROGRAMA */
 
         .audio {
             display: none;
@@ -222,7 +216,21 @@
             overflow: hidden;
         }
 
-        /* LINHA QUE ACOMPANHA A REPRODUÇÃO */
+        /* MÁSCARA: REVELAÇÃO PROGRESSIVA */
+
+        #mascaraEspectrograma {
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            width: 100%;
+            background: #ebe5d9;
+            pointer-events: none;
+            z-index: 4;
+            transition: width 0.08s linear;
+        }
+
+        /* CURSOR DE REPRODUÇÃO */
 
         #cursorEspectrograma {
             position: absolute;
@@ -284,8 +292,6 @@
         /* CELULAR */
 
         @media (max-width: 600px) {
-            /* TÍTULO PRESERVADO CONFORME O CÓDIGO ORIGINAL */
-
             .titulo {
                 top: 25px;
                 left: 15px;
@@ -308,8 +314,6 @@
                 width: 100%;
             }
 
-            /* ESCUTE */
-
             .escute {
                 left: 15px;
                 top: 165px;
@@ -318,8 +322,6 @@
                 max-width: none;
                 font-size: 18px;
             }
-
-            /* PAINEL */
 
             .audio {
                 left: 15px;
@@ -399,7 +401,6 @@
     <!-- ESPECTROGRAMA E ÁUDIO -->
 
     <div class="audio" id="audioPlayer">
-
         <div class="player">
 
             <audio
@@ -429,6 +430,8 @@
 
                     <div id="espectrograma"></div>
 
+                    <div id="mascaraEspectrograma"></div>
+
                     <div id="cursorEspectrograma"></div>
 
                 </div>
@@ -454,9 +457,7 @@
                 </p>
 
             </div>
-
         </div>
-
     </div>
 
     <!-- INTERAÇÕES E WAVESURFER -->
@@ -481,6 +482,9 @@
         const espectrogramaVisualizacao =
             document.getElementById("espectrogramaVisualizacao");
 
+        const mascaraEspectrograma =
+            document.getElementById("mascaraEspectrograma");
+
         const cursorEspectrograma =
             document.getElementById("cursorEspectrograma");
 
@@ -501,7 +505,7 @@
             }
         });
 
-        /* ATUALIZA A LINHA E O TEMPO */
+        /* ATUALIZA TEMPO, CURSOR E REVELAÇÃO */
 
         function atualizarCursor() {
             if (!audio.duration || !Number.isFinite(audio.duration)) {
@@ -515,6 +519,9 @@
 
             cursorEspectrograma.style.left =
                 (proporcao * 100) + "%";
+
+            mascaraEspectrograma.style.width =
+                ((1 - proporcao) * 100) + "%";
 
             const minutos = Math.floor(audio.currentTime / 60);
             const segundos = Math.floor(audio.currentTime % 60);
@@ -564,6 +571,17 @@
                         "Áudio carregado. Você já pode escutar.";
 
                     cursorEspectrograma.classList.add("visivel");
+
+                    /* Começa com o espectrograma encoberto */
+                    if (audio.currentTime === 0) {
+                        mascaraEspectrograma.style.transition = "none";
+                        mascaraEspectrograma.style.width = "100%";
+
+                        requestAnimationFrame(function () {
+                            mascaraEspectrograma.style.transition =
+                                "width 0.08s linear";
+                        });
+                    }
 
                     atualizarCursor();
                 });
@@ -618,7 +636,7 @@
             }
         });
 
-        /* ATUALIZA TEMPO E LINHA */
+        /* ATUALIZA TEMPO E LINHA DURANTE A REPRODUÇÃO */
 
         audio.addEventListener("timeupdate", atualizarCursor);
         audio.addEventListener("loadedmetadata", atualizarCursor);
@@ -659,10 +677,8 @@
         });
 
         audio.addEventListener("pause", function () {
-            if (!audio.ended) {
-                botaoPlay.textContent = "▶";
-                botaoPlay.setAttribute("aria-label", "Reproduzir");
-            }
+            botaoPlay.textContent = "▶";
+            botaoPlay.setAttribute("aria-label", "Reproduzir");
         });
 
         audio.addEventListener("ended", function () {
