@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -165,21 +166,35 @@
             display: block;
         }
 
+        /* BOTÃO PARA FECHAR O PAINEL */
+
+        .fechar-audio {
+            position: absolute;
+            top: 4px;
+            right: 10px;
+            z-index: 5;
+            border: none;
+            background: transparent;
+            padding: 0;
+            color: #222;
+            font-family: "Courier New", monospace;
+            font-size: 25px;
+            line-height: 1;
+            cursor: pointer;
+        }
+
+        .fechar-audio:hover {
+            color: #85593c;
+        }
+
         .player {
             width: 100%;
         }
 
-        /* FORMA DE ONDA */
+        /* FORMA DE ONDA — SEM CAIXA INTERNA */
 
         .waveform-bloco {
             width: 100%;
-        }
-
-        .waveform-titulo {
-            margin: 0 0 14px;
-            font-size: 13px;
-            font-weight: bold;
-            letter-spacing: 0.04em;
         }
 
         .waveform-visualizacao {
@@ -187,8 +202,8 @@
             width: 100%;
             min-height: 180px;
             cursor: pointer;
-            background: #ebe5d9;
-            border: 1px solid #85593c;
+            background: transparent;
+            border: none;
             overflow: hidden;
         }
 
@@ -211,7 +226,7 @@
             right: 0;
             bottom: 0;
             width: 100%;
-            background: #ebe5d9;
+            background: rgba(243, 240, 232, 0.58);
             pointer-events: none;
             z-index: 4;
             transition: none;
@@ -298,7 +313,7 @@
                 width: calc(100% - 30px);
                 max-width: none;
                 max-height: calc(100vh - 230px);
-                padding: 16px;
+                padding: 30px 16px 16px;
             }
 
             .waveform-visualizacao,
@@ -333,11 +348,12 @@
     <!-- MAPA -->
 
     <div class="mapa">
-         <iframe
+        <iframe
             allowfullscreen
             allow="geolocation"
             src="//umap.openstreetmap.fr/pt-br/map/mapa_1471708?scaleControl=false&miniMapControl=false&scrollWheelZoom=false&zoomControl=false&editMode=disabled&moreControl=false&searchControl=false&tilelayersControl=false&embedControl=false&datalayersControl=false&onLoadPanel=none&captionBar=false&captionMenus=false&fullscreenControl=false&locateControl=false&captionControl=false&printControl=false&measureControl=false">
         </iframe>
+
         <img
             class="desenho-arrudas"
             src="desenho_mapa.svg"
@@ -365,13 +381,17 @@
     <!-- WAVEFORM E ÁUDIO -->
 
     <div class="audio" id="audioPlayer">
+
+        <button
+            class="fechar-audio"
+            id="fecharAudio"
+            type="button"
+            aria-label="Fechar áudio">
+            ×
+        </button>
+
         <div class="player">
-
             <div class="waveform-bloco">
-
-                <p class="waveform-titulo">
-                    FORMA DE ONDA
-                </p>
 
                 <div
                     class="waveform-visualizacao"
@@ -418,6 +438,7 @@
         const titulo = document.getElementById("titulo");
         const escute = document.getElementById("escute");
         const audioPlayer = document.getElementById("audioPlayer");
+        const fecharAudio = document.getElementById("fecharAudio");
 
         const botaoPlay = document.getElementById("botaoPlay");
         const tempo = document.getElementById("tempo");
@@ -501,28 +522,14 @@
                 wavesurfer = WaveSurfer.create({
                     container: "#waveform",
                     url: audioUrl,
-
                     height: 180,
-
-                    /*
-                       Traçado contínuo e orgânico.
-                       Sem barras verticais.
-                    */
-
                     waveColor: "#85593c",
                     progressColor: "#85593c",
-
-                    /* Remove a linha vertical do cursor */
                     cursorWidth: 0,
-
                     normalize: false,
-
-                    /* Forma contínua, simétrica em torno do centro */
                     barWidth: undefined,
                     barGap: undefined,
                     barRadius: undefined,
-
-                    /* A navegação por clique é controlada abaixo */
                     interact: false
                 });
 
@@ -532,7 +539,6 @@
                     statusWaveform.textContent =
                         "Áudio carregado. Você já pode escutar.";
 
-                    /* Começa com a onda totalmente encoberta */
                     mascaraWaveform.style.transition = "none";
                     mascaraWaveform.style.width = "100%";
 
@@ -587,16 +593,24 @@
             }
         }
 
-        /* ESCUTE: ABRIR E FECHAR */
+        /* ESCUTE: ABRIR O ÁUDIO */
 
         escute.addEventListener("click", function () {
-            audioPlayer.classList.toggle("aberto");
+            audioPlayer.classList.add("aberto");
 
-            if (audioPlayer.classList.contains("aberto")) {
-                requestAnimationFrame(function () {
-                    iniciarWaveform();
-                });
+            requestAnimationFrame(function () {
+                iniciarWaveform();
+            });
+        });
+
+        /* X: FECHAR O ÁUDIO */
+
+        fecharAudio.addEventListener("click", function () {
+            if (wavesurfer) {
+                wavesurfer.pause();
             }
+
+            audioPlayer.classList.remove("aberto");
         });
 
         /* PLAY / PAUSA */
