@@ -1,4 +1,3 @@
-```html
 <!DOCTYPE html>
 <html lang="pt-BR">
 
@@ -218,45 +217,32 @@
             flex-shrink: 0;
         }
 
-        /* ÁREA DO ESPECTROGRAMA */
+        /* BARRA DE PROGRESSO */
 
-        .onda {
+        .progresso {
             position: relative;
 
             flex: 1;
 
-            height: 45px;
+            height: 8px;
+
+            background-color: rgba(34, 34, 34, 0.15);
 
             cursor: pointer;
 
             overflow: hidden;
-
-            background-color: transparent;
         }
 
-        /* CANVAS DO ESPECTROGRAMA */
-
-        #espectrograma {
-            display: block;
-
-            width: 100%;
-            height: 100%;
-        }
-
-        /* LINHA DO MOMENTO ATUAL */
-
-        .linha-atual {
+        .progresso-atual {
             position: absolute;
 
             top: 0;
-            right: 0;
+            left: 0;
 
-            width: 1px;
+            width: 0%;
             height: 100%;
 
             background-color: #222;
-
-            opacity: 0.8;
 
             pointer-events: none;
         }
@@ -422,15 +408,12 @@
 
 
                 <div
-                    class="onda"
-                    id="onda">
-
-                    <canvas
-                        id="espectrograma">
-                    </canvas>
+                    class="progresso"
+                    id="progresso">
 
                     <div
-                        class="linha-atual">
+                        class="progresso-atual"
+                        id="progressoAtual">
                     </div>
 
                 </div>
@@ -486,245 +469,9 @@
 
         const audio = document.getElementById("audio");
         const botaoPlay = document.getElementById("botaoPlay");
-        const onda = document.getElementById("onda");
-        const canvas = document.getElementById("espectrograma");
-        const contexto = canvas.getContext("2d");
+        const progresso = document.getElementById("progresso");
+        const progressoAtual = document.getElementById("progressoAtual");
         const tempo = document.getElementById("tempo");
-
-
-        /* CONFIGURAÇÃO DO ESPECTROGRAMA */
-
-        let analisador = null;
-        let dadosFrequencia = null;
-        let audioContext = null;
-        let fonteAudio = null;
-
-        let espectrogramaIniciado = false;
-
-
-        /* AJUSTA O TAMANHO DO CANVAS */
-
-        function ajustarCanvas() {
-
-            const largura =
-                onda.clientWidth;
-
-            const altura =
-                onda.clientHeight;
-
-            const escala =
-                window.devicePixelRatio || 1;
-
-            canvas.width =
-                largura * escala;
-
-            canvas.height =
-                altura * escala;
-
-            canvas.style.width =
-                largura + "px";
-
-            canvas.style.height =
-                altura + "px";
-
-            contexto.setTransform(
-                escala,
-                0,
-                0,
-                escala,
-                0,
-                0
-            );
-
-        }
-
-
-        ajustarCanvas();
-
-        window.addEventListener(
-            "resize",
-            ajustarCanvas
-        );
-
-
-        /* CRIA A ANÁLISE DO ÁUDIO */
-
-        function iniciarAnalise() {
-
-            if (espectrogramaIniciado) {
-
-                return;
-
-            }
-
-
-            audioContext =
-                new (
-                    window.AudioContext ||
-                    window.webkitAudioContext
-                )();
-
-
-            analisador =
-                audioContext.createAnalyser();
-
-
-            analisador.fftSize = 256;
-
-            analisador.smoothingTimeConstant = 0.35;
-
-
-            dadosFrequencia =
-                new Uint8Array(
-                    analisador.frequencyBinCount
-                );
-
-
-            fonteAudio =
-                audioContext.createMediaElementSource(
-                    audio
-                );
-
-
-            fonteAudio.connect(analisador);
-
-            analisador.connect(
-                audioContext.destination
-            );
-
-
-            espectrogramaIniciado = true;
-
-        }
-
-
-        /* DESENHA UMA NOVA COLUNA */
-
-        function desenharEspectrograma() {
-
-            if (!analisador) {
-
-                return;
-
-            }
-
-
-            const largura =
-                onda.clientWidth;
-
-            const altura =
-                onda.clientHeight;
-
-
-            analisador.getByteFrequencyData(
-                dadosFrequencia
-            );
-
-
-            /*
-             * Move o espectrograma existente
-             * uma pequena distância para a esquerda.
-             */
-
-            contexto.drawImage(
-                canvas,
-                -1,
-                0,
-                largura,
-                altura
-            );
-
-
-            /*
-             * Limpa apenas a nova coluna
-             * que entrou pela direita.
-             */
-
-            contexto.clearRect(
-                largura - 2,
-                0,
-                2,
-                altura
-            );
-
-
-            /*
-             * Desenha as frequências do som
-             * na nova coluna.
-             */
-
-            const novaColuna =
-                largura - 2;
-
-
-            const quantidade =
-                dadosFrequencia.length;
-
-
-            const larguraFaixa =
-                altura / quantidade;
-
-
-            for (
-                let i = 0;
-                i < quantidade;
-                i++
-            ) {
-
-                const valor =
-                    dadosFrequencia[i];
-
-
-                /*
-                 * Inverte a frequência para que
-                 * as frequências graves fiquem
-                 * embaixo.
-                 */
-
-                const y =
-                    altura -
-                    ((i + 1) * larguraFaixa);
-
-
-                /*
-                 * Intensidade mínima para
-                 * evitar uma tela completamente vazia.
-                 */
-
-                const intensidade =
-                    valor / 255;
-
-
-                /*
-                 * Tons neutros/terrosos.
-                 * A intensidade do som controla
-                 * a transparência.
-                 */
-
-                contexto.fillStyle =
-                    "rgba(34, 34, 34, " +
-                    (intensidade * 0.9) +
-                    ")";
-
-
-                contexto.fillRect(
-                    novaColuna,
-                    y,
-                    2,
-                    Math.max(
-                        1,
-                        larguraFaixa + 0.5
-                    )
-                );
-
-            }
-
-
-            requestAnimationFrame(
-                desenharEspectrograma
-            );
-
-        }
 
 
         /* PLAY / PAUSA */
@@ -733,26 +480,22 @@
             "click",
             async function () {
 
-                iniciarAnalise();
-
-
-                if (
-                    audioContext &&
-                    audioContext.state === "suspended"
-                ) {
-
-                    await audioContext.resume();
-
-                }
-
-
                 if (audio.paused) {
 
-                    await audio.play();
+                    try {
 
-                    botaoPlay.textContent = "Ⅱ";
+                        await audio.play();
 
-                    desenharEspectrograma();
+                        botaoPlay.textContent = "Ⅱ";
+
+                    } catch (erro) {
+
+                        console.error(
+                            "Erro ao reproduzir o áudio:",
+                            erro
+                        );
+
+                    }
 
                 } else {
 
@@ -766,18 +509,11 @@
         );
 
 
-        /* ATUALIZA O TEMPO */
+        /* ATUALIZA O TEMPO E A BARRA */
 
         audio.addEventListener(
             "timeupdate",
             function () {
-
-                if (!audio.duration) {
-
-                    return;
-
-                }
-
 
                 const minutos =
                     Math.floor(
@@ -802,13 +538,27 @@
                         "0"
                     );
 
+
+                if (audio.duration) {
+
+                    const porcentagem =
+                        (audio.currentTime /
+                        audio.duration) *
+                        100;
+
+
+                    progressoAtual.style.width =
+                        porcentagem + "%";
+
+                }
+
             }
         );
 
 
-        /* CLICAR NO ESPECTROGRAMA PARA AVANÇAR */
+        /* CLICAR NA BARRA PARA AVANÇAR */
 
-        onda.addEventListener(
+        progresso.addEventListener(
             "click",
             function (event) {
 
@@ -819,17 +569,22 @@
                 }
 
 
-                const largura =
-                    onda.getBoundingClientRect().width;
+                const area =
+                    progresso.getBoundingClientRect();
 
 
                 const posicao =
                     event.clientX -
-                    onda.getBoundingClientRect().left;
+                    area.left;
+
+
+                const proporcao =
+                    posicao /
+                    area.width;
 
 
                 audio.currentTime =
-                    (posicao / largura) *
+                    proporcao *
                     audio.duration;
 
             }
@@ -844,6 +599,8 @@
 
                 botaoPlay.textContent = "▶";
 
+                progressoAtual.style.width = "0%";
+
             }
         );
 
@@ -852,4 +609,3 @@
 </body>
 
 </html>
-```
