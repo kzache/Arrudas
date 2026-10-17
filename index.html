@@ -142,7 +142,7 @@
             background-color: rgba(235, 229, 217, 0.78);
         }
 
-        /* PAINEL DO ESPECTROGRAMA */
+        /* PAINEL DE ÁUDIO */
 
         .audio {
             display: none;
@@ -170,55 +170,37 @@
             width: 100%;
         }
 
-        /* ÁUDIO NATIVO OCULTO */
+        /* FORMA DE ONDA */
 
-        #audio {
-            display: none;
-        }
-
-        /* ÁREA TÉCNICA DO WAVESURFER */
-
-        .waveform-interno {
-            position: absolute;
-            width: 100%;
-            height: 1px;
-            overflow: hidden;
-            opacity: 0;
-            pointer-events: none;
-        }
-
-        /* ESPECTROGRAMA */
-
-        .espectrograma-bloco {
+        .waveform-bloco {
             width: 100%;
         }
 
-        .espectrograma-titulo {
+        .waveform-titulo {
             margin: 0 0 14px;
             font-size: 13px;
             font-weight: bold;
             letter-spacing: 0.04em;
         }
 
-        .espectrograma-visualizacao {
+        .waveform-visualizacao {
             position: relative;
             width: 100%;
-            cursor: crosshair;
+            min-height: 180px;
+            cursor: pointer;
             background: #ebe5d9;
             border: 1px solid #85593c;
             overflow: hidden;
         }
 
-        #espectrograma {
+        #waveform {
             width: 100%;
-            min-height: 320px;
-            background: #ebe5d9;
-            overflow: hidden;
+            min-height: 180px;
         }
 
         /* MÁSCARA: REVELAÇÃO PROGRESSIVA */
 
-        #mascaraEspectrograma {
+        #mascaraWaveform {
             position: absolute;
             top: 0;
             right: 0;
@@ -227,31 +209,12 @@
             background: #ebe5d9;
             pointer-events: none;
             z-index: 4;
-            transition: width 0.08s linear;
-        }
-
-        /* CURSOR DE REPRODUÇÃO */
-
-        #cursorEspectrograma {
-            position: absolute;
-            top: 0;
-            bottom: 0;
-            left: 0;
-            width: 2px;
-            background-color: #85593c;
-            opacity: 0;
-            pointer-events: none;
-            z-index: 5;
-            box-shadow: 0 0 2px rgba(243, 240, 232, 0.8);
-        }
-
-        #cursorEspectrograma.visivel {
-            opacity: 1;
+            transition: none;
         }
 
         /* CONTROLES */
 
-        .controles-espectrograma {
+        .controles-waveform {
             display: flex;
             align-items: center;
             justify-content: space-between;
@@ -282,7 +245,7 @@
             flex-shrink: 0;
         }
 
-        #statusEspectrograma {
+        #statusWaveform {
             margin: 12px 0 0;
             font-size: 11px;
             line-height: 1.4;
@@ -333,8 +296,9 @@
                 padding: 16px;
             }
 
-            #espectrograma {
-                min-height: 220px;
+            .waveform-visualizacao,
+            #waveform {
+                min-height: 140px;
             }
 
             .desenho-arrudas {
@@ -354,10 +318,6 @@
             .audio {
                 top: calc(27vh + 58px);
                 max-height: calc(73vh - 58px);
-            }
-
-            #espectrograma {
-                min-height: 220px;
             }
         }
     </style>
@@ -398,45 +358,28 @@
         ESCUTE
     </div>
 
-    <!-- ESPECTROGRAMA E ÁUDIO -->
+    <!-- WAVEFORM E ÁUDIO -->
 
     <div class="audio" id="audioPlayer">
         <div class="player">
 
-            <audio
-                id="audio"
-                preload="metadata"
-                controlsList="nodownload noplaybackrate">
+            <div class="waveform-bloco">
 
-                <source
-                    src="https://pub-0c523da3e80b4a0ab591837050bc71cb.r2.dev/arrudas_peca_sonora.wav"
-                    type="audio/wav">
-            </audio>
-
-            <div class="espectrograma-bloco">
-
-                <p class="espectrograma-titulo">
-                    ESPECTROGRAMA
+                <p class="waveform-titulo">
+                    FORMA DE ONDA
                 </p>
 
                 <div
-                    class="espectrograma-visualizacao"
-                    id="espectrogramaVisualizacao">
+                    class="waveform-visualizacao"
+                    id="waveformVisualizacao">
 
-                    <div
-                        id="waveformInterno"
-                        class="waveform-interno">
-                    </div>
+                    <div id="waveform"></div>
 
-                    <div id="espectrograma"></div>
-
-                    <div id="mascaraEspectrograma"></div>
-
-                    <div id="cursorEspectrograma"></div>
+                    <div id="mascaraWaveform"></div>
 
                 </div>
 
-                <div class="controles-espectrograma">
+                <div class="controles-waveform">
 
                     <button
                         class="botao-play"
@@ -447,13 +390,13 @@
                     </button>
 
                     <div class="tempo" id="tempo">
-                        00:00
+                        00:00 / 00:00
                     </div>
 
                 </div>
 
-                <p id="statusEspectrograma">
-                    Abra o player para carregar o espectrograma.
+                <p id="statusWaveform">
+                    Abra o player para carregar a peça sonora.
                 </p>
 
             </div>
@@ -466,36 +409,29 @@
         import WaveSurfer from
             'https://cdn.jsdelivr.net/npm/wavesurfer.js@8/dist/wavesurfer.esm.js';
 
-        import Spectrogram from
-            'https://cdn.jsdelivr.net/npm/wavesurfer.js@8/dist/plugins/spectrogram.esm.js';
-
         /* ELEMENTOS DO SITE */
 
         const titulo = document.getElementById("titulo");
         const escute = document.getElementById("escute");
         const audioPlayer = document.getElementById("audioPlayer");
 
-        const audio = document.getElementById("audio");
         const botaoPlay = document.getElementById("botaoPlay");
         const tempo = document.getElementById("tempo");
 
-        const espectrogramaVisualizacao =
-            document.getElementById("espectrogramaVisualizacao");
+        const waveformVisualizacao =
+            document.getElementById("waveformVisualizacao");
 
-        const mascaraEspectrograma =
-            document.getElementById("mascaraEspectrograma");
+        const mascaraWaveform =
+            document.getElementById("mascaraWaveform");
 
-        const cursorEspectrograma =
-            document.getElementById("cursorEspectrograma");
-
-        const statusEspectrograma =
-            document.getElementById("statusEspectrograma");
+        const statusWaveform =
+            document.getElementById("statusWaveform");
 
         const audioUrl =
             "https://pub-0c523da3e80b4a0ab591837050bc71cb.r2.dev/arrudas_peca_sonora.wav";
 
         let wavesurfer = null;
-        let espectrogramaIniciado = false;
+        let waveformIniciado = false;
 
         /* TÍTULO / MENU */
 
@@ -505,98 +441,141 @@
             }
         });
 
-        /* ATUALIZA TEMPO, CURSOR E REVELAÇÃO */
+        /* FORMATA O TEMPO */
 
-        function atualizarCursor() {
-            if (!audio.duration || !Number.isFinite(audio.duration)) {
+        function formatarTempo(segundos) {
+            const minutos = Math.floor(segundos / 60);
+            const segundosRestantes = Math.floor(segundos % 60);
+
+            return (
+                String(minutos).padStart(2, "0") + ":" +
+                String(segundosRestantes).padStart(2, "0")
+            );
+        }
+
+        /* ATUALIZA A REVELAÇÃO E O CONTADOR */
+
+        function atualizarWaveform() {
+            if (!wavesurfer) {
                 return;
             }
 
+            const duracao = wavesurfer.getDuration();
+
+            if (!duracao || !Number.isFinite(duracao)) {
+                return;
+            }
+
+            const atual = wavesurfer.getCurrentTime();
+
             const proporcao = Math.max(
                 0,
-                Math.min(1, audio.currentTime / audio.duration)
+                Math.min(1, atual / duracao)
             );
 
-            cursorEspectrograma.style.left =
-                (proporcao * 100) + "%";
-
-            mascaraEspectrograma.style.width =
+            mascaraWaveform.style.width =
                 ((1 - proporcao) * 100) + "%";
 
-            const minutos = Math.floor(audio.currentTime / 60);
-            const segundos = Math.floor(audio.currentTime % 60);
-
             tempo.textContent =
-                String(minutos).padStart(2, "0") + ":" +
-                String(segundos).padStart(2, "0");
+                formatarTempo(atual) + " / " +
+                formatarTempo(duracao);
         }
 
         /* INICIALIZAÇÃO DO WAVESURFER */
 
-        function iniciarEspectrograma() {
-            if (espectrogramaIniciado) {
+        function iniciarWaveform() {
+            if (waveformIniciado) {
                 return;
             }
 
-            espectrogramaIniciado = true;
+            waveformIniciado = true;
 
-            statusEspectrograma.textContent =
-                "Carregando áudio e espectrograma...";
+            statusWaveform.textContent =
+                "Carregando áudio...";
 
             try {
                 wavesurfer = WaveSurfer.create({
-                    container: "#waveformInterno",
-                    media: audio,
+                    container: "#waveform",
                     url: audioUrl,
-                    height: 1,
+
+                    height: 180,
+
                     waveColor: "#b5a18a",
                     progressColor: "#85593c",
-                    cursorColor: "#222",
-                    normalize: false
+
+                    /* Remove a linha vertical do cursor */
+                    cursorWidth: 0,
+
+                    normalize: false,
+
+                    barWidth: 2,
+                    barGap: 2,
+                    barRadius: 0,
+
+                    /* A navegação por clique é controlada abaixo */
+                    interact: false
                 });
 
-                wavesurfer.registerPlugin(
-                    Spectrogram.create({
-                        container: "#espectrograma",
-                        height: 320,
-                        labels: true,
-                        splitChannels: false,
-                        colorMap: "gray",
-                        rendering: "windowed"
-                    })
-                );
+                /* ÁUDIO CARREGADO */
 
                 wavesurfer.on("ready", function () {
-                    statusEspectrograma.textContent =
+                    statusWaveform.textContent =
                         "Áudio carregado. Você já pode escutar.";
 
-                    cursorEspectrograma.classList.add("visivel");
+                    /* A onda começa totalmente encoberta */
+                    mascaraWaveform.style.transition = "none";
+                    mascaraWaveform.style.width = "100%";
 
-                    /* Começa com o espectrograma encoberto */
-                    if (audio.currentTime === 0) {
-                        mascaraEspectrograma.style.transition = "none";
-                        mascaraEspectrograma.style.width = "100%";
+                    atualizarWaveform();
 
-                        requestAnimationFrame(function () {
-                            mascaraEspectrograma.style.transition =
-                                "width 0.08s linear";
-                        });
-                    }
-
-                    atualizarCursor();
+                    requestAnimationFrame(function () {
+                        mascaraWaveform.style.transition = "none";
+                    });
                 });
 
+                /* REVELAÇÃO DURANTE A REPRODUÇÃO */
+
+                wavesurfer.on("timeupdate", function () {
+                    atualizarWaveform();
+                });
+
+                /* BOTÃO PLAY / PAUSA */
+
+                wavesurfer.on("play", function () {
+                    botaoPlay.textContent = "Ⅱ";
+                    botaoPlay.setAttribute("aria-label", "Pausar");
+                    statusWaveform.textContent = "Reproduzindo...";
+                });
+
+                wavesurfer.on("pause", function () {
+                    botaoPlay.textContent = "▶";
+                    botaoPlay.setAttribute("aria-label", "Reproduzir");
+                    statusWaveform.textContent = "Áudio pausado.";
+                });
+
+                /* FIM DA PEÇA */
+
+                wavesurfer.on("finish", function () {
+                    botaoPlay.textContent = "▶";
+                    botaoPlay.setAttribute("aria-label", "Reproduzir");
+                    statusWaveform.textContent = "Reprodução concluída.";
+
+                    atualizarWaveform();
+                });
+
+                /* ERROS */
+
                 wavesurfer.on("error", function (erro) {
-                    statusEspectrograma.textContent =
-                        "Não foi possível carregar o espectrograma. " +
-                        "Verifique a conexão e o acesso ao áudio.";
+                    statusWaveform.textContent =
+                        "Não foi possível carregar o áudio. " +
+                        "Verifique a conexão e o acesso ao arquivo.";
 
                     console.error("Erro no WaveSurfer:", erro);
                 });
 
             } catch (erro) {
-                statusEspectrograma.textContent =
-                    "Erro ao iniciar o espectrograma. Consulte o console.";
+                statusWaveform.textContent =
+                    "Erro ao iniciar o áudio. Consulte o console.";
 
                 console.error("Erro ao iniciar o WaveSurfer:", erro);
             }
@@ -609,7 +588,7 @@
 
             if (audioPlayer.classList.contains("aberto")) {
                 requestAnimationFrame(function () {
-                    iniciarEspectrograma();
+                    iniciarWaveform();
                 });
             }
         });
@@ -617,44 +596,38 @@
         /* PLAY / PAUSA */
 
         botaoPlay.addEventListener("click", async function () {
-            if (audio.paused) {
+            if (!waveformIniciado) {
+                iniciarWaveform();
+
+                statusWaveform.textContent =
+                    "Carregando áudio...";
+
+                return;
+            }
+
+            if (wavesurfer) {
                 try {
-                    if (!espectrogramaIniciado) {
-                        iniciarEspectrograma();
-                    }
-
-                    await audio.play();
-
+                    await wavesurfer.playPause();
                 } catch (erro) {
-                    console.error("Erro ao reproduzir o áudio:", erro);
+                    console.error("Erro na reprodução:", erro);
 
-                    statusEspectrograma.textContent =
-                        "O áudio não conseguiu iniciar. Tente novamente.";
+                    statusWaveform.textContent =
+                        "Não foi possível reproduzir o áudio. Tente novamente.";
                 }
-            } else {
-                audio.pause();
             }
         });
 
-        /* ATUALIZA TEMPO E LINHA DURANTE A REPRODUÇÃO */
+        /* CLICAR NA ONDA PARA ESCOLHER O INSTANTE */
 
-        audio.addEventListener("timeupdate", atualizarCursor);
-        audio.addEventListener("loadedmetadata", atualizarCursor);
-
-        /* CLICAR NO ESPECTROGRAMA PARA NAVEGAR NO ÁUDIO */
-
-        espectrogramaVisualizacao.addEventListener(
+        waveformVisualizacao.addEventListener(
             "click",
             function (event) {
-                if (
-                    !audio.duration ||
-                    !Number.isFinite(audio.duration)
-                ) {
+                if (!wavesurfer || !wavesurfer.getDuration()) {
                     return;
                 }
 
                 const area =
-                    espectrogramaVisualizacao.getBoundingClientRect();
+                    waveformVisualizacao.getBoundingClientRect();
 
                 const posicao = event.clientX - area.left;
 
@@ -663,28 +636,10 @@
                     Math.min(1, posicao / area.width)
                 );
 
-                audio.currentTime = proporcao * audio.duration;
-
-                atualizarCursor();
+                wavesurfer.seekTo(proporcao);
+                atualizarWaveform();
             }
         );
-
-        /* ESTADO DO BOTÃO */
-
-        audio.addEventListener("play", function () {
-            botaoPlay.textContent = "Ⅱ";
-            botaoPlay.setAttribute("aria-label", "Pausar");
-        });
-
-        audio.addEventListener("pause", function () {
-            botaoPlay.textContent = "▶";
-            botaoPlay.setAttribute("aria-label", "Reproduzir");
-        });
-
-        audio.addEventListener("ended", function () {
-            botaoPlay.textContent = "▶";
-            botaoPlay.setAttribute("aria-label", "Reproduzir");
-        });
     </script>
 
 </body>
