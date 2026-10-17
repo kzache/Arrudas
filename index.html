@@ -142,13 +142,19 @@
             background-color: rgba(235, 229, 217, 0.78);
         }
 
+        /* ESCUTE DESAPARECE QUANDO O ÁUDIO ABRE */
+
+        .escute.oculto {
+            display: none;
+        }
+
         /* PAINEL DE ÁUDIO */
 
         .audio {
             display: none;
             position: fixed;
             left: 50%;
-            top: calc(36vh + 58px);
+            top: 36vh;
             transform: translateX(-50%);
             z-index: 30;
             width: 60vw;
@@ -212,13 +218,7 @@
             min-height: 180px;
         }
 
-        /*
-           MÁSCARA DE REVELAÇÃO
-
-           A máscara começa cobrindo a onda inteira.
-           Durante a reprodução, diminui da direita
-           para a esquerda, revelando o desenho.
-        */
+        /* MÁSCARA DE REVELAÇÃO */
 
         #mascaraWaveform {
             position: absolute;
@@ -308,7 +308,7 @@
 
             .audio {
                 left: 15px;
-                top: 215px;
+                top: 165px;
                 transform: none;
                 width: calc(100% - 30px);
                 max-width: none;
@@ -336,7 +336,7 @@
             }
 
             .audio {
-                top: calc(27vh + 58px);
+                top: 27vh;
                 max-height: calc(73vh - 58px);
             }
         }
@@ -593,9 +593,10 @@
             }
         }
 
-        /* ESCUTE: ABRIR O ÁUDIO */
+        /* ESCUTE: ABRIR O ÁUDIO E OCULTAR A CAIXA */
 
         escute.addEventListener("click", function () {
+            escute.classList.add("oculto");
             audioPlayer.classList.add("aberto");
 
             requestAnimationFrame(function () {
@@ -603,7 +604,7 @@
             });
         });
 
-        /* X: FECHAR O ÁUDIO */
+        /* X: FECHAR O ÁUDIO E MOSTRAR ESCUTE NOVAMENTE */
 
         fecharAudio.addEventListener("click", function () {
             if (wavesurfer) {
@@ -611,6 +612,7 @@
             }
 
             audioPlayer.classList.remove("aberto");
+            escute.classList.remove("oculto");
         });
 
         /* PLAY / PAUSA */
