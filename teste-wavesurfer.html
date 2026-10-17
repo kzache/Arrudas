@@ -1,1 +1,105 @@
 
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Teste WaveSurfer — Projeto Arrudas</title>
+
+  <style>
+    body {
+      margin: 0;
+      padding: 32px 20px;
+      background: #f3f0e8;
+      color: #222;
+      font-family: "Courier New", monospace;
+    }
+
+    main {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    h1 {
+      font-size: 25px;
+      font-weight: normal;
+    }
+
+    p {
+      line-height: 1.6;
+    }
+
+    #espectrograma {
+      margin-top: 28px;
+      min-height: 180px;
+      border: 1px solid #85593c;
+      background: #ebe5d9;
+    }
+
+    #status {
+      margin-top: 16px;
+      font-size: 14px;
+    }
+  </style>
+</head>
+
+<body>
+  <main>
+    <h1>PROJETO ARRUDAS</h1>
+    <p>Teste de espectrograma sonoro</p>
+
+    <p><strong>ESCUTE</strong></p>
+    <div id="player"></div>
+
+    <p>ESPECTROGRAMA</p>
+    <div id="espectrograma"></div>
+
+    <p id="status">Carregando áudio...</p>
+  </main>
+
+  <script type="module">
+    import WaveSurfer from
+      'https://cdn.jsdelivr.net/npm/wavesurfer.js@8/dist/wavesurfer.esm.js';
+
+    import Spectrogram from
+      'https://cdn.jsdelivr.net/npm/wavesurfer.js@8/dist/plugins/spectrogram.esm.js';
+
+    const status = document.getElementById('status');
+
+    try {
+      const wavesurfer = WaveSurfer.create({
+        container: '#player',
+        url: 'https://pub-0c523da3e80b4a0ab591837050bc71cb.r2.dev/arrudas_peca_sonora.wav',
+        height: 70,
+        waveColor: '#b5a18a',
+        progressColor: '#85593c',
+        cursorColor: '#222',
+        normalize: false
+      });
+
+      wavesurfer.registerPlugin(
+        Spectrogram.create({
+          container: '#espectrograma',
+          height: 240,
+          labels: true,
+          splitChannels: false,
+          colorMap: 'gray',
+          rendering: 'windowed'
+        })
+      );
+
+      wavesurfer.on('ready', () => {
+        status.textContent = 'Áudio carregado. Você já pode escutar.';
+      });
+
+      wavesurfer.on('error', (error) => {
+        status.textContent = 'Erro ao carregar: ' + error.message;
+      });
+
+    } catch (error) {
+      status.textContent = 'Erro ao iniciar: ' + error.message;
+    }
+  </script>
+</body>
+</html>
+
