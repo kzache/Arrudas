@@ -62,6 +62,7 @@
             from {
                 opacity: 0;
             }
+
             to {
                 opacity: 1;
             }
@@ -138,7 +139,7 @@
             cursor: pointer;
         }
 
-        /* PLAYER */
+        /* ÁREA DO ESPECTROGRAMA */
 
         .audio {
             display: none;
@@ -162,13 +163,80 @@
             width: 100%;
         }
 
-        .player-controles {
-            display: flex;
-            align-items: center;
-            gap: 12px;
+        /* ÁUDIO NATIVO OCULTO */
+
+        #audio {
+            display: none;
         }
 
-        /* BOTÃO PLAY */
+        /* ÁREA TÉCNICA DO WAVESURFER */
+
+        .waveform-interno {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            overflow: hidden;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        /* ESPECTROGRAMA */
+
+        .espectrograma-bloco {
+            width: 100%;
+        }
+
+        .espectrograma-titulo {
+            margin: 0 0 10px;
+            font-size: 13px;
+            font-weight: bold;
+            letter-spacing: 0.04em;
+        }
+
+        .espectrograma-visualizacao {
+            position: relative;
+            width: 100%;
+            cursor: crosshair;
+            background: #ebe5d9;
+            border: 1px solid #85593c;
+            overflow: hidden;
+        }
+
+        #espectrograma {
+            width: 100%;
+            min-height: 180px;
+            background: #ebe5d9;
+            overflow: hidden;
+        }
+
+        /* LINHA QUE ACOMPANHA A REPRODUÇÃO */
+
+        #cursorEspectrograma {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            width: 2px;
+            background-color: #85593c;
+            opacity: 0;
+            pointer-events: none;
+            z-index: 5;
+            box-shadow: 0 0 2px rgba(243, 240, 232, 0.8);
+        }
+
+        #cursorEspectrograma.visivel {
+            opacity: 1;
+        }
+
+        /* CONTROLES INTEGRADOS AO ESPECTROGRAMA */
+
+        .controles-espectrograma {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            margin-top: 12px;
+        }
 
         .botao-play {
             width: 32px;
@@ -183,73 +251,14 @@
             flex-shrink: 0;
         }
 
-        /* BARRA DE PROGRESSO */
-
-        .progresso {
-            position: relative;
-            flex: 1;
-            height: 8px;
-            background-color: rgba(34, 34, 34, 0.15);
-            cursor: pointer;
-            overflow: hidden;
+        .botao-play:hover {
+            background-color: #ebe5d9;
         }
-
-        .progresso-atual {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 0%;
-            height: 100%;
-            background-color: #222;
-            pointer-events: none;
-        }
-
-        /* TEMPO */
 
         .tempo {
-            min-width: 42px;
             font-size: 13px;
             text-align: right;
             flex-shrink: 0;
-        }
-
-        /* ÁUDIO NATIVO OCULTO */
-
-        #audio {
-            display: none;
-        }
-
-        /* WAVESURFER: ÁREA TÉCNICA DA FORMA DE ONDA */
-
-        .waveform-interno {
-            width: 100%;
-            height: 1px;
-            overflow: hidden;
-            opacity: 0;
-            pointer-events: none;
-        }
-
-        /* ESPECTROGRAMA */
-
-        .espectrograma-bloco {
-            margin-top: 18px;
-            padding-top: 12px;
-            border-top: 1px solid rgba(34, 34, 34, 0.35);
-        }
-
-        .espectrograma-titulo {
-            margin: 0 0 10px;
-            font-size: 13px;
-            font-weight: bold;
-            letter-spacing: 0.04em;
-        }
-
-        #espectrograma {
-            width: 100%;
-            min-height: 180px;
-            background: #ebe5d9;
-            border: 1px solid #85593c;
-            overflow: hidden;
         }
 
         #statusEspectrograma {
@@ -342,7 +351,7 @@
         ESCUTE
     </div>
 
-    <!-- PLAYER -->
+    <!-- ESPECTROGRAMA E ÁUDIO -->
 
     <div class="audio" id="audioPlayer">
 
@@ -358,42 +367,43 @@
                     type="audio/wav">
             </audio>
 
-            <div class="player-controles">
-
-                <button
-                    class="botao-play"
-                    id="botaoPlay"
-                    aria-label="Reproduzir">
-                    ▶
-                </button>
-
-                <div class="progresso" id="progresso">
-                    <div
-                        class="progresso-atual"
-                        id="progressoAtual">
-                    </div>
-                </div>
-
-                <div class="tempo" id="tempo">
-                    00:00
-                </div>
-
-            </div>
-
-            <!-- ESPECTROGRAMA -->
-
             <div class="espectrograma-bloco">
 
                 <p class="espectrograma-titulo">
                     ESPECTROGRAMA
                 </p>
 
-                <div
-                    id="waveformInterno"
-                    class="waveform-interno">
+                <!-- ÁREA VISUAL E LINHA DE REPRODUÇÃO -->
+
+                <div class="espectrograma-visualizacao"
+                     id="espectrogramaVisualizacao">
+
+                    <div id="waveformInterno"
+                         class="waveform-interno"></div>
+
+                    <div id="espectrograma"></div>
+
+                    <div id="cursorEspectrograma"></div>
+
                 </div>
 
-                <div id="espectrograma"></div>
+                <!-- BOTÃO E TEMPO, SEM BARRA SEPARADA -->
+
+                <div class="controles-espectrograma">
+
+                    <button
+                        class="botao-play"
+                        id="botaoPlay"
+                        aria-label="Reproduzir"
+                        type="button">
+                        ▶
+                    </button>
+
+                    <div class="tempo" id="tempo">
+                        00:00
+                    </div>
+
+                </div>
 
                 <p id="statusEspectrograma">
                     Abra o player para carregar o espectrograma.
@@ -422,9 +432,14 @@
 
         const audio = document.getElementById("audio");
         const botaoPlay = document.getElementById("botaoPlay");
-        const progresso = document.getElementById("progresso");
-        const progressoAtual = document.getElementById("progressoAtual");
         const tempo = document.getElementById("tempo");
+
+        const espectrogramaVisualizacao =
+            document.getElementById("espectrogramaVisualizacao");
+
+        const cursorEspectrograma =
+            document.getElementById("cursorEspectrograma");
+
         const statusEspectrograma =
             document.getElementById("statusEspectrograma");
 
@@ -441,6 +456,29 @@
                 titulo.classList.toggle("aberto");
             }
         });
+
+        /* ATUALIZA A POSIÇÃO DA LINHA */
+
+        function atualizarCursor() {
+            if (!audio.duration || !Number.isFinite(audio.duration)) {
+                return;
+            }
+
+            const proporcao = Math.max(
+                0,
+                Math.min(1, audio.currentTime / audio.duration)
+            );
+
+            cursorEspectrograma.style.left =
+                (proporcao * 100) + "%";
+
+            const minutos = Math.floor(audio.currentTime / 60);
+            const segundos = Math.floor(audio.currentTime % 60);
+
+            tempo.textContent =
+                String(minutos).padStart(2, "0") + ":" +
+                String(segundos).padStart(2, "0");
+        }
 
         /* INICIALIZAÇÃO DO WAVESURFER */
 
@@ -480,6 +518,10 @@
                 wavesurfer.on("ready", function () {
                     statusEspectrograma.textContent =
                         "Áudio carregado. Você já pode escutar.";
+
+                    cursorEspectrograma.classList.add("visivel");
+
+                    atualizarCursor();
                 });
 
                 wavesurfer.on("error", function (erro) {
@@ -498,7 +540,7 @@
             }
         }
 
-        /* ESCUTE: ABRIR E FECHAR PLAYER */
+        /* ESCUTE: ABRIR E FECHAR */
 
         escute.addEventListener("click", function () {
             audioPlayer.classList.toggle("aberto");
@@ -515,8 +557,12 @@
         botaoPlay.addEventListener("click", async function () {
             if (audio.paused) {
                 try {
+                    if (!espectrogramaIniciado) {
+                        iniciarEspectrograma();
+                    }
+
                     await audio.play();
-                    botaoPlay.textContent = "Ⅱ";
+
                 } catch (erro) {
                     console.error("Erro ao reproduzir o áudio:", erro);
 
@@ -525,57 +571,60 @@
                 }
             } else {
                 audio.pause();
-                botaoPlay.textContent = "▶";
             }
         });
 
-        /* ATUALIZA TEMPO E PROGRESSO */
+        /* ATUALIZA TEMPO E LINHA DURANTE A REPRODUÇÃO */
 
-        audio.addEventListener("timeupdate", function () {
-            const minutos = Math.floor(audio.currentTime / 60);
-            const segundos = Math.floor(audio.currentTime % 60);
+        audio.addEventListener("timeupdate", atualizarCursor);
 
-            tempo.textContent =
-                String(minutos).padStart(2, "0") + ":" +
-                String(segundos).padStart(2, "0");
+        audio.addEventListener("loadedmetadata", atualizarCursor);
 
-            if (audio.duration) {
-                const porcentagem =
-                    (audio.currentTime / audio.duration) * 100;
+        /* CLICAR NO ESPECTROGRAMA PARA AVANÇAR OU VOLTAR */
 
-                progressoAtual.style.width = porcentagem + "%";
+        espectrogramaVisualizacao.addEventListener(
+            "click",
+            function (event) {
+                if (
+                    !audio.duration ||
+                    !Number.isFinite(audio.duration)
+                ) {
+                    return;
+                }
+
+                const area =
+                    espectrogramaVisualizacao.getBoundingClientRect();
+
+                const posicao = event.clientX - area.left;
+
+                const proporcao = Math.max(
+                    0,
+                    Math.min(1, posicao / area.width)
+                );
+
+                audio.currentTime = proporcao * audio.duration;
+
+                atualizarCursor();
             }
-        });
+        );
 
-        /* AVANÇAR AO CLICAR NA BARRA */
-
-        progresso.addEventListener("click", function (event) {
-            if (!audio.duration) {
-                return;
-            }
-
-            const area = progresso.getBoundingClientRect();
-            const posicao = event.clientX - area.left;
-            const proporcao = posicao / area.width;
-
-            audio.currentTime = proporcao * audio.duration;
-        });
-
-        /* QUANDO A PEÇA TERMINAR */
-
-        audio.addEventListener("ended", function () {
-            botaoPlay.textContent = "▶";
-            progressoAtual.style.width = "0%";
-        });
+        /* ESTADO DO BOTÃO PLAY / PAUSA */
 
         audio.addEventListener("play", function () {
             botaoPlay.textContent = "Ⅱ";
+            botaoPlay.setAttribute("aria-label", "Pausar");
         });
 
         audio.addEventListener("pause", function () {
             if (!audio.ended) {
                 botaoPlay.textContent = "▶";
+                botaoPlay.setAttribute("aria-label", "Reproduzir");
             }
+        });
+
+        audio.addEventListener("ended", function () {
+            botaoPlay.textContent = "▶";
+            botaoPlay.setAttribute("aria-label", "Reproduzir");
         });
     </script>
 
