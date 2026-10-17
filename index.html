@@ -515,8 +515,7 @@
 
             waveformIniciado = true;
 
-            statusWaveform.textContent =
-                "Carregando áudio...";
+           
 
             try {
                 wavesurfer = WaveSurfer.create({
@@ -536,9 +535,7 @@
                 /* ÁUDIO CARREGADO */
 
                 wavesurfer.on("ready", function () {
-                    statusWaveform.textContent =
-                        "Áudio carregado. Você já pode escutar.";
-
+                   
                     mascaraWaveform.style.transition = "none";
                     mascaraWaveform.style.width = "100%";
 
