@@ -417,11 +417,7 @@
                         00:00 / 00:00
                     </div>
 
-                </div>
-
-                <p id="statusWaveform">
-                    Abra o player para carregar a peça sonora.
-                </p>
+            </div>     
 
             </div>
         </div>
@@ -548,25 +544,22 @@
                 /* BOTÃO PLAY / PAUSA */
 
                 wavesurfer.on("play", function () {
-                    botaoPlay.textContent = "Ⅱ";
-                    botaoPlay.setAttribute("aria-label", "Pausar");
-                    statusWaveform.textContent = "Reproduzindo...";
+                botaoPlay.textContent = "Ⅱ";
+                botaoPlay.setAttribute("aria-label", "Pausar");
                 });
 
                 wavesurfer.on("pause", function () {
-                    botaoPlay.textContent = "▶";
-                    botaoPlay.setAttribute("aria-label", "Reproduzir");
-                    statusWaveform.textContent = "Áudio pausado.";
+                botaoPlay.textContent = "▶";
+                botaoPlay.setAttribute("aria-label", "Reproduzir");
                 });
 
                 /* FIM DA PEÇA */
 
                 wavesurfer.on("finish", function () {
-                    botaoPlay.textContent = "▶";
-                    botaoPlay.setAttribute("aria-label", "Reproduzir");
-                    statusWaveform.textContent = "Reprodução concluída.";
+                botaoPlay.textContent = "▶";
+                botaoPlay.setAttribute("aria-label", "Reproduzir");
 
-                    atualizarWaveform();
+                atualizarWaveform();
                 });
 
                 /* ERROS */
