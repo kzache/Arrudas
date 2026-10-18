@@ -125,10 +125,14 @@
             top: 36vh;
             transform: translateX(-50%);
             z-index: 30;
-            width: 60vw;
-            max-width: 900px;
-            padding: 16px 20px;
+            width: 250px;
+            height: 140px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
             background-color: rgba(243, 240, 232, 0.72);
+            border-radius: 43% 57% 61% 39% / 50% 43% 57% 50%;
             backdrop-filter: blur(2px);
             -webkit-backdrop-filter: blur(2px);
             font-family: "Courier New", monospace;
@@ -136,10 +140,10 @@
             font-weight: bold;
             text-align: center;
             cursor: pointer;
-        }
+            }
 
         .escute:hover {
-            background-color: rgba(235, 229, 217, 0.78);
+        background-color: rgba(235, 229, 217, 0.78);
         }
 
         /* ESCUTE DESAPARECE QUANDO O ÁUDIO ABRE */
@@ -291,10 +295,11 @@
             }
 
             .escute {
-                left: 15px;
+                left: 50%;
                 top: 165px;
-                transform: none;
-                width: calc(100% - 30px);
+                transform: translateX(-50%);
+                width: 190px;
+                height: 110px;
                 max-width: none;
                 font-size: 18px;
             }
