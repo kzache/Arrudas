@@ -20,7 +20,6 @@
             overflow: hidden;
             font-family: "Courier New", monospace;
             color: #222;
-            background-color: #e8e0cf;
         }
 
         /* MAPA */
@@ -44,19 +43,11 @@
             filter: sepia(75%) saturate(65%) brightness(90%) contrast(95%) !important;
         }
 
-        /* CARREGAMENTO DO TÍTULO E DO ESCUTE */
-
-        .titulo,
-        .escute {
-            opacity: 1;
-            transition: opacity 1.8s ease-out;
-        }
+        /* AGUARDA O CARREGAMENTO INICIAL DO MAPA */
 
         body.carregando .titulo,
         body.carregando .escute {
-            opacity: 0;
             visibility: hidden;
-            transition: none;
         }
 
         /* DESENHO DO ARRUDAS */
@@ -70,7 +61,7 @@
             z-index: 2;
             pointer-events: none;
             opacity: 0;
-            animation: entradaDesenho 2s ease-out 2.2s forwards;
+            animation: entradaDesenho 1.8s ease-out 1.5s forwards;
             transform: translate(-170px, -1px);
         }
 
@@ -162,6 +153,8 @@
             background-color: rgba(235, 229, 217, 0.78);
         }
 
+        /* ESCUTE DESAPARECE QUANDO O ÁUDIO ABRE */
+
         .escute.oculto {
             display: none;
         }
@@ -175,31 +168,19 @@
             top: 36vh;
             transform: translateX(-50%);
             z-index: 30;
-            width: 85vw;
-            max-width: 1300px;
+            width: 75vw;
+            max-width: 1100px;
             max-height: calc(64vh - 58px);
             overflow-y: auto;
-            background: transparent;
+            background-color: rgba(243, 240, 232, 0.58);
             border: none;
-            backdrop-filter: none;
-            -webkit-backdrop-filter: none;
+            backdrop-filter: blur(2px);
+            -webkit-backdrop-filter: blur(2px);
             padding: 22px 24px;
         }
 
         .audio.aberto {
             display: block;
-        }
-
-        /* CONTROLES OCULTOS ATÉ A ONDA ESTAR PRONTA */
-
-        .fechar-audio,
-        .botao-play {
-            visibility: hidden;
-        }
-
-        .audio.pronto .fechar-audio,
-        .audio.pronto .botao-play {
-            visibility: visible;
         }
 
         /* BOTÃO PARA FECHAR O PAINEL */
@@ -208,7 +189,7 @@
             position: absolute;
             top: 4px;
             right: 10px;
-            z-index: 10;
+            z-index: 5;
             border: none;
             background: transparent;
             padding: 0;
@@ -227,7 +208,7 @@
             width: 100%;
         }
 
-        /* FORMA DE ONDA */
+        /* FORMA DE ONDA — SEM CAIXA INTERNA */
 
         .waveform-bloco {
             width: 100%;
@@ -236,7 +217,7 @@
         .waveform-visualizacao {
             position: relative;
             width: 100%;
-            height: 220px;
+            min-height: 200px;
             cursor: pointer;
             background: transparent;
             border: none;
@@ -245,46 +226,48 @@
 
         #waveform {
             width: 100%;
-            height: 220px;
+            min-height: 200px;
         }
 
-        /* BOTÃO PLAY SOBREPOSTO AO CENTRO DA ONDA */
+        /* MÁSCARA DE REVELAÇÃO */
 
-        .botao-play {
+        #mascaraWaveform {
             position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            z-index: 6;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 48px;
-            height: 48px;
-            padding: 0;
-            border: none;
-            border-radius: 50%;
-            background: rgba(243, 240, 232, 0.75);
-            backdrop-filter: blur(2px);
-            -webkit-backdrop-filter: blur(2px);
-            font-family: "Courier New", monospace;
-            font-size: 21px;
-            color: #222;
-            cursor: pointer;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            width: 100%;
+            background: rgba(243, 240, 232, 0.65);
+            pointer-events: none;
+            z-index: 4;
+            transition: none;
         }
 
-        .botao-play:hover {
-            background: rgba(243, 240, 232, 0.95);
-        }
-
-        /* CONTADOR */
+        /* CONTROLES */
 
         .controles-waveform {
             display: flex;
             align-items: center;
-            justify-content: flex-end;
+            justify-content: space-between;
             gap: 12px;
             margin-top: 14px;
+        }
+
+        .botao-play {
+            width: 36px;
+            height: 36px;
+            padding: 0;
+            background-color: rgba(243, 240, 232, 0.85);
+            border: 1px solid #222;
+            font-family: "Courier New", monospace;
+            font-size: 15px;
+            color: #222;
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+
+        .botao-play:hover {
+            background-color: #ebe5d9;
         }
 
         .tempo {
@@ -340,12 +323,7 @@
 
             .waveform-visualizacao,
             #waveform {
-                height: 160px;
-            }
-
-            .botao-play {
-                width: 48px;
-                height: 48px;
+                min-height: 200px;
             }
 
             .desenho-arrudas {
@@ -426,6 +404,12 @@
 
                     <div id="waveform"></div>
 
+                    <div id="mascaraWaveform"></div>
+
+                </div>
+
+                <div class="controles-waveform">
+
                     <button
                         class="botao-play"
                         id="botaoPlay"
@@ -434,12 +418,10 @@
                         ▶
                     </button>
 
-                </div>
-
-                <div class="controles-waveform">
                     <div class="tempo" id="tempo">
                         00:00 / 00:00
                     </div>
+
                 </div>
 
             </div>
@@ -461,35 +443,9 @@
 
         const mapaIframe = document.querySelector(".mapa iframe");
 
-        function mostrarElementos() {
-            setTimeout(function () {
-                document.body.classList.remove("carregando");
-
-                titulo.style.visibility = "visible";
-                escute.style.visibility = "visible";
-
-                titulo.style.opacity = "0";
-                escute.style.opacity = "0";
-
-                requestAnimationFrame(function () {
-                    requestAnimationFrame(function () {
-                        titulo.style.opacity = "1";
-                        escute.style.opacity = "1";
-                    });
-                });
-            }, 500);
-        }
-
-        if (
-            mapaIframe.contentDocument &&
-            mapaIframe.contentDocument.readyState === "complete"
-        ) {
-            mostrarElementos();
-        } else {
-            mapaIframe.addEventListener("load", mostrarElementos, {
-                once: true
-            });
-        }
+        mapaIframe.addEventListener("load", function () {
+            document.body.classList.remove("carregando");
+        });
 
         const audioPlayer = document.getElementById("audioPlayer");
         const fecharAudio = document.getElementById("fecharAudio");
@@ -499,6 +455,9 @@
 
         const waveformVisualizacao =
             document.getElementById("waveformVisualizacao");
+
+        const mascaraWaveform =
+            document.getElementById("mascaraWaveform");
 
         const audioUrl =
             "https://pub-0c523da3e80b4a0ab591837050bc71cb.r2.dev/arrudas_peca_sonora.wav";
@@ -526,9 +485,9 @@
             );
         }
 
-        /* ATUALIZA O CONTADOR */
+        /* ATUALIZA A REVELAÇÃO E O CONTADOR */
 
-        function atualizarTempo() {
+        function atualizarWaveform() {
             if (!wavesurfer) {
                 return;
             }
@@ -540,6 +499,14 @@
             }
 
             const atual = wavesurfer.getCurrentTime();
+
+            const proporcao = Math.max(
+                0,
+                Math.min(1, atual / duracao)
+            );
+
+            mascaraWaveform.style.width =
+                ((1 - proporcao) * 100) + "%";
 
             tempo.textContent =
                 formatarTempo(atual) + " / " +
@@ -559,9 +526,9 @@
                 wavesurfer = WaveSurfer.create({
                     container: "#waveform",
                     url: audioUrl,
-                    height: 220,
-                    waveColor: "#B79A78",
-                    progressColor: "#6F7770",
+                    height: 200,
+                    waveColor: "#85593c",
+                    progressColor: "#85593c",
                     cursorWidth: 0,
                     normalize: false,
                     interact: false
@@ -570,14 +537,16 @@
                 /* ÁUDIO CARREGADO */
 
                 wavesurfer.on("ready", function () {
-                    audioPlayer.classList.add("pronto");
-                    atualizarTempo();
+                    mascaraWaveform.style.transition = "none";
+                    mascaraWaveform.style.width = "100%";
+
+                    atualizarWaveform();
                 });
 
-                /* ATUALIZA O TEMPO DURANTE A REPRODUÇÃO */
+                /* REVELAÇÃO DURANTE A REPRODUÇÃO */
 
                 wavesurfer.on("timeupdate", function () {
-                    atualizarTempo();
+                    atualizarWaveform();
                 });
 
                 /* BOTÃO PLAY / PAUSA */
@@ -597,7 +566,8 @@
                 wavesurfer.on("finish", function () {
                     botaoPlay.textContent = "▶";
                     botaoPlay.setAttribute("aria-label", "Reproduzir");
-                    atualizarTempo();
+
+                    atualizarWaveform();
                 });
 
                 /* ERROS */
@@ -611,7 +581,7 @@
             }
         }
 
-        /* ESCUTE: ABRIR O ÁUDIO */
+        /* ESCUTE: ABRIR O ÁUDIO E OCULTAR A CAIXA */
 
         escute.addEventListener("click", function () {
             escute.classList.add("oculto");
@@ -622,7 +592,7 @@
             });
         });
 
-        /* X: FECHAR O ÁUDIO */
+        /* X: FECHAR O ÁUDIO E MOSTRAR ESCUTE NOVAMENTE */
 
         fecharAudio.addEventListener("click", function () {
             if (wavesurfer) {
@@ -635,9 +605,7 @@
 
         /* PLAY / PAUSA */
 
-        botaoPlay.addEventListener("click", async function (event) {
-            event.stopPropagation();
-
+        botaoPlay.addEventListener("click", async function () {
             if (!waveformIniciado) {
                 iniciarWaveform();
                 return;
@@ -657,11 +625,7 @@
         waveformVisualizacao.addEventListener(
             "click",
             function (event) {
-                if (
-                    event.target === botaoPlay ||
-                    !wavesurfer ||
-                    !wavesurfer.getDuration()
-                ) {
+                if (!wavesurfer || !wavesurfer.getDuration()) {
                     return;
                 }
 
@@ -676,7 +640,7 @@
                 );
 
                 wavesurfer.seekTo(proporcao);
-                atualizarTempo();
+                atualizarWaveform();
             }
         );
     </script>
