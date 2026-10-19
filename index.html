@@ -43,6 +43,13 @@
             filter: sepia(75%) saturate(65%) brightness(90%) contrast(95%) !important;
         }
 
+        /* AGUARDA O CARREGAMENTO INICIAL DO MAPA */
+
+        body.carregando .titulo,
+        body.carregando .escute {
+            visibility: hidden;
+        }
+
         /* DESENHO DO ARRUDAS */
 
         .desenho-arrudas {
@@ -140,10 +147,10 @@
             font-weight: bold;
             text-align: center;
             cursor: pointer;
-            }
+        }
 
         .escute:hover {
-        background-color: rgba(235, 229, 217, 0.78);
+            background-color: rgba(235, 229, 217, 0.78);
         }
 
         /* ESCUTE DESAPARECE QUANDO O ÁUDIO ABRE */
@@ -341,7 +348,7 @@
     </style>
 </head>
 
-<body>
+<body class="carregando">
 
     <!-- MAPA -->
 
@@ -431,6 +438,15 @@
 
         const titulo = document.getElementById("titulo");
         const escute = document.getElementById("escute");
+
+        /* MOSTRA O TÍTULO E O ESCUTE APÓS O CARREGAMENTO DO MAPA */
+
+        const mapaIframe = document.querySelector(".mapa iframe");
+
+        mapaIframe.addEventListener("load", function () {
+            document.body.classList.remove("carregando");
+        });
+
         const audioPlayer = document.getElementById("audioPlayer");
         const fecharAudio = document.getElementById("fecharAudio");
 
