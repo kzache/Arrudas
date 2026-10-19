@@ -45,10 +45,29 @@
 
         /* AGUARDA O CARREGAMENTO INICIAL DO MAPA */
 
+        .titulo,
+        .escute {
+        opacity: 1;
+        transition: opacity 1.8s ease-out;
+        }
+
         body.carregando .titulo,
         body.carregando .escute {
-            visibility: hidden;
+        opacity: 0;
+        visibility: hidden;
         }
+
+        body.carregando .titulo,
+        body.carregando .escute {
+        transition: none;
+        }
+
+        body.carregando .titulo.aparecendo,
+        body.carregando .escute.aparecendo {
+        visibility: visible;
+        opacity: 0;
+        }
+        
 
         /* DESENHO DO ARRUDAS */
 
@@ -444,7 +463,22 @@
         const mapaIframe = document.querySelector(".mapa iframe");
 
         mapaIframe.addEventListener("load", function () {
-            document.body.classList.remove("carregando");
+        setTimeout(function () {
+        document.body.classList.remove("carregando");
+
+        titulo.style.visibility = "visible";
+        escute.style.visibility = "visible";
+
+        titulo.style.opacity = "0";
+        escute.style.opacity = "0";
+
+        requestAnimationFrame(function () {
+            requestAnimationFrame(function () {
+                titulo.style.opacity = "1";
+                escute.style.opacity = "1";
+        });
+        });
+        }, 500);
         });
 
         const audioPlayer = document.getElementById("audioPlayer");
