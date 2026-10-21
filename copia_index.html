@@ -1,14 +1,12 @@
+
 <!DOCTYPE html>
 <html lang="pt-BR">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <title>Arrudas</title>
 
     <style>
-
         * {
             box-sizing: border-box;
         }
@@ -22,6 +20,7 @@
             overflow: hidden;
             font-family: "Courier New", monospace;
             color: #222;
+            background-color: #e8e0cf;
         }
 
         /* MAPA */
@@ -42,6 +41,22 @@
             border: none;
             margin: 0;
             padding: 0;
+            filter: sepia(75%) saturate(65%) brightness(90%) contrast(95%) !important;
+        }
+
+        /* CARREGAMENTO DO TÍTULO E DO ESCUTE */
+
+        .titulo,
+        .escute {
+            opacity: 1;
+            transition: opacity 1.8s ease-out;
+        }
+
+        body.carregando .titulo,
+        body.carregando .escute {
+            opacity: 0;
+            visibility: hidden;
+            transition: none;
         }
 
         /* DESENHO DO ARRUDAS */
@@ -55,34 +70,26 @@
             z-index: 2;
             pointer-events: none;
             opacity: 0;
-            animation: entradaDesenho 1.8s ease-out 1.5s forwards;
+            animation: entradaDesenho 2s ease-out 2.2s forwards;
             transform: translate(-170px, -1px);
         }
 
         @keyframes entradaDesenho {
-            from {
-                opacity: 0;
-            }
-
-            to {
-                opacity: 1;
-            }
+            from { opacity: 0; }
+            to { opacity: 1; }
         }
 
-        /* CAIXA DO TÍTULO / MENU */
+        /* TÍTULO / MENU — POSIÇÃO ORIGINAL */
 
         .titulo {
             position: fixed;
             top: 40px;
             left: 30px;
             z-index: 20;
-
             background-color: rgba(243, 240, 232, 0.94);
-
             padding: 25px 40px;
             text-align: center;
             min-width: 420px;
-
             cursor: pointer;
         }
 
@@ -101,18 +108,12 @@
 
         .menu-links {
             position: absolute;
-
             top: 0;
             left: 100%;
-
             display: none;
-
             width: 190px;
-
             background-color: rgba(243, 240, 232, 0.94);
-
             padding: 15px 20px;
-
             text-align: left;
         }
 
@@ -122,12 +123,9 @@
 
         .menu-links a {
             display: block;
-
             text-decoration: none;
             color: #222;
-
             font-size: 15px;
-
             padding: 7px 0;
         }
 
@@ -139,143 +137,178 @@
 
         .escute {
             position: fixed;
-
-            left: 30px;
-            top: 190px;
-
+            left: 50%;
+            top: 36vh;
+            transform: translateX(-50%);
             z-index: 30;
-
-            width: 420px;
-
-            padding: 16px 20px;
-
-            background-color: #f3f0e8;
-
+            width: 250px;
+            height: 140px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
+            background-color: rgba(243, 240, 232, 0.72);
+            border-radius: 43% 57% 61% 39% / 50% 43% 57% 50%;
+            backdrop-filter: blur(2px);
+            -webkit-backdrop-filter: blur(2px);
             font-family: "Courier New", monospace;
             font-size: 20px;
             font-weight: bold;
-
             text-align: center;
-
             cursor: pointer;
         }
 
-        /* PLAYER */
+        .escute:hover {
+            background-color: rgba(235, 229, 217, 0.78);
+        }
+
+        .escute.oculto {
+            display: none;
+        }
+
+        /* PAINEL DE ÁUDIO — SEM CAIXA */
 
         .audio {
             display: none;
-
             position: fixed;
-
-            left: 30px;
-            top: 245px;
-
+            left: 50%;
+            top: 36vh;
+            transform: translateX(-50%);
             z-index: 30;
-
-            width: 420px;
-
-            background-color: #f3f0e8;
-            border: 1px solid #222;
-
-            padding: 15px 18px;
+            width: 92vw;
+            max-width: 1500px;
+            max-height: calc(64vh - 58px);
+            overflow-y: auto;
+            background: transparent;
+            border: none;
+            backdrop-filter: none;
+            -webkit-backdrop-filter: none;
+            padding: 22px 24px;
         }
 
         .audio.aberto {
             display: block;
         }
 
-        /* ESTRUTURA DO PLAYER */
+        /* CONTROLES OCULTOS ATÉ A ONDA ESTAR PRONTA */
+
+        .fechar-audio,
+        .botao-play,
+        .tempo {
+        visibility: hidden;
+        }
+
+        .audio.pronto .fechar-audio,
+        .audio.pronto .botao-play,
+        .audio.pronto .tempo {
+        visibility: visible;
+        }
+
+        /* BOTÃO PARA FECHAR O PAINEL */
+
+        .fechar-audio {
+            position: absolute;
+            top: 4px;
+            right: 10px;
+            z-index: 10;
+            border: none;
+            background: transparent;
+            padding: 0;
+            color: #222;
+            font-family: "Courier New", monospace;
+            font-size: 25px;
+            line-height: 1;
+            cursor: pointer;
+        }
+
+        .fechar-audio:hover {
+            color: #85593c;
+        }
 
         .player {
             width: 100%;
         }
 
-        .player-controles {
-            display: flex;
-            align-items: center;
-            gap: 12px;
+        /* ONDA — MAIS ALTA, COM APARIÇÃO SUAVE */
+
+        .waveform-bloco {
+            width: 100%;
         }
 
-        /* BOTÃO PLAY */
-
-        .botao-play {
-            width: 32px;
-            height: 32px;
-
-            padding: 0;
-
-            background-color: #f3f0e8;
-            border: 1px solid #222;
-
-            font-family: "Courier New", monospace;
-            font-size: 15px;
-
-            color: #222;
-
-            cursor: pointer;
-
-            flex-shrink: 0;
-        }
-
-        /* BARRA DE PROGRESSO */
-
-        .progresso {
+        .waveform-visualizacao {
             position: relative;
-
-            flex: 1;
-
-            height: 8px;
-
-            background-color: rgba(34, 34, 34, 0.15);
-
+            width: 100%;
+            height: 280px;
             cursor: pointer;
-
+            background: transparent;
+            border: none;
             overflow: hidden;
         }
 
-        .progresso-atual {
-            position: absolute;
-
-            top: 0;
-            left: 0;
-
-            width: 0%;
-            height: 100%;
-
-            background-color: #222;
-
-            pointer-events: none;
+        #waveform {
+            width: 100%;
+            height: 280px;
+            opacity: 0;
+            transition: opacity 2.5s ease-in-out;
         }
 
-        /* TEMPO */
+        #waveform.carregado {
+            opacity: 1;
+        }
+
+        /* BOTÃO PLAY SOBREPOSTO AO CENTRO DA ONDA */
+
+        .botao-play {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 6;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 48px;
+            height: 48px;
+            padding: 0;
+            border: none;
+            border-radius: 50%;
+            background: rgba(243, 240, 232, 0.75);
+            backdrop-filter: blur(2px);
+            -webkit-backdrop-filter: blur(2px);
+            font-family: "Courier New", monospace;
+            font-size: 21px;
+            color: #222;
+            cursor: pointer;
+        }
+
+        .botao-play:hover {
+            background: rgba(243, 240, 232, 0.95);
+        }
+
+        /* CONTADOR */
+
+        .controles-waveform {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 12px;
+            margin-top: 14px;
+        }
 
         .tempo {
-            min-width: 42px;
-
             font-size: 13px;
-
             text-align: right;
-
             flex-shrink: 0;
-        }
-
-        /* ESCONDE O ÁUDIO NATIVO */
-
-        #audio {
-            display: none;
         }
 
         /* CELULAR */
 
         @media (max-width: 600px) {
-
             .titulo {
                 top: 25px;
                 left: 15px;
-
                 width: calc(100% - 100px);
                 min-width: 0;
-
                 padding: 18px 15px;
             }
 
@@ -290,24 +323,37 @@
             .menu-links {
                 top: 100%;
                 left: 0;
-
                 width: 100%;
             }
 
             .escute {
-                left: 15px;
+                left: 50%;
                 top: 165px;
-
-                width: calc(100% - 30px);
-
+                transform: translateX(-50%);
+                width: 190px;
+                height: 110px;
+                max-width: none;
                 font-size: 18px;
             }
 
             .audio {
                 left: 15px;
-                top: 215px;
-
+                top: 165px;
+                transform: none;
                 width: calc(100% - 30px);
+                max-width: none;
+                max-height: calc(100vh - 230px);
+                padding: 30px 16px 16px;
+            }
+
+            .waveform-visualizacao,
+            #waveform {
+                height: 220px;
+            }
+
+            .botao-play {
+                width: 48px;
+                height: 48px;
             }
 
             .desenho-arrudas {
@@ -315,25 +361,28 @@
                 top: 45%;
                 left: 40%;
             }
-
         }
 
-        /* COR DO MAPA */
+        /* TELAS BAIXAS */
 
-        .mapa iframe {
-            filter: sepia(75%) saturate(65%) brightness(90%) contrast(95%) !important;
+        @media (min-width: 601px) and (max-height: 650px) {
+            .escute {
+                top: 27vh;
+            }
+
+            .audio {
+                top: 27vh;
+                max-height: calc(73vh - 58px);
+            }
         }
-
     </style>
-
 </head>
 
-<body>
+<body class="carregando">
 
     <!-- MAPA -->
 
     <div class="mapa">
-
         <iframe
             allowfullscreen
             allow="geolocation"
@@ -343,269 +392,313 @@
         <img
             class="desenho-arrudas"
             src="desenho_mapa.svg"
-            alt=""
-        >
-
+            alt="">
     </div>
-
 
     <!-- TÍTULO / MENU -->
 
     <div class="titulo" id="titulo">
-
         <h1>Arrudas</h1>
-
         <p>Memórias Sonoras de um Território-Rio</p>
 
         <div class="menu-links">
-
             <a href="sobre.html">Sobre o projeto</a>
-
             <a href="creditos.html">Ficha técnica</a>
-
         </div>
-
     </div>
-
 
     <!-- ESCUTE -->
 
     <div class="escute" id="escute">
-
         ESCUTE
-
     </div>
 
-
-    <!-- PLAYER -->
+    <!-- WAVEFORM E ÁUDIO -->
 
     <div class="audio" id="audioPlayer">
 
+        <button
+            class="fechar-audio"
+            id="fecharAudio"
+            type="button"
+            aria-label="Fechar áudio">
+            ×
+        </button>
+
         <div class="player">
-
-            <audio
-                id="audio"
-                preload="metadata"
-                controlsList="nodownload noplaybackrate">
-
-                <source
-                    src="https://pub-0c523da3e80b4a0ab591837050bc71cb.r2.dev/arrudas_peca_sonora.wav"
-                    type="audio/wav">
-
-            </audio>
-
-
-            <div class="player-controles">
-
-                <button
-                    class="botao-play"
-                    id="botaoPlay"
-                    aria-label="Reproduzir">
-
-                    ▶
-
-                </button>
-
+            <div class="waveform-bloco">
 
                 <div
-                    class="progresso"
-                    id="progresso">
+                    class="waveform-visualizacao"
+                    id="waveformVisualizacao">
 
-                    <div
-                        class="progresso-atual"
-                        id="progressoAtual">
-                    </div>
+                    <div id="waveform"></div>
+
+                    <button
+                        class="botao-play"
+                        id="botaoPlay"
+                        aria-label="Reproduzir"
+                        type="button">
+                        ▶
+                    </button>
 
                 </div>
 
-
-                <div
-                    class="tempo"
-                    id="tempo">
-
-                    00:00
-
+                <div class="controles-waveform">
+                    <div class="tempo" id="tempo">
+                        00:00 / 00:00
+                    </div>
                 </div>
 
             </div>
-
         </div>
-
     </div>
 
+    <!-- INTERAÇÕES E WAVESURFER -->
 
-    <!-- INTERAÇÕES -->
+    <script type="module">
+        import WaveSurfer from
+            'https://cdn.jsdelivr.net/npm/wavesurfer.js@8/dist/wavesurfer.esm.js';
 
-    <script>
-
-        /* CAIXA DO TÍTULO / MENU */
+        /* ELEMENTOS DO SITE */
 
         const titulo = document.getElementById("titulo");
-
-        titulo.addEventListener("click", function (event) {
-
-            if (event.target.tagName !== "A") {
-
-                titulo.classList.toggle("aberto");
-
-            }
-
-        });
-
-
-        /* ESCUTE / PLAYER */
-
         const escute = document.getElementById("escute");
+
+        /* MOSTRA O TÍTULO E O ESCUTE APÓS O CARREGAMENTO DO MAPA */
+
+        const mapaIframe = document.querySelector(".mapa iframe");
+
+        function mostrarElementos() {
+            setTimeout(function () {
+                document.body.classList.remove("carregando");
+
+                titulo.style.visibility = "visible";
+                escute.style.visibility = "visible";
+
+                titulo.style.opacity = "0";
+                escute.style.opacity = "0";
+
+                requestAnimationFrame(function () {
+                    requestAnimationFrame(function () {
+                        titulo.style.opacity = "1";
+                        escute.style.opacity = "1";
+                    });
+                });
+            }, 500);
+        }
+
+        if (
+            mapaIframe.contentDocument &&
+            mapaIframe.contentDocument.readyState === "complete"
+        ) {
+            mostrarElementos();
+        } else {
+            mapaIframe.addEventListener("load", mostrarElementos, {
+                once: true
+            });
+        }
+
         const audioPlayer = document.getElementById("audioPlayer");
+        const fecharAudio = document.getElementById("fecharAudio");
 
-        escute.addEventListener("click", function () {
-
-            audioPlayer.classList.toggle("aberto");
-
-        });
-
-
-        /* ELEMENTOS DO PLAYER */
-
-        const audio = document.getElementById("audio");
         const botaoPlay = document.getElementById("botaoPlay");
-        const progresso = document.getElementById("progresso");
-        const progressoAtual = document.getElementById("progressoAtual");
         const tempo = document.getElementById("tempo");
 
+        const waveformVisualizacao =
+            document.getElementById("waveformVisualizacao");
+
+        const waveformElemento = document.getElementById("waveform");
+
+        const audioUrl =
+            "https://pub-0c523da3e80b4a0ab591837050bc71cb.r2.dev/arrudas_peca_sonora.wav";
+
+        let wavesurfer = null;
+        let waveformIniciado = false;
+
+        /* TÍTULO / MENU */
+
+        titulo.addEventListener("click", function (event) {
+            if (event.target.tagName !== "A") {
+                titulo.classList.toggle("aberto");
+            }
+        });
+
+        /* FORMATA O TEMPO */
+
+        function formatarTempo(segundos) {
+            const minutos = Math.floor(segundos / 60);
+            const segundosRestantes = Math.floor(segundos % 60);
+
+            return (
+                String(minutos).padStart(2, "0") + ":" +
+                String(segundosRestantes).padStart(2, "0")
+            );
+        }
+
+        /* ATUALIZA O CONTADOR */
+
+        function atualizarTempo() {
+            if (!wavesurfer) {
+                return;
+            }
+
+            const duracao = wavesurfer.getDuration();
+
+            if (!duracao || !Number.isFinite(duracao)) {
+                return;
+            }
+
+            const atual = wavesurfer.getCurrentTime();
+
+            tempo.textContent =
+                formatarTempo(atual) + " / " +
+                formatarTempo(duracao);
+        }
+
+        /* INICIALIZAÇÃO DO WAVESURFER */
+
+        function iniciarWaveform() {
+            if (waveformIniciado) {
+                return;
+            }
+
+            waveformIniciado = true;
+
+            try {
+                wavesurfer = WaveSurfer.create({
+                    container: "#waveform",
+                    url: audioUrl,
+                    height: 280,
+                    waveColor: "#B79A78",
+                    progressColor: "#6F7770",
+                    cursorWidth: 0,
+                    normalize: false,
+                    interact: false,
+                    barWidth: 2,
+                    barGap: 1,
+                    barRadius: 3
+                });
+
+                /* ÁUDIO CARREGADO: APARIÇÃO GRADUAL */
+
+                wavesurfer.on("ready", function () {
+                    audioPlayer.classList.add("pronto");
+                    atualizarTempo();
+
+                    requestAnimationFrame(function () {
+                        requestAnimationFrame(function () {
+                            waveformElemento.classList.add("carregado");
+                        });
+                    });
+                });
+
+                /* ATUALIZA O TEMPO DURANTE A REPRODUÇÃO */
+
+                wavesurfer.on("timeupdate", function () {
+                    atualizarTempo();
+                });
+
+                /* BOTÃO PLAY / PAUSA */
+
+                wavesurfer.on("play", function () {
+                    botaoPlay.textContent = "Ⅱ";
+                    botaoPlay.setAttribute("aria-label", "Pausar");
+                });
+
+                wavesurfer.on("pause", function () {
+                    botaoPlay.textContent = "▶";
+                    botaoPlay.setAttribute("aria-label", "Reproduzir");
+                });
+
+                /* FIM DA PEÇA */
+
+                wavesurfer.on("finish", function () {
+                    botaoPlay.textContent = "▶";
+                    botaoPlay.setAttribute("aria-label", "Reproduzir");
+                    atualizarTempo();
+                });
+
+                /* ERROS */
+
+                wavesurfer.on("error", function (erro) {
+                    console.error("Erro no WaveSurfer:", erro);
+                });
+
+            } catch (erro) {
+                console.error("Erro ao iniciar o WaveSurfer:", erro);
+            }
+        }
+
+        /* ESCUTE: ABRIR O ÁUDIO */
+
+        escute.addEventListener("click", function () {
+            escute.classList.add("oculto");
+            audioPlayer.classList.add("aberto");
+
+            requestAnimationFrame(function () {
+                iniciarWaveform();
+            });
+        });
+
+        /* X: FECHAR O ÁUDIO */
+
+        fecharAudio.addEventListener("click", function () {
+            if (wavesurfer) {
+                wavesurfer.pause();
+            }
+
+            audioPlayer.classList.remove("aberto");
+            escute.classList.remove("oculto");
+        });
 
         /* PLAY / PAUSA */
 
-        botaoPlay.addEventListener(
-            "click",
-            async function () {
+        botaoPlay.addEventListener("click", async function (event) {
+            event.stopPropagation();
 
-                if (audio.paused) {
-
-                    try {
-
-                        await audio.play();
-
-                        botaoPlay.textContent = "Ⅱ";
-
-                    } catch (erro) {
-
-                        console.error(
-                            "Erro ao reproduzir o áudio:",
-                            erro
-                        );
-
-                    }
-
-                } else {
-
-                    audio.pause();
-
-                    botaoPlay.textContent = "▶";
-
-                }
-
+            if (!waveformIniciado) {
+                iniciarWaveform();
+                return;
             }
-        );
 
-
-        /* ATUALIZA O TEMPO E A BARRA */
-
-        audio.addEventListener(
-            "timeupdate",
-            function () {
-
-                const minutos =
-                    Math.floor(
-                        audio.currentTime / 60
-                    );
-
-
-                const segundos =
-                    Math.floor(
-                        audio.currentTime % 60
-                    );
-
-
-                tempo.textContent =
-                    String(minutos).padStart(
-                        2,
-                        "0"
-                    ) +
-                    ":" +
-                    String(segundos).padStart(
-                        2,
-                        "0"
-                    );
-
-
-                if (audio.duration) {
-
-                    const porcentagem =
-                        (audio.currentTime /
-                        audio.duration) *
-                        100;
-
-
-                    progressoAtual.style.width =
-                        porcentagem + "%";
-
+            if (wavesurfer) {
+                try {
+                    await wavesurfer.playPause();
+                } catch (erro) {
+                    console.error("Erro na reprodução:", erro);
                 }
-
             }
-        );
+        });
 
+        /* CLICAR NA ONDA PARA ESCOLHER O INSTANTE */
 
-        /* CLICAR NA BARRA PARA AVANÇAR */
-
-        progresso.addEventListener(
+        waveformVisualizacao.addEventListener(
             "click",
             function (event) {
-
-                if (!audio.duration) {
-
+                if (
+                    event.target === botaoPlay ||
+                    !wavesurfer ||
+                    !wavesurfer.getDuration()
+                ) {
                     return;
-
                 }
 
-
                 const area =
-                    progresso.getBoundingClientRect();
+                    waveformVisualizacao.getBoundingClientRect();
 
+                const posicao = event.clientX - area.left;
 
-                const posicao =
-                    event.clientX -
-                    area.left;
+                const proporcao = Math.max(
+                    0,
+                    Math.min(1, posicao / area.width)
+                );
 
-
-                const proporcao =
-                    posicao /
-                    area.width;
-
-
-                audio.currentTime =
-                    proporcao *
-                    audio.duration;
-
+                wavesurfer.seekTo(proporcao);
+                atualizarTempo();
             }
         );
-
-
-        /* QUANDO A PEÇA TERMINAR */
-
-        audio.addEventListener(
-            "ended",
-            function () {
-
-                botaoPlay.textContent = "▶";
-
-                progressoAtual.style.width = "0%";
-
-            }
-        );
-
     </script>
 
 </body>
-
 </html>
