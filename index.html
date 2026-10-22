@@ -81,6 +81,7 @@
             opacity: 0;
             animation: entradaDesenho 2s ease-out 2.2s forwards;
             transform: translate(-170px, -1px);
+            filter: brightness(0) saturate(100%) invert(12%) sepia(45%) saturate(3000%) hue-rotate(300deg) brightness(65%) contrast(110%);
         }
 
         @keyframes entradaDesenho {
@@ -179,9 +180,7 @@
         }
         /* ESCONDE O CONJUNTO AO CLICAR */
         .escute.oculto {
-        opacity: 0;
-        visibility: hidden;
-        pointer-events: none;
+        display: none;
         }
         
         /* =========================================
