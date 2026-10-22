@@ -140,46 +140,39 @@
         /* ESCUTE */
 
         .escute {
-            position: fixed;
-            left: 50%;
-            top: 12vh;
-            transform: translateX(-50%);
-            z-index: 30;
-            width: 420px;
-            height: 500px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: flex-start;
-            gap: 12px;
-            padding: 0;
-            background: transparent;
-            border: none;
-            border-radius: 0;
-            font-size: 30px;
-            font-weight: bold;
-            text-align: center;
-            cursor: pointer;
+        position: fixed;
+        left: 50%;
+        top: 12vh;
+        transform: translateX(-50%);
+        z-index: 30;
+        width: 380px;
+        height: 380px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 0;
+        padding: 0;
+        background: transparent;
+        border: 1px solid #222;
+        border-radius: 50%;
+        font-size: 30px;
+        font-weight: bold;
+        text-align: center;
+        cursor: pointer;
         }
-        
-        .escute img {
-            display: block;
-            width: 380px;
-            height: 410px;
-            object-fit: contain;
-            border: 1px solid #222;
-            border-radius: 50%;
-        }
-        
+    
         .escute span {
-            position: relative;
-            display: block;
-            z-index: 1;
+        display: block;
+        position: relative;
+        z-index: 1;
+        margin-top: -45px;
+        }
+    
+        .escute:hover {
+        background: transparent;
         }
         
-        .escute:hover {
-            background: transparent;
-        }
         /* PAINEL DE ÁUDIO — SEM CAIXA */
 
         .audio {
