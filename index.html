@@ -177,7 +177,12 @@
         /* Comportamento do cursor */
         cursor: pointer;
         }
-        
+        /* ESCONDE O CONJUNTO AO CLICAR */
+        .escute.oculto {
+        opacity: 0;
+        visibility: hidden;
+        pointer-events: none;
+        }
         
         /* =========================================
            ORELHA — TAMANHO E APARÊNCIA DA IMAGEM
@@ -209,13 +214,7 @@
         }
         
         
-        /* =========================================
-           EFEITO AO PASSAR O CURSOR PELO CONJUNTO
-           ========================================= */
-        
-        .escute:hover {
-            opacity: 0;
-        }
+      
                 
         /* PAINEL DE ÁUDIO — SEM CAIXA */
 
