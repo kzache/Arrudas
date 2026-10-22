@@ -139,48 +139,79 @@
 
         /* ESCUTE */
         .escute {
-
+        /* Posição do conjunto na tela */
         position: fixed;
         left: 50%;
         top: 12vh;
         transform: translateX(-50%);
         z-index: 30;
-        width: 340px;
-        height: 340px;
+    
+        /* TAMANHO DO CÍRCULO */
+        width: 250px;
+        height: 250px;
         box-sizing: border-box;
+    
+        /* Alinhamento da imagem e da palavra dentro do círculo */
         display: flex;
         flex-direction: column;
         align-items: center;
         justify-content: center;
         padding: 12px;
         gap: 0;
+    
+        /* APARÊNCIA DO CÍRCULO */
         background: transparent;
         border: 1px solid #222;
         border-radius: 50%;
+    
+        /* Aparência geral do texto */
         font-size: 30px;
         font-weight: bold;
         text-align: center;
+    
+        /* Comportamento do cursor */
         cursor: pointer;
         }
         
+        
+        /* =========================================
+           ORELHA — TAMANHO E APARÊNCIA DA IMAGEM
+           ========================================= */
+        
         .escute img {
             display: block;
+        
+            /* TAMANHO DA IMAGEM DA ORELHA */
             width: 280px;
             height: 270px;
+        
+            /* Mantém as proporções do desenho */
             object-fit: contain;
         }
+        
+        
+        /* =========================================
+           PALAVRA ESCUTE — POSIÇÃO DO TEXTO
+           ========================================= */
         
         .escute span {
             display: block;
             position: relative;
             z-index: 1;
+        
+            /* POSIÇÃO VERTICAL DA PALAVRA */
             margin-top: -15px;
         }
         
+        
+        /* =========================================
+           EFEITO AO PASSAR O CURSOR PELO CONJUNTO
+           ========================================= */
+        
         .escute:hover {
-            background: transparent;
+            opacity: 0;
         }
-            
+                
         /* PAINEL DE ÁUDIO — SEM CAIXA */
 
         .audio {
