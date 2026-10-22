@@ -138,21 +138,22 @@
         }
 
         /* ESCUTE */
-
         .escute {
+
         position: fixed;
         left: 50%;
         top: 12vh;
         transform: translateX(-50%);
         z-index: 30;
-        width: 380px;
-        height: 380px;
+        width: 340px;
+        height: 340px;
+        box-sizing: border-box;
         display: flex;
         flex-direction: column;
         align-items: center;
         justify-content: center;
+        padding: 12px;
         gap: 0;
-        padding: 0;
         background: transparent;
         border: 1px solid #222;
         border-radius: 50%;
@@ -161,18 +162,25 @@
         text-align: center;
         cursor: pointer;
         }
-    
-        .escute span {
-        display: block;
-        position: relative;
-        z-index: 1;
-        margin-top: -45px;
-        }
-    
-        .escute:hover {
-        background: transparent;
+        
+        .escute img {
+            display: block;
+            width: 280px;
+            height: 270px;
+            object-fit: contain;
         }
         
+        .escute span {
+            display: block;
+            position: relative;
+            z-index: 1;
+            margin-top: -15px;
+        }
+        
+        .escute:hover {
+            background: transparent;
+        }
+            
         /* PAINEL DE ÁUDIO — SEM CAIXA */
 
         .audio {
