@@ -7,6 +7,10 @@
     <title>Arrudas</title>
 
     <style>
+        :root {
+            --cor-arrudas: #94787f;
+        }
+
         * {
             box-sizing: border-box;
         }
@@ -66,7 +70,8 @@
             transition: none;
         }
 
-        /* DESENHO DO ARRUDAS */
+        /* DESENHO DO ARRUDAS
+           A COR É CONTROLADA PELA VARIÁVEL --cor-arrudas */
 
         .desenho-arrudas {
             position: absolute;
@@ -79,7 +84,20 @@
             opacity: 0;
             animation: entradaDesenho 2s ease-out 2.2s forwards;
             transform: translate(-170px, -1px);
-            filter: invert(54%) sepia(5%) saturate(1332%) hue-rotate(294deg) brightness(90%) contrast(80%);
+
+            background-color: var(--cor-arrudas);
+
+            -webkit-mask-image: url("desenho_mapa.svg");
+            mask-image: url("desenho_mapa.svg");
+
+            -webkit-mask-repeat: no-repeat;
+            mask-repeat: no-repeat;
+
+            -webkit-mask-position: center;
+            mask-position: center;
+
+            -webkit-mask-size: 100% 100%;
+            mask-size: 100% 100%;
         }
 
         @keyframes entradaDesenho {
@@ -417,10 +435,10 @@
             src="//umap.openstreetmap.fr/pt-br/map/mapa_1471708?scaleControl=false&miniMapControl=false&scrollWheelZoom=false&zoomControl=false&editMode=disabled&moreControl=false&searchControl=false&tilelayersControl=false&embedControl=false&datalayersControl=false&onLoadPanel=none&captionBar=false&captionMenus=false&fullscreenControl=false&locateControl=false&printControl=false&measureControl=false">
         </iframe>
 
-        <img
+        <div
             class="desenho-arrudas"
-            src="desenho_mapa.svg"
-            alt="">
+            aria-hidden="true">
+        </div>
     </div>
 
     <!-- TÍTULO / MENU -->
