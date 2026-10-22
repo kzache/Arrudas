@@ -6,8 +6,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Arrudas</title>
 
-   
-
     <style>
         * {
             box-sizing: border-box;
@@ -81,8 +79,7 @@
             opacity: 0;
             animation: entradaDesenho 2s ease-out 2.2s forwards;
             transform: translate(-170px, -1px);
-            filter: invert(54%) sepia(5%) saturate(1332%) hue-rotate(294deg) brightness(90%) contrast(80%);
-            
+            filter: brightness(0) saturate(100%) invert(52%) sepia(8%) saturate(650%) hue-rotate(276deg) brightness(94%) contrast(85%);
         }
 
         @keyframes entradaDesenho {
@@ -145,83 +142,60 @@
         }
 
         /* ESCUTE */
+
         .escute {
-         /* Posição do conjunto na tela */
-        position: fixed;
-        left: 50%;
-        top: 12vh;
-        transform: translateX(-50%);
-        z-index: 30;
-    
-        /* TAMANHO DO CÍRCULO */
-        width: 250px;
-        height: 250px;
-        box-sizing: border-box;
-    
-        /* Alinhamento da imagem e da palavra dentro do círculo */
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        padding: 12px;
-        gap: 0;
-    
-        /* APARÊNCIA DO CÍRCULO */
-        background: transparent;
-        border: 1px solid #222;
-        border-radius: 50%;
-    
-        /* Aparência geral do texto */
-        font-size: 30px;
-        font-weight: bold;
-        text-align: center;
-        cursor: pointer;
-    
-        /* DESAPARECIMENTO GRADUAL */
-        opacity: 1;
-        visibility: visible;
-        transition: opacity 1.8s ease, visibility 0s linear;
+            position: fixed;
+            left: 50%;
+            top: 12vh;
+            transform: translateX(-50%);
+            z-index: 30;
+            width: 250px;
+            height: 250px;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 12px;
+            gap: 0;
+            background: transparent;
+            border: 1px solid #222;
+            border-radius: 50%;
+            font-size: 30px;
+            font-weight: bold;
+            text-align: center;
+            cursor: pointer;
+            opacity: 1;
+            visibility: visible;
+            transition: opacity 1.8s ease, visibility 0s linear;
         }
-    
-       /* DESAPARECIMENTO GRADUAL AO CLICAR */
+
+        /* DESAPARECIMENTO GRADUAL AO CLICAR */
+
         .escute.oculto {
-        opacity: 0;
-        pointer-events: none;
-        transition: opacity 1.8s ease;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 1.8s ease;
         }
-        
-        /* =========================================
-           ORELHA — TAMANHO E APARÊNCIA DA IMAGEM
-           ========================================= */
-        
+
+        /* ORELHA */
+
         .escute img {
             display: block;
-        
-            /* TAMANHO DA IMAGEM DA ORELHA */
             width: 280px;
             height: 270px;
-        
-            /* Mantém as proporções do desenho */
             object-fit: contain;
         }
-        
-        
-        /* =========================================
-           PALAVRA ESCUTE — POSIÇÃO DO TEXTO
-           ========================================= */
-        
+
+        /* PALAVRA ESCUTE */
+
         .escute span {
             display: block;
             position: relative;
             z-index: 1;
-        
-            /* POSIÇÃO VERTICAL DA PALAVRA */
             margin-top: -15px;
         }
-        
-        
-      
-                
+
         /* PAINEL DE ÁUDIO — SEM CAIXA */
 
         .audio {
@@ -440,7 +414,7 @@
         <iframe
             allowfullscreen
             allow="geolocation"
-            src="//umap.openstreetmap.fr/pt-br/map/mapa_1471708?scaleControl=false&miniMapControl=false&scrollWheelZoom=false&zoomControl=false&editMode=disabled&moreControl=false&searchControl=false&tilelayersControl=false&embedControl=false&datalayersControl=false&onLoadPanel=none&captionBar=false&captionMenus=false&fullscreenControl=false&locateControl=false&captionControl=false&printControl=false&measureControl=false">
+            src="//umap.openstreetmap.fr/pt-br/map/mapa_1471708?scaleControl=false&miniMapControl=false&scrollWheelZoom=false&zoomControl=false&editMode=disabled&moreControl=false&searchControl=false&tilelayersControl=false&embedControl=false&datalayersControl=false&onLoadPanel=none&captionBar=false&captionMenus=false&fullscreenControl=false&locateControl=false&printControl=false&measureControl=false">
         </iframe>
 
         <img
@@ -464,9 +438,8 @@
     <!-- ESCUTE -->
 
     <div class="escute" id="escute">
-    <img src="orelha.png" alt="Orelha — escute">
-    <span>ESCUTE</span>
-
+        <img src="orelha.png" alt="Orelha — escute">
+        <span>ESCUTE</span>
     </div>
 
     <!-- WAVEFORM E ÁUDIO -->
@@ -689,6 +662,7 @@
         /* ESCUTE: ABRIR O ÁUDIO */
 
         escute.addEventListener("click", function () {
+            escute.style.removeProperty("opacity");
             escute.classList.add("oculto");
             audioPlayer.classList.add("aberto");
 
