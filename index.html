@@ -1,4 +1,6 @@
 
+
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -8,8 +10,9 @@
 
     <style>
         :root {
-        --cor-arrudas: #1c4354;
+            --cor-arrudas: #1c4354;
         }
+
         * {
             box-sizing: border-box;
         }
@@ -33,14 +36,25 @@
             background-color: #e8e0cf;
         }
 
+        /* ÁREA DE REFERÊNCIA FIXA */
+
+        .tela-referencia {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 1440px;
+            height: 810px;
+            transform-origin: top left;
+        }
+
         /* MAPA */
 
         .mapa {
-            position: fixed;
+            position: absolute;
             top: 0;
             left: 0;
-            width: 100vw;
-            height: 100vh;
+            width: 1440px;
+            height: 810px;
             z-index: 1;
         }
 
@@ -84,9 +98,9 @@
             transform: translate(-150px, 1px);
             filter: none;
             background-image: linear-gradient(
-            45deg,
-            #651b28,
-            var(--cor-arrudas)
+                45deg,
+                #651b28,
+                var(--cor-arrudas)
             );
             -webkit-mask-image: url("desenho_mapa.svg");
             mask-image: url("desenho_mapa.svg");
@@ -96,14 +110,14 @@
             mask-position: center;
             -webkit-mask-size: 100% 100%;
             mask-size: 100% 100%;
-            }
+        }
 
         @keyframes entradaDesenho {
             from { opacity: 0; }
             to { opacity: 1; }
         }
 
-        /* TÍTULO / MENU — POSIÇÃO ORIGINAL */
+        /* TÍTULO / MENU */
 
         .titulo {
             position: fixed;
@@ -162,7 +176,7 @@
         .escute {
             position: fixed;
             left: 50%;
-            top: 12vh;
+            top: 97px;
             transform: translateX(-50%);
             z-index: 30;
             width: 190px;
@@ -191,7 +205,7 @@
         .escute.oculto {
             opacity: 0;
             pointer-events: none;
-            transition: opacity 5.0s ease;
+            transition: opacity 5s ease;
         }
 
         /* AVISO SOBRE O USO DE FONES */
@@ -199,10 +213,10 @@
         .aviso-fone {
             position: fixed;
             left: 50%;
-            top: 12vh;
+            top: 97px;
             transform: translateX(-50%);
             z-index: 31;
-            width: min(420px, calc(100vw - 32px));
+            width: 420px;
             padding: 18px 24px;
             background-color: rgba(28, 67, 84, 0.9);
             color: #e8e0cf;
@@ -247,18 +261,18 @@
             margin-top: -125px;
         }
 
-        /* PAINEL DE ÁUDIO — SEM CAIXA */
+        /* PAINEL DE ÁUDIO */
 
         .audio {
             display: none;
             position: fixed;
             left: 50%;
-            top: 36vh;
+            top: 292px;
             transform: translateX(-50%);
             z-index: 30;
-            width: 92vw;
-            max-width: 1500px;
-            max-height: calc(64vh - 58px);
+            width: 1325px;
+            max-width: none;
+            max-height: 460px;
             overflow-y: auto;
             background: transparent;
             border: none;
@@ -309,7 +323,7 @@
             width: 100%;
         }
 
-        /* ONDA — MAIS ALTA, COM APARIÇÃO SUAVE */
+        /* ONDA SONORA */
 
         .waveform-bloco {
             width: 100%;
@@ -336,7 +350,7 @@
             opacity: 1;
         }
 
-        /* BOTÃO PLAY SOBREPOSTO AO CENTRO DA ONDA */
+        /* BOTÃO PLAY */
 
         .botao-play {
             position: absolute;
@@ -379,170 +393,90 @@
             text-align: right;
             flex-shrink: 0;
         }
-
-        /* CELULAR */
-
-        @media (max-width: 600px) {
-            .titulo {
-                top: 25px;
-                left: 15px;
-                width: calc(100% - 100px);
-                min-width: 0;
-                padding: 18px 15px;
-            }
-
-            .titulo h1 {
-                font-size: 40px;
-            }
-
-            .titulo p {
-                font-size: 25px;
-            }
-
-            .menu-links {
-                top: 100%;
-                left: 0;
-                width: 100%;
-            }
-
-            .escute {
-                left: 50%;
-                top: 165px;
-                transform: translateX(-50%);
-                width: 190px;
-                height: 190px;
-                max-width: none;
-                font-size: 18px;
-            }
-
-            .aviso-fone {
-                top: 165px;
-            }
-
-            .audio {
-                left: 15px;
-                top: 165px;
-                transform: none;
-                width: calc(100% - 30px);
-                max-width: none;
-                max-height: calc(100vh - 230px);
-                padding: 30px 16px 16px;
-            }
-
-            .waveform-visualizacao,
-            #waveform {
-                height: 220px;
-            }
-
-            .botao-play {
-                width: 48px;
-                height: 48px;
-            }
-
-            .desenho-arrudas {
-                width: 900px;
-                top: 45%;
-                left: 40%;
-            }
-        }
-
-        /* TELAS BAIXAS */
-
-        @media (min-width: 601px) and (max-height: 650px) {
-            .escute {
-                top: 27vh;
-            }
-
-            .aviso-fone {
-                top: 27vh;
-            }
-
-            .audio {
-                top: 27vh;
-                max-height: calc(73vh - 58px);
-            }
-        }
     </style>
 </head>
 
 <body class="carregando">
 
-    <!-- MAPA -->
+    <div class="tela-referencia" id="telaReferencia">
 
-    <div class="mapa">
-        <iframe
-            allowfullscreen
-            allow="geolocation"
-            src="//umap.openstreetmap.fr/pt-br/map/mapa_1471708?scaleControl=false&miniMapControl=false&scrollWheelZoom=false&zoomControl=false&editMode=disabled&moreControl=false&searchControl=false&tilelayersControl=false&embedControl=false&datalayersControl=false&onLoadPanel=none&captionBar=false&captionMenus=false&fullscreenControl=false&locateControl=false&captionControl=false&printControl=false&measureControl=false">
-        </iframe>
+        <!-- MAPA -->
 
-        <div class="desenho-arrudas" aria-hidden="true"></div>
-    </div>
+        <div class="mapa">
+            <iframe
+                allowfullscreen
+                allow="geolocation"
+                src="//umap.openstreetmap.fr/pt-br/map/mapa_1471708?scaleControl=false&miniMapControl=false&scrollWheelZoom=false&zoomControl=false&editMode=disabled&moreControl=false&searchControl=false&tilelayersControl=false&embedControl=false&datalayersControl=false&onLoadPanel=none&captionBar=false&captionMenus=false&fullscreenControl=false&locateControl=false&captionControl=false&printControl=false&measureControl=false">
+            </iframe>
 
-    <!-- TÍTULO / MENU -->
-
-    <div class="titulo" id="titulo">
-        <h1>Arrudas</h1>
-        <p>Memórias Sonoras de um Território-Rio</p>
-
-        <div class="menu-links">
-            <a href="sobre.html">Sobre o projeto</a>
-            <a href="creditos.html">Ficha técnica</a>
+            <div class="desenho-arrudas" aria-hidden="true"></div>
         </div>
-    </div>
 
-    <!-- ESCUTE -->
+        <!-- TÍTULO / MENU -->
 
-    <div class="escute" id="escute">
-        <img src="orelha.png" alt="Orelha — escute">
-        <span>ESCUTE</span>
-    </div>
+        <div class="titulo" id="titulo">
+            <h1>Arrudas</h1>
+            <p>Memórias Sonoras de um Território-Rio</p>
 
-    <!-- AVISO SOBRE O USO DE FONES -->
-
-    <div class="aviso-fone" id="avisoFone" role="status">
-        Use fone de ouvido para uma experiência sonora imersiva.
-    </div>
-
-    <!-- WAVEFORM E ÁUDIO -->
-
-    <div class="audio" id="audioPlayer">
-
-        <button
-            class="fechar-audio"
-            id="fecharAudio"
-            type="button"
-            aria-label="Fechar áudio">
-            ×
-        </button>
-
-        <div class="player">
-            <div class="waveform-bloco">
-
-                <div
-                    class="waveform-visualizacao"
-                    id="waveformVisualizacao">
-
-                    <div id="waveform"></div>
-
-                    <button
-                        class="botao-play"
-                        id="botaoPlay"
-                        aria-label="Reproduzir"
-                        type="button">
-                        ▶
-                    </button>
-
-                </div>
-
-                <div class="controles-waveform">
-                    <div class="tempo" id="tempo">
-                        00:00 / 00:00
-                    </div>
-                </div>
-
+            <div class="menu-links">
+                <a href="sobre.html">Sobre o projeto</a>
+                <a href="creditos.html">Ficha técnica</a>
             </div>
         </div>
+
+        <!-- ESCUTE -->
+
+        <div class="escute" id="escute">
+            <img src="orelha.png" alt="Orelha — escute">
+            <span>ESCUTE</span>
+        </div>
+
+        <!-- AVISO SOBRE O USO DE FONES -->
+
+        <div class="aviso-fone" id="avisoFone" role="status">
+            Use fone de ouvido para uma experiência sonora imersiva.
+        </div>
+
+        <!-- WAVEFORM E ÁUDIO -->
+
+        <div class="audio" id="audioPlayer">
+
+            <button
+                class="fechar-audio"
+                id="fecharAudio"
+                type="button"
+                aria-label="Fechar áudio">
+                ×
+            </button>
+
+            <div class="player">
+                <div class="waveform-bloco">
+
+                    <div
+                        class="waveform-visualizacao"
+                        id="waveformVisualizacao">
+
+                        <div id="waveform"></div>
+
+                        <button
+                            class="botao-play"
+                            id="botaoPlay"
+                            aria-label="Reproduzir"
+                            type="button">
+                            ▶
+                        </button>
+                    </div>
+
+                    <div class="controles-waveform">
+                        <div class="tempo" id="tempo">
+                            00:00 / 00:00
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
     </div>
 
     <!-- INTERAÇÕES E WAVESURFER -->
@@ -550,6 +484,32 @@
     <script type="module">
         import WaveSurfer from
             'https://cdn.jsdelivr.net/npm/wavesurfer.js@8/dist/wavesurfer.esm.js';
+
+        /* ESCALA PROPORCIONAL DA ÁREA DE REFERÊNCIA */
+
+        const telaReferencia = document.getElementById("telaReferencia");
+
+        function ajustarTelaReferencia() {
+            const larguraReferencia = 1440;
+            const alturaReferencia = 810;
+
+            const escala = Math.max(
+                window.innerWidth / larguraReferencia,
+                window.innerHeight / alturaReferencia
+            );
+
+            const larguraEscalada = larguraReferencia * escala;
+            const alturaEscalada = alturaReferencia * escala;
+
+            telaReferencia.style.transform = `scale(${escala})`;
+            telaReferencia.style.left =
+                `${(window.innerWidth - larguraEscalada) / 2}px`;
+            telaReferencia.style.top =
+                `${(window.innerHeight - alturaEscalada) / 2}px`;
+        }
+
+        ajustarTelaReferencia();
+        window.addEventListener("resize", ajustarTelaReferencia);
 
         /* ELEMENTOS DO SITE */
 
@@ -674,7 +634,7 @@
                     barRadius: 3
                 });
 
-                /* ÁUDIO CARREGADO: APARIÇÃO GRADUAL */
+                /* ÁUDIO CARREGADO */
 
                 wavesurfer.on("ready", function () {
                     audioPlayer.classList.add("pronto");
