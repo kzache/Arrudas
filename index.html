@@ -1,6 +1,4 @@
 
-
-
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -36,7 +34,7 @@
             background-color: #e8e0cf;
         }
 
-        /* ÁREA DE REFERÊNCIA FIXA */
+        /* ÁREA DE REFERÊNCIA: SOMENTE MAPA E DESENHO */
 
         .tela-referencia {
             position: absolute;
@@ -45,6 +43,7 @@
             width: 1440px;
             height: 810px;
             transform-origin: top left;
+            z-index: 1;
         }
 
         /* MAPA */
@@ -181,7 +180,6 @@
             z-index: 30;
             width: 190px;
             height: 190px;
-            box-sizing: border-box;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -216,7 +214,7 @@
             top: 97px;
             transform: translateX(-50%);
             z-index: 31;
-            width: 420px;
+            width: min(420px, calc(100vw - 32px));
             padding: 18px 24px;
             background-color: rgba(28, 67, 84, 0.9);
             color: #e8e0cf;
@@ -270,9 +268,9 @@
             top: 292px;
             transform: translateX(-50%);
             z-index: 30;
-            width: 1325px;
-            max-width: none;
-            max-height: 460px;
+            width: 92vw;
+            max-width: 1500px;
+            max-height: calc(100vh - 330px);
             overflow-y: auto;
             background: transparent;
             border: none;
@@ -393,15 +391,97 @@
             text-align: right;
             flex-shrink: 0;
         }
+
+        /* CELULAR — AJUSTES EXISTENTES */
+
+        @media (max-width: 600px) {
+            .titulo {
+                top: 25px;
+                left: 15px;
+                width: calc(100% - 100px);
+                min-width: 0;
+                padding: 18px 15px;
+            }
+
+            .titulo h1 {
+                font-size: 40px;
+            }
+
+            .titulo p {
+                font-size: 25px;
+            }
+
+            .menu-links {
+                top: 100%;
+                left: 0;
+                width: 100%;
+            }
+
+            .escute {
+                left: 50%;
+                top: 165px;
+                transform: translateX(-50%);
+                width: 190px;
+                height: 190px;
+                max-width: none;
+                font-size: 18px;
+            }
+
+            .aviso-fone {
+                top: 165px;
+            }
+
+            .audio {
+                left: 15px;
+                top: 165px;
+                transform: none;
+                width: calc(100% - 30px);
+                max-width: none;
+                max-height: calc(100vh - 230px);
+                padding: 30px 16px 16px;
+            }
+
+            .waveform-visualizacao,
+            #waveform {
+                height: 220px;
+            }
+
+            .botao-play {
+                width: 48px;
+                height: 48px;
+            }
+
+            .desenho-arrudas {
+                width: 900px;
+                top: 45%;
+                left: 40%;
+            }
+        }
+
+        /* TELAS BAIXAS */
+
+        @media (min-width: 601px) and (max-height: 650px) {
+            .escute {
+                top: 27vh;
+            }
+
+            .aviso-fone {
+                top: 27vh;
+            }
+
+            .audio {
+                top: 27vh;
+                max-height: calc(73vh - 58px);
+            }
+        }
     </style>
 </head>
 
 <body class="carregando">
 
+    <!-- ÁREA DE REFERÊNCIA: MAPA + DESENHO -->
+
     <div class="tela-referencia" id="telaReferencia">
-
-        <!-- MAPA -->
-
         <div class="mapa">
             <iframe
                 allowfullscreen
@@ -411,72 +491,71 @@
 
             <div class="desenho-arrudas" aria-hidden="true"></div>
         </div>
+    </div>
 
-        <!-- TÍTULO / MENU -->
+    <!-- TÍTULO / MENU -->
 
-        <div class="titulo" id="titulo">
-            <h1>Arrudas</h1>
-            <p>Memórias Sonoras de um Território-Rio</p>
+    <div class="titulo" id="titulo">
+        <h1>Arrudas</h1>
+        <p>Memórias Sonoras de um Território-Rio</p>
 
-            <div class="menu-links">
-                <a href="sobre.html">Sobre o projeto</a>
-                <a href="creditos.html">Ficha técnica</a>
-            </div>
+        <div class="menu-links">
+            <a href="sobre.html">Sobre o projeto</a>
+            <a href="creditos.html">Ficha técnica</a>
         </div>
+    </div>
 
-        <!-- ESCUTE -->
+    <!-- ESCUTE -->
 
-        <div class="escute" id="escute">
-            <img src="orelha.png" alt="Orelha — escute">
-            <span>ESCUTE</span>
-        </div>
+    <div class="escute" id="escute">
+        <img src="orelha.png" alt="Orelha — escute">
+        <span>ESCUTE</span>
+    </div>
 
-        <!-- AVISO SOBRE O USO DE FONES -->
+    <!-- AVISO SOBRE O USO DE FONES -->
 
-        <div class="aviso-fone" id="avisoFone" role="status">
-            Use fone de ouvido para uma experiência sonora imersiva.
-        </div>
+    <div class="aviso-fone" id="avisoFone" role="status">
+        Use fone de ouvido para uma experiência sonora imersiva.
+    </div>
 
-        <!-- WAVEFORM E ÁUDIO -->
+    <!-- WAVEFORM E ÁUDIO -->
 
-        <div class="audio" id="audioPlayer">
+    <div class="audio" id="audioPlayer">
 
-            <button
-                class="fechar-audio"
-                id="fecharAudio"
-                type="button"
-                aria-label="Fechar áudio">
-                ×
-            </button>
+        <button
+            class="fechar-audio"
+            id="fecharAudio"
+            type="button"
+            aria-label="Fechar áudio">
+            ×
+        </button>
 
-            <div class="player">
-                <div class="waveform-bloco">
+        <div class="player">
+            <div class="waveform-bloco">
 
-                    <div
-                        class="waveform-visualizacao"
-                        id="waveformVisualizacao">
+                <div
+                    class="waveform-visualizacao"
+                    id="waveformVisualizacao">
 
-                        <div id="waveform"></div>
+                    <div id="waveform"></div>
 
-                        <button
-                            class="botao-play"
-                            id="botaoPlay"
-                            aria-label="Reproduzir"
-                            type="button">
-                            ▶
-                        </button>
-                    </div>
-
-                    <div class="controles-waveform">
-                        <div class="tempo" id="tempo">
-                            00:00 / 00:00
-                        </div>
-                    </div>
-
+                    <button
+                        class="botao-play"
+                        id="botaoPlay"
+                        aria-label="Reproduzir"
+                        type="button">
+                        ▶
+                    </button>
                 </div>
+
+                <div class="controles-waveform">
+                    <div class="tempo" id="tempo">
+                        00:00 / 00:00
+                    </div>
+                </div>
+
             </div>
         </div>
-
     </div>
 
     <!-- INTERAÇÕES E WAVESURFER -->
@@ -485,7 +564,7 @@
         import WaveSurfer from
             'https://cdn.jsdelivr.net/npm/wavesurfer.js@8/dist/wavesurfer.esm.js';
 
-        /* ESCALA PROPORCIONAL DA ÁREA DE REFERÊNCIA */
+        /* ESCALA PROPORCIONAL SOMENTE DO MAPA E DO DESENHO */
 
         const telaReferencia = document.getElementById("telaReferencia");
 
@@ -553,7 +632,6 @@
 
         const audioPlayer = document.getElementById("audioPlayer");
         const fecharAudio = document.getElementById("fecharAudio");
-
         const botaoPlay = document.getElementById("botaoPlay");
         const tempo = document.getElementById("tempo");
 
@@ -653,7 +731,7 @@
                     atualizarTempo();
                 });
 
-                /* BOTÃO PLAY / PAUSA */
+                /* BOTÃO PLAY / PAUSA E AVISO */
 
                 wavesurfer.on("play", function () {
                     botaoPlay.textContent = "Ⅱ";
