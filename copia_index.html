@@ -1,4 +1,5 @@
 
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -85,7 +86,7 @@
             filter: none;
             background-image: linear-gradient(
             45deg,
-            #620f0f,
+            #651b28,
             var(--cor-arrudas)
             );
             -webkit-mask-image: url("desenho_mapa.svg");
@@ -97,6 +98,7 @@
             -webkit-mask-size: 100% 100%;
             mask-size: 100% 100%;
             }
+
         @keyframes entradaDesenho {
             from { opacity: 0; }
             to { opacity: 1; }
@@ -174,7 +176,7 @@
             padding: 12px;
             gap: 0;
             background-color: rgba(28, 67, 84, 0.20);
-            border: none; 
+            border: none;
             border-radius: 50%;
             font-size: 35px;
             font-weight: bold;
@@ -191,6 +193,39 @@
             opacity: 0;
             pointer-events: none;
             transition: opacity 5.0s ease;
+        }
+
+        /* AVISO SOBRE O USO DE FONES */
+
+        .aviso-fone {
+            position: fixed;
+            left: 50%;
+            top: 12vh;
+            transform: translateX(-50%);
+            z-index: 31;
+            width: min(420px, calc(100vw - 32px));
+            padding: 18px 24px;
+            background-color: rgba(28, 67, 84, 0.9);
+            color: #e8e0cf;
+            text-align: center;
+            font-size: 18px;
+            line-height: 1.4;
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+            transition: opacity 1.5s ease, visibility 0s linear 1.5s;
+        }
+
+        .aviso-fone.visivel {
+            opacity: 1;
+            visibility: visible;
+            transition: opacity 1.5s ease;
+        }
+
+        .aviso-fone.oculto {
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 1.5s ease, visibility 0s linear 1.5s;
         }
 
         /* ORELHA */
@@ -376,9 +411,13 @@
                 top: 165px;
                 transform: translateX(-50%);
                 width: 190px;
-                height: 180px;
+                height: 190px;
                 max-width: none;
                 font-size: 18px;
+            }
+
+            .aviso-fone {
+                top: 165px;
             }
 
             .audio {
@@ -415,6 +454,10 @@
                 top: 27vh;
             }
 
+            .aviso-fone {
+                top: 27vh;
+            }
+
             .audio {
                 top: 27vh;
                 max-height: calc(73vh - 58px);
@@ -433,8 +476,8 @@
             allow="geolocation"
             src="//umap.openstreetmap.fr/pt-br/map/mapa_1471708?scaleControl=false&miniMapControl=false&scrollWheelZoom=false&zoomControl=false&editMode=disabled&moreControl=false&searchControl=false&tilelayersControl=false&embedControl=false&datalayersControl=false&onLoadPanel=none&captionBar=false&captionMenus=false&fullscreenControl=false&locateControl=false&captionControl=false&printControl=false&measureControl=false">
         </iframe>
+
         <div class="desenho-arrudas" aria-hidden="true"></div>
-           
     </div>
 
     <!-- TÍTULO / MENU -->
@@ -454,6 +497,12 @@
     <div class="escute" id="escute">
         <img src="orelha.png" alt="Orelha — escute">
         <span>ESCUTE</span>
+    </div>
+
+    <!-- AVISO SOBRE O USO DE FONES -->
+
+    <div class="aviso-fone" id="avisoFone" role="status">
+        Use fone de ouvido para uma experiência sonora imersiva.
     </div>
 
     <!-- WAVEFORM E ÁUDIO -->
@@ -507,6 +556,7 @@
 
         const titulo = document.getElementById("titulo");
         const escute = document.getElementById("escute");
+        const avisoFone = document.getElementById("avisoFone");
 
         /* MOSTRA O TÍTULO E O ESCUTE APÓS O CARREGAMENTO DO MAPA */
 
@@ -558,6 +608,8 @@
 
         let wavesurfer = null;
         let waveformIniciado = false;
+        let avisoFoneTimer = null;
+        let avisoFoneTimerIniciado = false;
 
         /* TÍTULO / MENU */
 
@@ -647,6 +699,18 @@
                 wavesurfer.on("play", function () {
                     botaoPlay.textContent = "Ⅱ";
                     botaoPlay.setAttribute("aria-label", "Pausar");
+
+                    if (
+                        !avisoFoneTimerIniciado &&
+                        avisoFone.classList.contains("visivel")
+                    ) {
+                        avisoFoneTimerIniciado = true;
+
+                        avisoFoneTimer = setTimeout(function () {
+                            avisoFone.classList.remove("visivel");
+                            avisoFone.classList.add("oculto");
+                        }, 15000);
+                    }
                 });
 
                 wavesurfer.on("pause", function () {
@@ -680,6 +744,16 @@
             escute.classList.add("oculto");
             audioPlayer.classList.add("aberto");
 
+            if (avisoFoneTimer !== null) {
+                clearTimeout(avisoFoneTimer);
+            }
+
+            avisoFoneTimer = null;
+            avisoFoneTimerIniciado = false;
+
+            avisoFone.classList.remove("oculto");
+            avisoFone.classList.add("visivel");
+
             requestAnimationFrame(function () {
                 iniciarWaveform();
             });
@@ -694,6 +768,15 @@
 
             audioPlayer.classList.remove("aberto");
             escute.classList.remove("oculto");
+
+            if (avisoFoneTimer !== null) {
+                clearTimeout(avisoFoneTimer);
+            }
+
+            avisoFoneTimer = null;
+            avisoFoneTimerIniciado = false;
+
+            avisoFone.classList.remove("visivel", "oculto");
         });
 
         /* PLAY / PAUSA */
