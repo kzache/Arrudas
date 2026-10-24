@@ -667,19 +667,15 @@
                     });
                 });
             }, 500);
+        
         }
 
-        if (
-            mapaIframe.contentDocument &&
-            mapaIframe.contentDocument.readyState === "complete"
-        ) {
-            mostrarElementos();
-        } else {
-            mapaIframe.addEventListener("load", mostrarElementos, {
-                once: true
-            });
-        }
+        mapaIframe.addEventListener("load", mostrarElementos, {
+            once: true
+        });
 
+        setTimeout(mostrarElementos, 3000);
+        
         const audioPlayer = document.getElementById("audioPlayer");
         const fecharAudio = document.getElementById("fecharAudio");
         const botaoPlay = document.getElementById("botaoPlay");
