@@ -1,9 +1,8 @@
-
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=2.0, user-scalable=yes">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Arrudas</title>
 
     <style>
@@ -28,10 +27,10 @@
             padding: 0;
             width: 100%;
             height: 100%;
-            overflow: hidden; /* Trava o scroll indesejado para manter tudo no lugar */
+            overflow: hidden; /* Trava o scroll para manter tudo perfeitamente no lugar */
             font-family: "Courier New", monospace;
             color: #222;
-            background-color: #d8d0bc; /* Fundo unificado com o mapa */
+            background-color: #d8d0bc; /* Fundo unificado que camufla qualquer margem */
             user-select: none;
         }
 
@@ -66,7 +65,7 @@
             border: none;
             margin: 0;
             padding: 0;
-            pointer-events: auto; /* Permite interagir e dar zoom nativo direto no uMap com segurança */
+            pointer-events: none; /* Mantém o mapa estático para não desalinhar o desenho */
             filter: sepia(75%) saturate(65%) brightness(90%) contrast(95%) !important;
             outline: none !important;
             box-shadow: none !important;
@@ -477,14 +476,14 @@
 
 <body class="carregando">
 
-    <!-- MAPA + DESENHO -->
+    <!-- MAPA + DESENHO (TRAVADOS E UNIDOS) -->
 
     <div class="tela-referencia" id="telaReferencia">
         <div class="mapa">
             <iframe
                 allowfullscreen
                 allow="geolocation"
-                src="//umap.openstreetmap.fr/pt-br/map/mapa_1471708?scaleControl=false&miniMapControl=false&scrollWheelZoom=true&zoomControl=true&editMode=disabled&moreControl=false&searchControl=false&tilelayersControl=false&embedControl=false&datalayersControl=false&onLoadPanel=none&captionBar=false&captionMenus=false&fullscreenControl=false&locateControl=false&captionControl=false&printControl=false&measureControl=false&dragging=true">
+                src="//umap.openstreetmap.fr/pt-br/map/mapa_1471708?scaleControl=false&miniMapControl=false&scrollWheelZoom=false&zoomControl=false&editMode=disabled&moreControl=false&searchControl=false&tilelayersControl=false&embedControl=false&datalayersControl=false&onLoadPanel=none&captionBar=false&captionMenus=false&fullscreenControl=false&locateControl=false&captionControl=false&printControl=false&measureControl=false&dragging=false">
             </iframe>
 
             <div class="desenho-arrudas" aria-hidden="true"></div>
