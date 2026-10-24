@@ -30,7 +30,7 @@
             overflow: hidden;
             font-family: "Courier New", monospace;
             color: #222;
-            background-color: #1c4354; /* Alterado para evitar fundo creme em sobras de tela */
+            background-color: #e8e0cf; /* Fundo creme original restaurado para o carregamento */
             user-select: none;
         }
 
@@ -447,7 +447,7 @@
 
             .waveform-visualizacao,
             #waveform {
-                height: 180px;
+                height: 180px !important;
             }
 
             .botao-play {
@@ -606,7 +606,6 @@
 
             telaReferencia.style.transform = `scale(${escala})`;
 
-            // Centraliza perfeitamente e elimina qualquer sobra de barra creme nas bordas
             telaReferencia.style.left = `${(larguraJanela - larguraEscalada) / 2}px`;
             telaReferencia.style.top = `${(alturaJanela - alturaEscalada) / 2}px`;
         }
@@ -717,7 +716,7 @@
                 wavesurfer = WaveSurfer.create({
                     container: "#waveform",
                     url: audioUrl,
-                    height: 280,
+                    height: window.innerWidth <= 600 ? 180 : 280, // Ajusta altura do wavesurfer conforme a tela
                     waveColor: "#B79A78",
                     progressColor: "#6F7770",
                     cursorWidth: 0,
