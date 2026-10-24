@@ -106,7 +106,7 @@
             to { opacity: 1; }
         }
 
-        /* TÍTULO / MENU (PADRÃO DESKTOP) */
+        /* TÍTULO / MENU (APENAS "SOBRE O PROJETO") */
         .titulo {
             position: absolute;
             top: 60px;
@@ -135,7 +135,7 @@
             top: 0;
             left: 100%;
             display: none;
-            width: 190px;
+            width: 220px;
             background-color: rgba(243, 240, 232, 0.94);
             padding: 15px 20px;
             text-align: left;
@@ -157,7 +157,7 @@
             text-decoration: underline;
         }
 
-        /* ESCUTE (PADRÃO DESKTOP) */
+        /* ESCUTE */
         .escute {
             position: absolute;
             left: 960px;
@@ -204,20 +204,21 @@
             margin-top: -125px;
         }
 
-        /* AVISO DE FONES */
+        /* AVISO DE FONES — Ajustado (Arredondado, transparente, centralizado no círculo) */
         .aviso-fone {
             position: absolute;
             left: 960px;
-            top: 670px;
+            top: 535px; /* Posicionado exatamente no meio vertical do círculo do ESCUTE */
             transform: translateX(-50%);
             z-index: 31;
-            width: 420px;
-            padding: 18px 24px;
-            background-color: rgba(28, 67, 84, 0.9);
+            width: 520px;
+            padding: 20px 28px;
+            background-color: rgba(28, 67, 84, 0.82); /* Mais translúcido */
             color: #e8e0cf;
             text-align: center;
-            font-size: 18px;
+            font-size: 21px; /* Fonte maior */
             line-height: 1.4;
+            border-radius: 16px; /* Cantos arredondados */
             opacity: 0;
             visibility: hidden;
             pointer-events: none;
@@ -236,7 +237,7 @@
             transition: opacity 1.5s ease, visibility 0s linear 1.5s;
         }
 
-        /* PAINEL DE ÁUDIO — SEM RETÂNGULO (APENAS A ONDA FLUTUANTE) */
+        /* PAINEL DE ÁUDIO — SEM RETÂNGULO */
         .audio {
             display: none;
             position: absolute;
@@ -354,13 +355,8 @@
             font-weight: bold;
         }
 
-        /* ========================================================
-           PERSONALIZAÇÃO EXCLUSIVA PARA CELULAR (VERTICAL / HORIZONTAL)
-           Título reestruturado e botão ESCUTE bem no meio da tela inicial
-           ======================================================== */
+        /* CELULAR */
         @media (max-width: 850px) {
-            
-            /* Título compacto no topo apenas para celular */
             .titulo {
                 top: 25px;
                 left: 50%;
@@ -377,13 +373,12 @@
                 margin: 4px 0 0;
             }
 
-            /* Botão ESCUTE posicionado logo abaixo do título, bem no meio da visão inicial */
             .escute {
                 width: 200px;
                 height: 200px;
                 font-size: 30px;
-                left: 960px; /* Meio exato do canvas de 1920 */
-                top: 420px;  /* Posição central vertical da tela de referência */
+                left: 960px;
+                top: 420px;
                 transform: translateX(-50%);
             }
             .escute img {
@@ -395,16 +390,16 @@
                 margin-top: -120px;
             }
 
-            /* Aviso de fones logo abaixo do botão escute */
             .aviso-fone {
                 left: 960px;
-                top: 650px;
-                width: 400px;
-                font-size: 16px;
+                top: 510px; /* Alinhado perfeitamente no centro do botão no celular */
+                width: 420px;
+                font-size: 17px;
+                padding: 16px 22px;
+                border-radius: 14px;
                 transform: translateX(-50%);
             }
 
-            /* Player de áudio centralizado na área visível */
             .audio {
                 left: 210px;
                 top: 380px;
@@ -434,7 +429,6 @@
 
             <div class="menu-links">
                 <a href="sobre.html">Sobre o projeto</a>
-                <a href="creditos.html">Ficha técnica</a>
             </div>
         </div>
 
@@ -444,7 +438,7 @@
         </div>
 
         <div class="aviso-fone" id="avisoFone" role="status">
-            Use fone de ouvido para uma experiência sonora imersiva.
+            Para uma experiência sonora imersiva, use fones de ouvido.
         </div>
 
         <div class="audio" id="audioPlayer">
@@ -506,7 +500,6 @@
             const wWin = window.innerWidth;
             const hWin = window.innerHeight;
 
-            // Escala mínima para preencher a tela sem bordas
             escalaBaseMinima = Math.max(wWin / larguraRef, hWin / alturaRef);
             
             if (escalaAtual < escalaBaseMinima) {
@@ -516,7 +509,6 @@
             const wEscalado = larguraRef * escalaAtual;
             const hEscalado = alturaRef * escalaAtual;
 
-            // POSICIONA EXATAMENTE NO MEIO DA PÁGINA NA ABERTURA (Tanto no PC quanto no Celular)
             posX = (wWin - wEscalado) / 2;
             posY = (hWin - hEscalado) / 2;
 
