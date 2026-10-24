@@ -244,12 +244,13 @@
             top: 250px;
             z-index: 30;
             width: 1500px;
-            background: rgba(216, 208, 188, 0.25); /* Fundo super translúcido integrado ao tom do mapa */
-            backdrop-filter: blur(2px);              /* Leve desfoque suave por trás */
-            -webkit-backdrop-filter: blur(2px);
-            border-radius: 12px;
-            padding: 22px 24px;
-            border: 1px solid rgba(28, 67, 84, 0.15); /* Contorno bem sutil */
+            background: transparent; /* Remove totalmente o fundo/retângulo */
+            backdrop-filter: none;
+            -webkit-backdrop-filter: none;
+            border-radius: 0;
+            padding: 10px 0;
+            border: none; /* Remove qualquer contorno */
+            box-shadow: none; /* Remove qualquer sombra */
         }
 
         .audio.aberto {
@@ -393,7 +394,8 @@
                 top: 180px;
                 width: calc(1920px - 60px);
                 max-width: 90vw;
-                padding: 20px;
+                padding: 10px 0;
+                background: transparent;
             }
         }
     </style>
