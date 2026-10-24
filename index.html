@@ -274,11 +274,15 @@
             max-width: 1500px;
             max-height: calc(100vh - 330px);
             overflow-y: auto;
-            background: rgba(243, 240, 232, 0.95); /* Fundo levemente sólido para destacar a onda */
-            border-radius: 8px;
+            /* Fundo creme bem transparente (ajuste o último número de 0.4 para mais ou menos opaco se quiser) */
+            background: rgba(232, 224, 207, 0.4); 
+            border-radius: 12px;
             border: none;
+            /* Cria um desfoque suave no mapa que está atrás, integrando as cores */
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
             padding: 22px 24px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); /* Sombra bem sutil */
         }
 
         .audio.aberto {
