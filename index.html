@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
     <title>Arrudas</title>
 
     <style>
@@ -27,14 +27,15 @@
             padding: 0;
             width: 100%;
             height: 100%;
-            overflow: hidden; /* Trava o scroll para manter tudo perfeitamente no lugar */
+            overflow: hidden; /* Mantém a página contida para controlarmos o zoom e o arrasto perfeitamente */
             font-family: "Courier New", monospace;
             color: #222;
-            background-color: #d8d0bc; /* Fundo unificado que camufla qualquer margem */
+            background-color: #d8d0bc;
             user-select: none;
+            touch-action: none;
         }
 
-        /* ÁREA DE REFERÊNCIA: MAPA + DESENHO */
+        /* ÁREA DE REFERÊNCIA: MAPA + DESENHO (MOVEM E AMPLIAM JUNTOS) */
 
         .tela-referencia {
             position: absolute;
@@ -42,8 +43,10 @@
             top: 0;
             width: 1920px;
             height: 1080px;
-            transform-origin: top left;
+            transform-origin: 0 0;
             z-index: 1;
+            background-color: #d8d0bc;
+            will-change: transform;
         }
 
         /* MAPA */
@@ -65,13 +68,13 @@
             border: none;
             margin: 0;
             padding: 0;
-            pointer-events: none; /* Mantém o mapa estático para não desalinhar o desenho */
+            pointer-events: none; /* Mantém o uMap travado para proteger o alinhamento do seu desenho */
             filter: sepia(75%) saturate(65%) brightness(90%) contrast(95%) !important;
             outline: none !important;
             box-shadow: none !important;
         }
 
-        /* CARREGAMENTO DO TÍTULO E DO ESCUTE */
+        /* CARREGAMENTO DOS ELEMENTOS */
 
         .titulo,
         .escute {
@@ -252,8 +255,6 @@
             top: -62px;
         }
 
-        /* PALAVRA ESCUTE */
-
         .escute span {
             display: block;
             position: relative;
@@ -310,8 +311,6 @@
             visibility: visible;
         }
 
-        /* FECHAR ÁUDIO */
-
         .fechar-audio {
             position: absolute;
             top: 4px;
@@ -335,8 +334,6 @@
             width: 100%;
         }
 
-        /* ONDA SONORA */
-
         .waveform-visualizacao {
             position: relative;
             width: 100%;
@@ -357,8 +354,6 @@
         #waveform.carregado {
             opacity: 1;
         }
-
-        /* PLAY */
 
         .botao-play {
             position: absolute;
@@ -386,8 +381,6 @@
             background: rgba(243, 240, 232, 0.95);
         }
 
-        /* CONTADOR */
-
         .controles-waveform {
             display: flex;
             align-items: center;
@@ -401,8 +394,6 @@
             text-align: right;
             flex-shrink: 0;
         }
-
-        /* CELULAR */
 
         @media (max-width: 600px) {
             .titulo {
@@ -476,8 +467,6 @@
 
 <body class="carregando">
 
-    <!-- MAPA + DESENHO (TRAVADOS E UNIDOS) -->
-
     <div class="tela-referencia" id="telaReferencia">
         <div class="mapa">
             <iframe
@@ -490,8 +479,6 @@
         </div>
     </div>
 
-    <!-- TÍTULO / MENU -->
-
     <div class="titulo" id="titulo">
         <h1>ARRUDAS</h1>
         <p>Memórias Sonoras de um Território-Rio</p>
@@ -502,20 +489,14 @@
         </div>
     </div>
 
-    <!-- ESCUTE -->
-
     <div class="escute" id="escute">
         <img src="orelha.png" alt="Orelha — escute">
         <span>ESCUTE</span>
     </div>
 
-    <!-- AVISO DE FONES -->
-
     <div class="aviso-fone" id="avisoFone" role="status">
         Use fone de ouvido para uma experiência sonora imersiva.
     </div>
-
-    <!-- PLAYER -->
 
     <div class="audio" id="audioPlayer">
         <div class="carregando-audio" id="carregandoAudio">Carregando composição sonora...</div>
@@ -558,30 +539,124 @@
 
         const telaReferencia = document.getElementById("telaReferencia");
 
-        function ajustarTelaReferencia() {
-            const larguraReferencia = 1920;
-            const alturaReferencia = 1080;
+        let escalaAtual = 1;
+        let escalaBaseMinima = 1;
+        let posX = 0;
+        let posY = 0;
 
-            const larguraJanela = window.innerWidth;
-            const alturaJanela = window.innerHeight;
+        const larguraRef = 1920;
+        const alturaRef = 1080;
 
-            const escala = Math.max(
-                larguraJanela / larguraReferencia,
-                alturaJanela / alturaReferencia
-            );
-
-            const larguraEscalada = larguraReferencia * escala;
-            const alturaEscalada = alturaReferencia * escala;
-
-            telaReferencia.style.transform = `scale(${escala})`;
-            telaReferencia.style.left = `${(larguraJanela - larguraEscalada) / 2}px`;
-            telaReferencia.style.top = `${(alturaJanela - alturaEscalada) / 2}px`;
+        function atualizarTransformacao() {
+            telaReferencia.style.transform = `translate(${posX}px, ${posY}px) scale(${escalaAtual})`;
         }
 
-        ajustarTelaReferencia();
+        function inicializarPosicao() {
+            const wWin = window.innerWidth;
+            const hWin = window.innerHeight;
 
-        window.addEventListener("resize", ajustarTelaReferencia);
-        window.addEventListener("orientationchange", ajustarTelaReferencia);
+            // Calcula a escala perfeita para preencher a tela na proporção original
+            escalaBaseMinima = Math.max(wWin / larguraRef, hWin / alturaRef);
+            
+            if (escalaAtual < escalaBaseMinima) {
+                escalaAtual = escalaBaseMinima;
+            }
+
+            const wEscalado = larguraRef * escalaAtual;
+            const hEscalado = alturaRef * escalaAtual;
+
+            // Centraliza se houver sobra proporcional, ou trava nos limites para não encolher abaixo da base
+            posX = Math.min(0, Math.max(wWin - wEscalado, posX));
+            posY = Math.min(0, Math.max(hWin - hEscalado, posY));
+
+            atualizarTransformacao();
+        }
+
+        inicializarPosicao();
+
+        window.addEventListener("resize", () => {
+            inicializarPosicao();
+        });
+
+        window.addEventListener("orientationchange", () => {
+            setTimeout(inicializarPosicao, 200);
+        });
+
+        // Sistema de Toque Unificado (Zoom de Pinça Limitado + Arrastar Fluido)
+        let toquesAtivos = [];
+        let distanciaInicial = 0;
+        let escalaInicial = 1;
+        let ultimoX = 0;
+        let ultimoY = 0;
+
+        document.addEventListener("touchstart", (e) => {
+            toquesAtivos = Array.from(e.touches);
+            if (toquesAtivos.length === 1) {
+                ultimoX = toquesAtivos[0].clientX;
+                ultimoY = toquesAtivos[0].clientY;
+            } else if (toquesAtivos.length === 2) {
+                distanciaInicial = Math.hypot(
+                    toquesAtivos[0].clientX - toquesAtivos[1].clientX,
+                    toquesAtivos[0].clientY - toquesAtivos[1].clientY
+                );
+                escalaInicial = escalaAtual;
+            }
+        }, { passive: false });
+
+        document.addEventListener("touchmove", (e) => {
+            e.preventDefault();
+            toquesAtivos = Array.from(e.touches);
+
+            const wWin = window.innerWidth;
+            const hWin = window.innerHeight;
+            const wEscalado = larguraRef * escalaAtual;
+            const hEscalado = alturaRef * escalaAtual;
+
+            // Arrastar com 1 dedo (movimentação livre para os lados)
+            if (toquesAtivos.length === 1) {
+                const x = toquesAtivos[0].clientX;
+                const y = toquesAtivos[0].clientY;
+
+                posX += x - ultimoX;
+                posY += y - ultimoY;
+
+                // Limites para o mapa não sumir totalmente da tela ao arrastar
+                const limiteX = wWin - wEscalado;
+                const limiteY = hWin - hEscalado;
+
+                posX = Math.min(0, Math.max(limiteX, posX));
+                posY = Math.min(0, Math.max(limiteY, posY));
+
+                ultimoX = x;
+                ultimoY = y;
+
+                atualizarTransformacao();
+            } 
+            // Zoom de Pinça com 2 dedos (Aumenta e protege contra redução menor que a original)
+            else if (toquesAtivos.length === 2) {
+                const distanciaAtual = Math.hypot(
+                    toquesAtivos[0].clientX - toquesAtivos[1].clientX,
+                    toquesAtivos[0].clientY - toquesAtivos[1].clientY
+                );
+
+                if (distanciaInicial > 0) {
+                    let novaEscala = escalaInicial * (distanciaAtual / distanciaInicial);
+                    
+                    // TRAVA DE SEGURANÇA: Nunca menor que a posição original de abertura
+                    if (novaEscala < escalaBaseMinima) novaEscala = escalaBaseMinima;
+                    
+                    // DELIMITAÇÃO DE ZOOM MÁXIMO: Travado em até 3x o tamanho original para ver os mínimos detalhes
+                    if (novaEscala > escalaBaseMinima * 3) novaEscala = escalaBaseMinima * 3;
+
+                    escalaAtual = novaEscala;
+                    atualizarTransformacao();
+                }
+            }
+        }, { passive: false });
+
+        document.addEventListener("touchend", (e) => {
+            toquesAtivos = Array.from(e.touches);
+        });
 
         const titulo = document.getElementById("titulo");
         const escute = document.getElementById("escute");
