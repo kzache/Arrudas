@@ -35,7 +35,7 @@
             user-select: none;
         }
 
-        /* ÁREA DE REFERÊNCIA: SOMENTE MAPA E DESENHO */
+        /* ÁREA DE REFERÊNCIA: MAPA + DESENHO */
 
         .tela-referencia {
             position: absolute;
@@ -54,7 +54,7 @@
             top: 0;
             left: 0;
             width: 1920px;
-            height:1080px;
+            height: 1080px;
             z-index: 1;
         }
 
@@ -86,7 +86,7 @@
             transition: none;
         }
 
-        /* DESENHO DO ARRUDAS */
+        /* DESENHO DO ARRUDAS — POSIÇÃO PRESERVADA */
 
         .desenho-arrudas {
             position: absolute;
@@ -202,15 +202,13 @@
             transition: opacity 1.8s ease, visibility 0s linear;
         }
 
-        /* DESAPARECIMENTO GRADUAL AO CLICAR */
-
         .escute.oculto {
             opacity: 0;
             pointer-events: none;
             transition: opacity 5s ease;
         }
 
-        /* AVISO SOBRE O USO DE FONES */
+        /* AVISO DE FONES */
 
         .aviso-fone {
             position: fixed;
@@ -287,8 +285,6 @@
             display: block;
         }
 
-        /* CONTROLES OCULTOS ATÉ A ONDA ESTAR PRONTA */
-
         .fechar-audio,
         .botao-play,
         .tempo {
@@ -301,7 +297,7 @@
             visibility: visible;
         }
 
-        /* BOTÃO PARA FECHAR O PAINEL */
+        /* FECHAR ÁUDIO */
 
         .fechar-audio {
             position: absolute;
@@ -321,15 +317,12 @@
             color: #85593c;
         }
 
-        .player {
+        .player,
+        .waveform-bloco {
             width: 100%;
         }
 
         /* ONDA SONORA */
-
-        .waveform-bloco {
-            width: 100%;
-        }
 
         .waveform-visualizacao {
             position: relative;
@@ -352,7 +345,7 @@
             opacity: 1;
         }
 
-        /* BOTÃO PLAY */
+        /* PLAY */
 
         .botao-play {
             position: absolute;
@@ -396,7 +389,7 @@
             flex-shrink: 0;
         }
 
-        /* CELULAR — CONFIGURAÇÕES EXISTENTES DA INTERFACE */
+        /* CELULAR */
 
         @media (max-width: 600px) {
             .titulo {
@@ -477,7 +470,7 @@
 
 <body class="carregando">
 
-    <!-- ÁREA DE REFERÊNCIA: MAPA + DESENHO -->
+    <!-- MAPA + DESENHO -->
 
     <div class="tela-referencia" id="telaReferencia">
         <div class="mapa">
@@ -510,16 +503,15 @@
         <span>ESCUTE</span>
     </div>
 
-    <!-- AVISO SOBRE O USO DE FONES -->
+    <!-- AVISO DE FONES -->
 
     <div class="aviso-fone" id="avisoFone" role="status">
         Use fone de ouvido para uma experiência sonora imersiva.
     </div>
 
-    <!-- WAVEFORM E ÁUDIO -->
+    <!-- PLAYER -->
 
     <div class="audio" id="audioPlayer">
-
         <button
             class="fechar-audio"
             id="fecharAudio"
@@ -530,7 +522,6 @@
 
         <div class="player">
             <div class="waveform-bloco">
-
                 <div
                     class="waveform-visualizacao"
                     id="waveformVisualizacao">
@@ -547,22 +538,17 @@
                 </div>
 
                 <div class="controles-waveform">
-                    <div class="tempo" id="tempo">
-                        00:00 / 00:00
-                    </div>
+                    <div class="tempo" id="tempo">00:00 / 00:00</div>
                 </div>
-
             </div>
         </div>
     </div>
-
-    <!-- INTERAÇÕES E WAVESURFER -->
 
     <script type="module">
         import WaveSurfer from
             'https://cdn.jsdelivr.net/npm/wavesurfer.js@8/dist/wavesurfer.esm.js';
 
-        /* ESCALA PROPORCIONAL DO MAPA E DO DESENHO */
+        /* ENQUADRAMENTO RESPONSIVO DO MAPA + DESENHO */
 
         const telaReferencia = document.getElementById("telaReferencia");
 
@@ -583,19 +569,6 @@
             const celularHorizontal =
                 celular && larguraJanela > alturaJanela;
 
-            /*
-              ENQUADRAMENTO:
-              horizontal 0 = prioriza esquerda
-              horizontal 0.5 = centraliza
-              horizontal 1 = prioriza direita
-
-              vertical 0 = prioriza topo
-              vertical 0.5 = centraliza
-              vertical 1 = prioriza parte inferior
-
-              zoom = escala visual do conjunto, sem alterar o zoom geográfico do uMap
-            */
-
             let enquadramento = {
                 zoom: 1,
                 horizontal: 0.5,
@@ -604,17 +577,23 @@
 
             if (celularVertical) {
                 enquadramento = {
-                zoom: 1.05,
-                horizontal: 0.5,
-                vertical: 0
+                    zoom: 1.05,
+                    horizontal: 0.5,
+                    vertical: 0
                 };
             } else if (celularHorizontal) {
                 enquadramento = {
-                zoom: 1,
-                horizontal: 0.5,
-                vertical: 0
+                    zoom: 1,
+                    horizontal: 0.5,
+                    vertical: 0
                 };
             }
+
+            /*
+              Calcula a escala para cobrir a janela.
+              O mapa e o desenho são transformados juntos.
+              Os valores individuais do desenho permanecem intactos.
+            */
 
             const escalaBase = Math.max(
                 larguraJanela / larguraReferencia,
@@ -638,19 +617,28 @@
         }
 
         ajustarTelaReferencia();
+
         window.addEventListener("resize", ajustarTelaReferencia);
+        window.addEventListener("orientationchange", ajustarTelaReferencia);
 
         /* ELEMENTOS DO SITE */
 
         const titulo = document.getElementById("titulo");
         const escute = document.getElementById("escute");
         const avisoFone = document.getElementById("avisoFone");
-
-        /* MOSTRA O TÍTULO E O ESCUTE APÓS O CARREGAMENTO DO MAPA */
-
         const mapaIframe = document.querySelector(".mapa iframe");
 
+        /* EXIBE TÍTULO E ESCUTE */
+
+        let elementosExibidos = false;
+
         function mostrarElementos() {
+            if (elementosExibidos) {
+                return;
+            }
+
+            elementosExibidos = true;
+
             setTimeout(function () {
                 document.body.classList.remove("carregando");
 
@@ -667,15 +655,18 @@
                     });
                 });
             }, 500);
-        
         }
 
         mapaIframe.addEventListener("load", mostrarElementos, {
             once: true
         });
 
+        /* ALTERNATIVA SE O EVENTO DE LOAD DEMORAR */
+
         setTimeout(mostrarElementos, 3000);
-        
+
+        /* ÁUDIO */
+
         const audioPlayer = document.getElementById("audioPlayer");
         const fecharAudio = document.getElementById("fecharAudio");
         const botaoPlay = document.getElementById("botaoPlay");
@@ -694,7 +685,7 @@
         let avisoFoneTimer = null;
         let avisoFoneTimerIniciado = false;
 
-        /* TÍTULO / MENU */
+        /* MENU */
 
         titulo.addEventListener("click", function (event) {
             if (event.target.tagName !== "A") {
@@ -702,7 +693,7 @@
             }
         });
 
-        /* FORMATA O TEMPO */
+        /* FORMATAÇÃO DO TEMPO */
 
         function formatarTempo(segundos) {
             const minutos = Math.floor(segundos / 60);
@@ -713,8 +704,6 @@
                 String(segundosRestantes).padStart(2, "0")
             );
         }
-
-        /* ATUALIZA O CONTADOR */
 
         function atualizarTempo() {
             if (!wavesurfer) {
@@ -758,8 +747,6 @@
                     barRadius: 3
                 });
 
-                /* ÁUDIO CARREGADO */
-
                 wavesurfer.on("ready", function () {
                     audioPlayer.classList.add("pronto");
                     atualizarTempo();
@@ -771,13 +758,7 @@
                     });
                 });
 
-                /* ATUALIZA O TEMPO DURANTE A REPRODUÇÃO */
-
-                wavesurfer.on("timeupdate", function () {
-                    atualizarTempo();
-                });
-
-                /* BOTÃO PLAY / PAUSA E AVISO */
+                wavesurfer.on("timeupdate", atualizarTempo);
 
                 wavesurfer.on("play", function () {
                     botaoPlay.textContent = "Ⅱ";
@@ -801,15 +782,11 @@
                     botaoPlay.setAttribute("aria-label", "Reproduzir");
                 });
 
-                /* FIM DA PEÇA */
-
                 wavesurfer.on("finish", function () {
                     botaoPlay.textContent = "▶";
                     botaoPlay.setAttribute("aria-label", "Reproduzir");
                     atualizarTempo();
                 });
-
-                /* ERROS */
 
                 wavesurfer.on("error", function (erro) {
                     console.error("Erro no WaveSurfer:", erro);
@@ -837,12 +814,10 @@
             avisoFone.classList.remove("oculto");
             avisoFone.classList.add("visivel");
 
-            requestAnimationFrame(function () {
-                iniciarWaveform();
-            });
+            requestAnimationFrame(iniciarWaveform);
         });
 
-        /* X: FECHAR O ÁUDIO */
+        /* FECHAR ÁUDIO */
 
         fecharAudio.addEventListener("click", function () {
             if (wavesurfer) {
@@ -883,32 +858,26 @@
 
         /* CLICAR NA ONDA PARA ESCOLHER O INSTANTE */
 
-        waveformVisualizacao.addEventListener(
-            "click",
-            function (event) {
-                if (
-                    event.target === botaoPlay ||
-                    !wavesurfer ||
-                    !wavesurfer.getDuration()
-                ) {
-                    return;
-                }
-
-                const area =
-                    waveformVisualizacao.getBoundingClientRect();
-
-                const posicao = event.clientX - area.left;
-
-                const proporcao = Math.max(
-                    0,
-                    Math.min(1, posicao / area.width)
-                );
-
-                wavesurfer.seekTo(proporcao);
-                atualizarTempo();
+        waveformVisualizacao.addEventListener("click", function (event) {
+            if (
+                event.target === botaoPlay ||
+                !wavesurfer ||
+                !wavesurfer.getDuration()
+            ) {
+                return;
             }
-        );
-    </script>
 
+            const area = waveformVisualizacao.getBoundingClientRect();
+            const posicao = event.clientX - area.left;
+
+            const proporcao = Math.max(
+                0,
+                Math.min(1, posicao / area.width)
+            );
+
+            wavesurfer.seekTo(proporcao);
+            atualizarTempo();
+        });
+    </script>
 </body>
 </html>
