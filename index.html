@@ -36,7 +36,7 @@
             touch-action: none;
         }
 
-        /* ÁREA DE REFERÊNCIA GLOBAL (MAPA + DESENHO + ELEMENTOS) */
+        /* ÁREA DE REFERÊNCIA GLOBAL (1920x1080) */
         .tela-referencia {
             position: absolute;
             left: 0;
@@ -106,7 +106,7 @@
             to { opacity: 1; }
         }
 
-        /* TÍTULO / MENU (PADRÃO DESKTOP) */
+        /* TÍTULO / MENU */
         .titulo {
             position: absolute;
             top: 60px;
@@ -157,7 +157,7 @@
             text-decoration: underline;
         }
 
-        /* ESCUTE (PADRÃO DESKTOP) */
+        /* ESCUTE */
         .escute {
             position: absolute;
             left: 960px;
@@ -236,7 +236,7 @@
             transition: opacity 1.5s ease, visibility 0s linear 1.5s;
         }
 
-        /* PAINEL DE ÁUDIO (PADRÃO DESKTOP) */
+        /* PAINEL DE ÁUDIO */
         .audio {
             display: none;
             position: absolute;
@@ -244,7 +244,7 @@
             top: 320px;
             z-index: 30;
             width: 1500px;
-            background: rgba(232, 224, 207, 0.85);
+            background: rgba(232, 224, 207, 0.92);
             border-radius: 12px;
             padding: 22px 24px;
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
@@ -299,7 +299,7 @@
         .waveform-visualizacao {
             position: relative;
             width: 100%;
-            height: 280px;
+            height: 220px;
             cursor: pointer;
             background: transparent;
             border: none;
@@ -308,12 +308,7 @@
 
         #waveform {
             width: 100%;
-            height: 280px;
-            opacity: 0;
-            transition: opacity 1s ease-in-out;
-        }
-
-        #waveform.carregado {
+            height: 220px;
             opacity: 1;
         }
 
@@ -326,14 +321,15 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            width: 58px;
-            height: 58px;
+            width: 65px;
+            height: 65px;
             border: none;
             border-radius: 50%;
-            background: rgba(243, 240, 232, 0.9);
-            font-size: 21px;
+            background: rgba(243, 240, 232, 0.95);
+            font-size: 26px;
             color: #222;
             cursor: pointer;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.15);
         }
 
         .controles-waveform {
@@ -345,70 +341,56 @@
         }
 
         .tempo {
-            font-size: 15px;
+            font-size: 16px;
             text-align: right;
+            font-weight: bold;
         }
 
-        /* ========================================================
-           PERSONALIZAÇÃO EXCLUSIVA PARA CELULAR (VERTICAL / HORIZONTAL)
-           ======================================================== */
+        /* PERSONALIZAÇÃO PARA TELAS MENORES */
         @media (max-width: 850px) {
-            
-            /* Título menor e reposicionado para não estourar a tela */
             .titulo {
                 top: 40px;
                 left: 40px;
                 padding: 15px 25px;
-                min-width: 320px;
+                min-width: 300px;
             }
             .titulo h1 {
-                font-size: 26px;
+                font-size: 24px;
             }
             .titulo p {
-                font-size: 13px;
+                font-size: 12px;
             }
 
-            /* Botão ESCUTE maior e destacado conforme solicitado */
             .escute {
-                width: 260px;
-                height: 260px;
-                font-size: 45px;
-                /* Exemplo na vertical: posicionado mais abaixo do título */
-                left: 960px;
-                top: 380px; 
+                width: 220px;
+                height: 220px;
+                font-size: 38px;
+                left: 1600px;
+                top: 60px;
+                transform: none;
             }
             .escute img {
-                width: 330px;
-                height: 310px;
-                top: -80px;
+                width: 280px;
+                height: 270px;
+                top: -70px;
             }
             .escute span {
-                margin-top: -160px;
+                margin-top: -140px;
             }
 
-            /* Aviso de fones adaptado à proporção */
             .aviso-fone {
-                left: 960px;
-                top: 380px;
-                width: 550px;
-                font-size: 22px;
+                left: 1300px;
+                top: 60px;
+                width: 500px;
+                font-size: 20px;
+                transform: none;
             }
 
-            /* Painel de áudio dimensionado perfeitamente dentro da tela de referência */
             .audio {
                 left: 110px;
-                top: 350px;
+                top: 300px;
                 width: 1700px;
-                padding: 30px;
-            }
-            .waveform-visualizacao,
-            #waveform {
-                height: 240px !important;
-            }
-            .botao-play {
-                width: 70px;
-                height: 70px;
-                font-size: 28px;
+                padding: 25px;
             }
         }
     </style>
@@ -531,6 +513,7 @@
             setTimeout(inicializarPosicao, 300);
         });
 
+        // TOQUE E ARRASTO
         let toquesAtivos = [];
         let distanciaInicial = 0;
         let escalaInicial = 1;
@@ -628,12 +611,10 @@
         const botaoPlay = document.getElementById("botaoPlay");
         const tempo = document.getElementById("tempo");
         const waveformVisualizacao = document.getElementById("waveformVisualizacao");
-        const waveformElemento = document.getElementById("waveform");
 
         const audioUrl = "https://pub-0c523da3e80b4a0ab591837050bc71cb.r2.dev/arrudas_peca_sonora.wav";
 
         let wavesurfer = null;
-        let waveformIniciado = false;
         let avisoFoneTimer = null;
         let avisoFoneTimerIniciado = false;
 
@@ -657,48 +638,51 @@
             tempo.textContent = formatarTempo(atual) + " / " + formatarTempo(duracao);
         }
 
-        function iniciarWaveform() {
-            if (waveformIniciado) return;
-            waveformIniciado = true;
+        function carregarEIniciarWaveform() {
+            if (!wavesurfer) {
+                try {
+                    wavesurfer = WaveSurfer.create({
+                        container: "#waveform",
+                        url: audioUrl,
+                        height: 220,
+                        waveColor: "#B79A78",
+                        progressColor: "#6F7770",
+                        cursorWidth: 0,
+                        normalize: false,
+                        interact: false,
+                        barWidth: 2,
+                        barGap: 1,
+                        barRadius: 3
+                    });
 
-            try {
-                wavesurfer = WaveSurfer.create({
-                    container: "#waveform",
-                    url: audioUrl,
-                    height: 240,
-                    waveColor: "#B79A78",
-                    progressColor: "#6F7770",
-                    cursorWidth: 0,
-                    normalize: false,
-                    interact: false,
-                    barWidth: 2,
-                    barGap: 1,
-                    barRadius: 3
-                });
+                    wavesurfer.on("ready", function () {
+                        audioPlayer.classList.add("pronto");
+                        atualizarTempo();
+                    });
 
-                wavesurfer.on("ready", function () {
-                    audioPlayer.classList.add("pronto");
-                    atualizarTempo();
-                    waveformElemento.classList.add("carregado");
-                });
+                    wavesurfer.on("timeupdate", atualizarTempo);
 
-                wavesurfer.on("timeupdate", atualizarTempo);
+                    wavesurfer.on("play", function () {
+                        botaoPlay.textContent = "Ⅱ";
+                        if (!avisoFoneTimerIniciado && avisoFone.classList.contains("visivel")) {
+                            avisoFoneTimerIniciado = true;
+                            avisoFoneTimer = setTimeout(() => {
+                                avisoFone.classList.remove("visivel");
+                                avisoFone.classList.add("oculto");
+                            }, 15000);
+                        }
+                    });
 
-                wavesurfer.on("play", function () {
-                    botaoPlay.textContent = "Ⅱ";
-                    if (!avisoFoneTimerIniciado && avisoFone.classList.contains("visivel")) {
-                        avisoFoneTimerIniciado = true;
-                        avisoFoneTimer = setTimeout(() => {
-                            avisoFone.classList.remove("visivel");
-                            avisoFone.classList.add("oculto");
-                        }, 15000);
-                    }
-                });
-
-                wavesurfer.on("pause", () => botaoPlay.textContent = "▶");
-                wavesurfer.on("finish", () => { botaoPlay.textContent = "▶"; atualizarTempo(); });
-            } catch (erro) {
-                console.error("Erro no WaveSurfer:", erro);
+                    wavesurfer.on("pause", () => botaoPlay.textContent = "▶");
+                    wavesurfer.on("finish", () => { botaoPlay.textContent = "▶"; atualizarTempo(); });
+                } catch (erro) {
+                    console.error("Erro no WaveSurfer:", erro);
+                }
+            } else {
+                // Se já existir, força a renderização para ajustar ao tamanho visível
+                setTimeout(() => {
+                    if (wavesurfer) wavesurfer.setOptions({});
+                }, 100);
             }
         }
 
@@ -713,7 +697,8 @@
             avisoFone.classList.remove("oculto");
             avisoFone.classList.add("visivel");
 
-            iniciarWaveform();
+            // Inicia o WaveSurfer exatamente quando o container fica visível na tela
+            setTimeout(carregarEIniciarWaveform, 50);
         });
 
         fecharAudio.addEventListener("click", function () {
@@ -730,11 +715,9 @@
 
         botaoPlay.addEventListener("click", async function (event) {
             event.stopPropagation();
-            if (!waveformIniciado) {
-                iniciarWaveform();
-                return;
+            if (wavesurfer) {
+                await wavesurfer.playPause();
             }
-            if (wavesurfer) await wavesurfer.playPause();
         });
 
         waveformVisualizacao.addEventListener("click", function (event) {
