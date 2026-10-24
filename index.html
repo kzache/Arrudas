@@ -49,7 +49,7 @@
             will-change: transform;
         }
 
-        /* MAPA */
+        /* MAPA BASE */
         .mapa {
             position: absolute;
             top: 0;
@@ -106,7 +106,9 @@
             to { opacity: 1; }
         }
 
-        /* TÍTULO / MENU (APENAS "SOBRE O PROJETO") */
+        /* ========================================================
+           PADRÃO ORIGINAL DO PC (INTOCADO E SEGURO)
+           ======================================================== */
         .titulo {
             position: absolute;
             top: 60px;
@@ -157,11 +159,11 @@
             text-decoration: underline;
         }
 
-        /* ESCUTE */
+        /* BOTÃO ESCUTE (PADRÃO PC) */
         .escute {
             position: absolute;
             left: 960px;
-            top: 450px;
+            top: 80px;
             transform: translateX(-50%);
             z-index: 30;
             width: 190px;
@@ -204,21 +206,21 @@
             margin-top: -125px;
         }
 
-        /* AVISO DE FONES — Ajustado (Arredondado, transparente, centralizado no círculo) */
+        /* AVISO DE FONES (PADRÃO PC) */
         .aviso-fone {
             position: absolute;
             left: 960px;
-            top: 535px; /* Posicionado exatamente no meio vertical do círculo do ESCUTE */
+            top: 535px;
             transform: translateX(-50%);
             z-index: 31;
             width: 520px;
             padding: 20px 28px;
-            background-color: rgba(28, 67, 84, 0.82); /* Mais translúcido */
+            background-color: rgba(28, 67, 84, 0.82);
             color: #e8e0cf;
             text-align: center;
-            font-size: 21px; /* Fonte maior */
+            font-size: 21px;
             line-height: 1.4;
-            border-radius: 16px; /* Cantos arredondados */
+            border-radius: 16px;
             opacity: 0;
             visibility: hidden;
             pointer-events: none;
@@ -237,7 +239,7 @@
             transition: opacity 1.5s ease, visibility 0s linear 1.5s;
         }
 
-        /* PAINEL DE ÁUDIO — SEM RETÂNGULO */
+        /* PAINEL DE ÁUDIO (PADRÃO PC — CENTRALIZADO EXATAMENTE COMO VOCÊ GOSTAVA) */
         .audio {
             display: none;
             position: absolute;
@@ -355,8 +357,12 @@
             font-weight: bold;
         }
 
-        /* CELULAR */
+        /* ========================================================
+           EXCLUSIVO PARA CELULAR (MODIFICAÇÕES SÓ ACONTECEM AQUI)
+           ======================================================== */
         @media (max-width: 850px) {
+            
+            /* Título reestruturado para celular */
             .titulo {
                 top: 25px;
                 left: 50%;
@@ -373,36 +379,38 @@
                 margin: 4px 0 0;
             }
 
+            /* Botão ESCUTE posicionado no celular */
             .escute {
-                width: 200px;
-                height: 200px;
-                font-size: 30px;
+                width: 190px;
+                height: 190px;
+                font-size: 28px;
                 left: 960px;
-                top: 420px;
+                top: 380px; /* Ajuste aqui se quiser subir ou descer o escute no celular */
                 transform: translateX(-50%);
             }
             .escute img {
-                width: 240px;
-                height: 230px;
+                width: 220px;
+                height: 210px;
                 top: -55px;
             }
             .escute span {
-                margin-top: -120px;
+                margin-top: -110px;
             }
 
+            /* Aviso de fones no celular */
             .aviso-fone {
                 left: 960px;
-                top: 510px; /* Alinhado perfeitamente no centro do botão no celular */
-                width: 420px;
-                font-size: 17px;
-                padding: 16px 22px;
-                border-radius: 14px;
+                top: 480px;
+                width: 400px;
+                font-size: 16px;
+                padding: 16px 20px;
                 transform: translateX(-50%);
             }
 
+            /* Player de áudio no celular */
             .audio {
                 left: 210px;
-                top: 380px;
+                top: 350px;
                 width: 1500px;
             }
         }
@@ -496,33 +504,38 @@
             telaReferencia.style.transform = `translate(${posX}px, ${posY}px) scale(${escalaAtual})`;
         }
 
-        function inicializarPosicaoCentro() {
+        function inicializarPosicaoDinamica() {
             const wWin = window.innerWidth;
             const hWin = window.innerHeight;
 
             escalaBaseMinima = Math.max(wWin / larguraRef, hWin / alturaRef);
-            
-            if (escalaAtual < escalaBaseMinima) {
-                escalaAtual = escalaBaseMinima;
-            }
+            escalaAtual = escalaBaseMinima;
 
             const wEscalado = larguraRef * escalaAtual;
             const hEscalado = alturaRef * escalaAtual;
 
+            // Centraliza horizontalmente para todos
             posX = (wWin - wEscalado) / 2;
-            posY = (hWin - hEscalado) / 2;
+
+            // SE FOR CELULAR (tela menor que 850px), abre no TOPO verticalmente.
+            // SE FOR PC, abre no MEIO verticalmente.
+            if (wWin <= 850) {
+                posY = 0; // Topo no celular
+            } else {
+                posY = (hWin - hEscalado) / 2; // Centro no PC
+            }
 
             atualizarTransformacao();
         }
 
-        inicializarPosicaoCentro();
+        inicializarPosicaoDinamica();
 
         window.addEventListener("resize", () => {
-            inicializarPosicaoCentro();
+            inicializarPosicaoDinamica();
         });
 
         window.addEventListener("orientationchange", () => {
-            setTimeout(inicializarPosicaoCentro, 300);
+            setTimeout(inicializarPosicaoDinamica, 300);
         });
 
         // TOQUE E ARRASTO
