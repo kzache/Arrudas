@@ -28,11 +28,13 @@
             padding: 0;
             width: 100%;
             height: 100%;
-            overflow: hidden;
+            overflow: auto; /* Permite o zoom e movimentação livre */
             font-family: "Courier New", monospace;
             color: #222;
-            background-color: #e8e0cf;
+            /* Cor de fundo neutra que se funde com as bordas do mapa carregado */
+            background-color: #d8d0bc; 
             user-select: none;
+            -webkit-overflow-scrolling: touch;
         }
 
         /* ÁREA DE REFERÊNCIA: MAPA + DESENHO */
@@ -56,6 +58,7 @@
             width: 1920px;
             height: 1080px;
             z-index: 1;
+            background-color: #d8d0bc; /* Garante que o fundo do container seja idêntico */
         }
 
         .mapa iframe {
@@ -274,30 +277,39 @@
             max-width: 1500px;
             max-height: calc(100vh - 330px);
             overflow-y: auto;
-            /* Fundo creme bem transparente (ajuste o último número de 0.4 para mais ou menos opaco se quiser) */
-            background: rgba(232, 224, 207, 0.4); 
+            background: rgba(232, 224, 207, 0.4);
             border-radius: 12px;
             border: none;
-            /* Cria um desfoque suave no mapa que está atrás, integrando as cores */
             backdrop-filter: blur(4px);
             -webkit-backdrop-filter: blur(4px);
             padding: 22px 24px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); /* Sombra bem sutil */
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
         }
 
         .audio.aberto {
             display: block;
         }
 
+        .carregando-audio {
+            text-align: center;
+            font-size: 16px;
+            color: #1c4354;
+            padding: 40px 0;
+            font-weight: bold;
+        }
+
+        .audio.pronto .carregando-audio {
+            display: none;
+        }
+
         .fechar-audio,
-        .botao-play,
-        .tempo {
-            visibility: hidden;
+        .player {
+            display: none;
         }
 
         .audio.pronto .fechar-audio,
-        .audio.pronto .botao-play,
-        .audio.pronto .tempo {
+        .audio.pronto .player {
+            display: block;
             visibility: visible;
         }
 
@@ -442,7 +454,6 @@
                 padding: 10px 14px;
             }
 
-            /* Painel de áudio posicionado mais abaixo para não atropelar os textos */
             .audio {
                 left: 10px;
                 top: 175px;
@@ -461,51 +472,6 @@
                 width: 40px;
                 height: 40px;
                 font-size: 16px;
-            }
-        }
-
-        /* TELAS BAIXAS / HORIZONTAL */
-
-        @media (max-width: 900px) and (orientation: landscape) {
-            .titulo {
-                top: 10px;
-                left: 10px;
-                min-width: 250px;
-                padding: 6px 10px;
-            }
-            .titulo h1 { font-size: 16px; }
-            .titulo p { font-size: 10px; }
-
-            .escute {
-                top: 10px;
-                left: auto;
-                right: 15px;
-                transform: none;
-                width: 70px;
-                height: 70px;
-                font-size: 10px;
-            }
-            .escute img {
-                width: 80px;
-                height: 75px;
-                top: -18px;
-            }
-            .escute span {
-                margin-top: -45px;
-            }
-
-            .audio {
-                top: 95px;
-                left: 15px;
-                transform: none;
-                width: calc(100% - 30px);
-                max-height: calc(100vh - 110px);
-                padding: 10px;
-            }
-
-            .waveform-visualizacao,
-            #waveform {
-                height: 120px !important;
             }
         }
     </style>
@@ -555,6 +521,8 @@
     <!-- PLAYER -->
 
     <div class="audio" id="audioPlayer">
+        <div class="carregando-audio" id="carregandoAudio">Carregando composição sonora...</div>
+
         <button
             class="fechar-audio"
             id="fecharAudio"
@@ -875,24 +843,26 @@
         });
 
         waveformVisualizacao.addEventListener("click", function (event) {
-            if (
-                event.target === botaoPlay ||
-                !wavesurfer ||
-                !wavesurfer.getDuration()
-            ) {
-                return;
+            linkPlayer: {
+                if (
+                    event.target === botaoPlay ||
+                    !wavesurfer ||
+                    !wavesurfer.getDuration()
+                ) {
+                    break linkPlayer;
+                }
+
+                const area = waveformVisualizacao.getBoundingClientRect();
+                const posicao = event.clientX - area.left;
+
+                const proporcao = Math.max(
+                    0,
+                    Math.min(1, posicao / area.width)
+                );
+
+                wavesurfer.seekTo(proporcao);
+                atualizarTempo();
             }
-
-            const area = waveformVisualizacao.getBoundingClientRect();
-            const posicao = event.clientX - area.left;
-
-            const proporcao = Math.max(
-                0,
-                Math.min(1, posicao / area.width)
-            );
-
-            wavesurfer.seekTo(proporcao);
-            atualizarTempo();
         });
     </script>
 </body>
