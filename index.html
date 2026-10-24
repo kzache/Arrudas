@@ -1,9 +1,8 @@
-
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Arrudas</title>
 
     <style>
@@ -31,7 +30,7 @@
             overflow: hidden;
             font-family: "Courier New", monospace;
             color: #222;
-            background-color: #e8e0cf;
+            background-color: #1c4354; /* Alterado para evitar fundo creme em sobras de tela */
             user-select: none;
         }
 
@@ -393,19 +392,19 @@
 
         @media (max-width: 600px) {
             .titulo {
-                top: 25px;
+                top: 15px;
                 left: 15px;
-                width: calc(100% - 100px);
+                width: calc(100% - 30px);
                 min-width: 0;
-                padding: 18px 15px;
+                padding: 12px 15px;
             }
 
             .titulo h1 {
-                font-size: 40px;
+                font-size: 24px;
             }
 
             .titulo p {
-                font-size: 25px;
+                font-size: 14px;
             }
 
             .menu-links {
@@ -415,32 +414,40 @@
             }
 
             .escute {
-                left: 50%;
-                top: 165px;
-                transform: translateX(-50%);
-                width: 190px;
-                height: 190px;
-                max-width: none;
-                font-size: 18px;
+                top: 110px;
+                width: 120px;
+                height: 120px;
+                font-size: 14px;
+            }
+
+            .escute img {
+                width: 150px;
+                height: 145px;
+                top: -38px;
+            }
+
+            .escute span {
+                margin-top: -80px;
             }
 
             .aviso-fone {
-                top: 165px;
+                top: 110px;
+                font-size: 14px;
+                padding: 12px 16px;
             }
 
             .audio {
                 left: 15px;
-                top: 165px;
+                top: 110px;
                 transform: none;
                 width: calc(100% - 30px);
-                max-width: none;
-                max-height: calc(100vh - 230px);
-                padding: 30px 16px 16px;
+                max-height: calc(100vh - 140px);
+                padding: 20px 10px 10px;
             }
 
             .waveform-visualizacao,
             #waveform {
-                height: 220px;
+                height: 180px;
             }
 
             .botao-play {
@@ -548,110 +555,71 @@
         import WaveSurfer from
             'https://cdn.jsdelivr.net/npm/wavesurfer.js@8/dist/wavesurfer.esm.js';
 
-        /* ENQUADRAMENTO RESPONSIVO DO MAPA + DESENHO */
-
         const telaReferencia = document.getElementById("telaReferencia");
 
-            function ajustarTelaReferencia() {
-        const larguraReferencia = 1920;
-        const alturaReferencia = 1080;
-    
-        const celular =
-            window.matchMedia("(pointer: coarse)").matches ||
-            window.innerWidth <= 600;
-    
-        const viewport = celular ? window.visualViewport : null;
-    
-        const larguraJanela = viewport
-            ? viewport.width
-            : window.innerWidth;
-    
-        const alturaJanela = viewport
-            ? viewport.height
-            : window.innerHeight;
-    
-        const deslocamentoEsquerda = viewport
-            ? viewport.offsetLeft
-            : 0;
-    
-        const deslocamentoTopo = viewport
-            ? viewport.offsetTop
-            : 0;
-    
-        const celularVertical =
-            celular && alturaJanela >= larguraJanela;
-    
-        const celularHorizontal =
-            celular && larguraJanela > alturaJanela;
-    
-        let enquadramento = {
-            zoom: 1,
-            horizontal: 0.5,
-            vertical: 0.5
-        };
-    
-        if (celularVertical) {
-            enquadramento = {
-                zoom: 1.05,
-                horizontal: 0.5,
-                vertical: 0
-            };
-        } else if (celularHorizontal) {
-            enquadramento = {
+        function ajustarTelaReferencia() {
+            const larguraReferencia = 1920;
+            const alturaReferencia = 1080;
+
+            const larguraJanela = window.innerWidth;
+            const alturaJanela = window.innerHeight;
+
+            const celular =
+                window.matchMedia("(pointer: coarse)").matches ||
+                larguraJanela <= 600;
+
+            const celularVertical =
+                celular && alturaJanela >= larguraJanela;
+
+            const celularHorizontal =
+                celular && larguraJanela > alturaJanela;
+
+            let enquadramento = {
                 zoom: 1,
                 horizontal: 0.5,
-                vertical: 0
+                vertical: 0.5
             };
-        }
-    
-        const escalaBase = Math.max(
-            larguraJanela / larguraReferencia,
-            alturaJanela / alturaReferencia
-        );
-    
-        const escala = escalaBase * enquadramento.zoom;
-    
-        const larguraEscalada = larguraReferencia * escala;
-        const alturaEscalada = alturaReferencia * escala;
-    
-        telaReferencia.style.transform = `scale(${escala})`;
-    
-        telaReferencia.style.left =
-            `${deslocamentoEsquerda +
-            (larguraJanela - larguraEscalada) *
-            enquadramento.horizontal}px`;
-    
-        telaReferencia.style.top =
-            `${deslocamentoTopo +
-            (alturaJanela - alturaEscalada) *
-            enquadramento.vertical}px`;
-        }
-        
-        ajustarTelaReferencia();
-        
-        window.addEventListener("resize", ajustarTelaReferencia);
-        window.addEventListener("orientationchange", ajustarTelaReferencia);
-        
-        if (window.visualViewport) {
-            window.visualViewport.addEventListener(
-                "resize",
-                ajustarTelaReferencia
+
+            if (celularVertical) {
+                enquadramento = {
+                    zoom: 1.02,
+                    horizontal: 0.5,
+                    vertical: 0.5
+                };
+            } else if (celularHorizontal) {
+                enquadramento = {
+                    zoom: 1.02,
+                    horizontal: 0.5,
+                    vertical: 0.5
+                };
+            }
+
+            const escalaBase = Math.max(
+                larguraJanela / larguraReferencia,
+                alturaJanela / alturaReferencia
             );
-        
-            window.visualViewport.addEventListener(
-                "scroll",
-                ajustarTelaReferencia
-            );
+
+            const escala = escalaBase * enquadramento.zoom;
+
+            const larguraEscalada = larguraReferencia * escala;
+            const alturaEscalada = alturaReferencia * escala;
+
+            telaReferencia.style.transform = `scale(${escala})`;
+
+            // Centraliza perfeitamente e elimina qualquer sobra de barra creme nas bordas
+            telaReferencia.style.left = `${(larguraJanela - larguraEscalada) / 2}px`;
+            telaReferencia.style.top = `${(alturaJanela - alturaEscalada) / 2}px`;
         }
 
-        /* ELEMENTOS DO SITE */
+        ajustarTelaReferencia();
+
+        window.addEventListener("resize", ajustarTelaReferencia);
+        window.addEventListener("orientationchange", ajustarTelaReferencia);
 
         const titulo = document.getElementById("titulo");
         const escute = document.getElementById("escute");
         const avisoFone = document.getElementById("avisoFone");
         const mapaIframe = document.querySelector(".mapa iframe");
-
-        /* EXIBE TÍTULO E ESCUTE */
 
         let elementosExibidos = false;
 
@@ -684,11 +652,7 @@
             once: true
         });
 
-        /* ALTERNATIVA SE O EVENTO DE LOAD DEMORAR */
-
         setTimeout(mostrarElementos, 3000);
-
-        /* ÁUDIO */
 
         const audioPlayer = document.getElementById("audioPlayer");
         const fecharAudio = document.getElementById("fecharAudio");
@@ -708,15 +672,11 @@
         let avisoFoneTimer = null;
         let avisoFoneTimerIniciado = false;
 
-        /* MENU */
-
         titulo.addEventListener("click", function (event) {
             if (event.target.tagName !== "A") {
                 titulo.classList.toggle("aberto");
             }
         });
-
-        /* FORMATAÇÃO DO TEMPO */
 
         function formatarTempo(segundos) {
             const minutos = Math.floor(segundos / 60);
@@ -745,8 +705,6 @@
                 formatarTempo(atual) + " / " +
                 formatarTempo(duracao);
         }
-
-        /* INICIALIZAÇÃO DO WAVESURFER */
 
         function iniciarWaveform() {
             if (waveformIniciado) {
@@ -820,8 +778,6 @@
             }
         }
 
-        /* ESCUTE: ABRIR O ÁUDIO */
-
         escute.addEventListener("click", function () {
             escute.style.removeProperty("opacity");
             escute.classList.add("oculto");
@@ -839,8 +795,6 @@
 
             requestAnimationFrame(iniciarWaveform);
         });
-
-        /* FECHAR ÁUDIO */
 
         fecharAudio.addEventListener("click", function () {
             if (wavesurfer) {
@@ -860,8 +814,6 @@
             avisoFone.classList.remove("visivel", "oculto");
         });
 
-        /* PLAY / PAUSA */
-
         botaoPlay.addEventListener("click", async function (event) {
             event.stopPropagation();
 
@@ -878,8 +830,6 @@
                 }
             }
         });
-
-        /* CLICAR NA ONDA PARA ESCOLHER O INSTANTE */
 
         waveformVisualizacao.addEventListener("click", function (event) {
             if (
