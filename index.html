@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -35,7 +36,7 @@
             touch-action: none;
         }
 
-        /* ÁREA DE REFERÊNCIA GLOBAL: TUDO FICA AQUI DENTRO E SE MOVE/AMPLIA JUNTO */
+        /* ÁREA DE REFERÊNCIA GLOBAL (MAPA + DESENHO + ELEMENTOS) */
         .tela-referencia {
             position: absolute;
             left: 0;
@@ -105,7 +106,7 @@
             to { opacity: 1; }
         }
 
-        /* TÍTULO / MENU (AGORA DENTRO DA TELA DE REFERÊNCIA) */
+        /* TÍTULO / MENU (PADRÃO DESKTOP) */
         .titulo {
             position: absolute;
             top: 60px;
@@ -156,10 +157,10 @@
             text-decoration: underline;
         }
 
-        /* ESCUTE (AGORA DENTRO DA TELA DE REFERÊNCIA) */
+        /* ESCUTE (PADRÃO DESKTOP) */
         .escute {
             position: absolute;
-            left: 960px; /* Centro exato da base de 1920px */
+            left: 960px;
             top: 80px;
             transform: translateX(-50%);
             z-index: 30;
@@ -235,7 +236,7 @@
             transition: opacity 1.5s ease, visibility 0s linear 1.5s;
         }
 
-        /* PAINEL DE ÁUDIO (AGORA DENTRO DA TELA DE REFERÊNCIA) */
+        /* PAINEL DE ÁUDIO (PADRÃO DESKTOP) */
         .audio {
             display: none;
             position: absolute;
@@ -347,12 +348,74 @@
             font-size: 15px;
             text-align: right;
         }
+
+        /* ========================================================
+           PERSONALIZAÇÃO EXCLUSIVA PARA CELULAR (VERTICAL / HORIZONTAL)
+           ======================================================== */
+        @media (max-width: 850px) {
+            
+            /* Título menor e reposicionado para não estourar a tela */
+            .titulo {
+                top: 40px;
+                left: 40px;
+                padding: 15px 25px;
+                min-width: 320px;
+            }
+            .titulo h1 {
+                font-size: 26px;
+            }
+            .titulo p {
+                font-size: 13px;
+            }
+
+            /* Botão ESCUTE maior e destacado conforme solicitado */
+            .escute {
+                width: 260px;
+                height: 260px;
+                font-size: 45px;
+                /* Exemplo na vertical: posicionado mais abaixo do título */
+                left: 960px;
+                top: 380px; 
+            }
+            .escute img {
+                width: 330px;
+                height: 310px;
+                top: -80px;
+            }
+            .escute span {
+                margin-top: -160px;
+            }
+
+            /* Aviso de fones adaptado à proporção */
+            .aviso-fone {
+                left: 960px;
+                top: 380px;
+                width: 550px;
+                font-size: 22px;
+            }
+
+            /* Painel de áudio dimensionado perfeitamente dentro da tela de referência */
+            .audio {
+                left: 110px;
+                top: 350px;
+                width: 1700px;
+                padding: 30px;
+            }
+            .waveform-visualizacao,
+            #waveform {
+                height: 240px !important;
+            }
+            .botao-play {
+                width: 70px;
+                height: 70px;
+                font-size: 28px;
+            }
+        }
     </style>
 </head>
 
 <body class="carregando">
 
-    <!-- TUDO ESTÁ DENTRO DA TELA DE REFERÊNCIA (MOVE E DÁ ZOOM EM BLOCO ÚNICO) -->
     <div class="tela-referencia" id="telaReferencia">
         
         <div class="mapa">
@@ -365,7 +428,6 @@
             <div class="desenho-arrudas" aria-hidden="true"></div>
         </div>
 
-        <!-- TÍTULO / MENU -->
         <div class="titulo" id="titulo">
             <h1>ARRUDAS</h1>
             <p>Memórias Sonoras de um Território-Rio</p>
@@ -376,18 +438,15 @@
             </div>
         </div>
 
-        <!-- ESCUTE -->
         <div class="escute" id="escute">
             <img src="orelha.png" alt="Orelha — escute">
             <span>ESCUTE</span>
         </div>
 
-        <!-- AVISO DE FONES -->
         <div class="aviso-fone" id="avisoFone" role="status">
             Use fone de ouvido para uma experiência sonora imersiva.
         </div>
 
-        <!-- PLAYER DE ÁUDIO -->
         <div class="audio" id="audioPlayer">
             <div class="carregando-audio" id="carregandoAudio">Carregando composição sonora...</div>
 
@@ -469,7 +528,7 @@
         });
 
         window.addEventListener("orientationchange", () => {
-            setTimeout(inicializarPosicao, 200);
+            setTimeout(inicializarPosicao, 300);
         });
 
         let toquesAtivos = [];
@@ -606,7 +665,7 @@
                 wavesurfer = WaveSurfer.create({
                     container: "#waveform",
                     url: audioUrl,
-                    height: 280,
+                    height: 240,
                     waveColor: "#B79A78",
                     progressColor: "#6F7770",
                     cursorWidth: 0,
