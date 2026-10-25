@@ -107,7 +107,7 @@
         }
 
         /* ========================================================
-           PADRÃO ORIGINAL DO PC (INTOCADO E SEGURO)
+           PADRÃO DESKTOP
            ======================================================== */
         .titulo {
             position: absolute;
@@ -206,7 +206,7 @@
             margin-top: -125px;
         }
 
-        /* AVISO DE FONES (PADRÃO PC) */
+        /* AVISO DE FONES */
         .aviso-fone {
             position: absolute;
             left: 960px;
@@ -239,7 +239,7 @@
             transition: opacity 1.5s ease, visibility 0s linear 1.5s;
         }
 
-        /* PAINEL DE ÁUDIO (PADRÃO PC) */
+        /* PAINEL DE ÁUDIO */
         .audio {
             display: none;
             position: absolute;
@@ -358,11 +358,10 @@
         }
 
         /* ========================================================
-           EXCLUSIVO PARA CELULAR (MODIFICAÇÕES SÓ ACONTECEM AQUI)
+           EXCLUSIVO PARA CELULAR
            ======================================================== */
         @media (max-width: 850px) {
             
-            /* TÍTULO COMPACTO À ESQUERDA (SEM ESPAÇOS VAZIOS) */
             .titulo {
                 top: 20px;
                 left: 15px;
@@ -388,13 +387,12 @@
                 margin: 4px 0 0;
             }
 
-            /* BOTÃO ESCUTE NO CELULAR */
             .escute {
                 width: 190px;
                 height: 190px;
                 font-size: 28px;
                 left: 960px;
-                top: 280px;
+                top: 220px;
                 transform: translateX(-50%);
             }
             .escute img {
@@ -406,20 +404,18 @@
                 margin-top: -110px;
             }
 
-            /* AVISO DE FONES NO CELULAR */
             .aviso-fone {
                 left: 960px;
-                top: 480px;
+                top: 420px;
                 width: 400px;
                 font-size: 16px;
                 padding: 16px 20px;
                 transform: translateX(-50%);
             }
 
-            /* PLAYER DE ÁUDIO NO CELULAR */
             .audio {
                 left: 210px;
-                top: 350px;
+                top: 320px;
                 width: 1500px;
             }
         }
@@ -513,6 +509,29 @@
             telaReferencia.style.transform = `translate(${posX}px, ${posY}px) scale(${escalaAtual})`;
         }
 
+        function aplicarLimites() {
+            const wWin = window.innerWidth;
+            const hWin = window.innerHeight;
+            const wEscalado = larguraRef * escalaAtual;
+            const hEscalado = alturaRef * escalaAtual;
+
+            // Se o mapa escalado for maior que a tela, limita para não aparecer fundo creme.
+            // Se for menor, centraliza na tela.
+            if (wEscalado >= wWin) {
+                const limiteX = wWin - wEscalado;
+                posX = Math.min(0, Math.max(limiteX, posX));
+            } else {
+                posX = (wWin - wEscalado) / 2;
+            }
+
+            if (hEscalado >= hWin) {
+                const limiteY = hWin - hEscalado;
+                posY = Math.min(0, Math.max(limiteY, posY));
+            } else {
+                posY = (hWin - hEscalado) / 2;
+            }
+        }
+
         function inicializarPosicaoDinamica() {
             const wWin = window.innerWidth;
             const hWin = window.innerHeight;
@@ -520,55 +539,35 @@
             escalaBaseMinima = Math.max(wWin / larguraRef, hWin / alturaRef);
             escalaAtual = escalaBaseMinima;
 
-            // Lógica limpa e separada para Celular vs PC
-            if (wWin <= 850) {
-                posY = 0; // Topo no celular
-                escalaAtual = escalaBaseMinima * 0.85; // Zoom menor (afastado) aplicado apenas no celular
-            } else {
-                posY = (hWin - (alturaRef * escalaAtual)) / 2; // Centro vertical no PC
-            }
-
             const wEscalado = larguraRef * escalaAtual;
             const hEscalado = alturaRef * escalaAtual;
 
-            // Centraliza horizontalmente para ambos
             posX = (wWin - wEscalado) / 2;
 
+            if (wWin <= 850) {
+                posY = 0; // Alinhado ao topo
+            } else {
+                posY = (hWin - hEscalado) / 2; // Centralizado no PC
+            }
+
+            aplicarLimites();
             atualizarTransformacao();
         }
 
         inicializarPosicaoDinamica();
 
-        window.addEventListener("resize", () => {
-            inicializarPosicaoDinamica();
-        });
-
+        window.addEventListener("resize", inicializarPosicaoDinamica);
         window.addEventListener("orientationchange", () => {
             setTimeout(inicializarPosicaoDinamica, 300);
         });
 
-        // TOQUE E ARRASTO
+        // CONTROLE DE TOQUE E ZOOM LÓGICO
         let toquesAtivos = [];
         let distanciaInicial = 0;
         let escalaInicial = 1;
         let ultimoX = 0;
         let ultimoY = 0;
 
-        document.addEventListener("touchstart", (e) => {
-            toquesAtivos = Array.from(e.touches);
-            if (toquesAtivos.length === 1) {
-                ultimoX = toquesAtivos[0].clientX;
-                ultimoY = toquesAtivos[0].clientY;
-            } else if (toquesAtivos.length === 2) {
-                distanciaInicial = Math.hypot(
-                    toquesAtivos[0].clientX - to_X = toquesAtivos[1].clientX, // corrigido
-                    toquesAtivos[0].clientY - toquesAtivos[1].clientY
-                );
-                escalaInicial = escalaAtual;
-            }
-        }, { passive: false });
-
-        // Correção de toque limpa
         document.addEventListener("touchstart", (e) => {
             toquesAtivos = Array.from(e.touches);
             if (toquesAtivos.length === 1) {
@@ -587,27 +586,17 @@
             e.preventDefault();
             toquesAtivos = Array.from(e.touches);
 
-            const wWin = window.innerWidth;
-            const hWin = window.innerHeight;
-            const wEscalado = larguraRef * escalaAtual;
-            const hEscalado = alturaRef * escalaAtual;
-
             if (toquesAtivos.length === 1) {
                 const x = toquesAtivos[0].clientX;
                 const y = toquesAtivos[0].clientY;
 
-                posX += x - ultimoX;
-                posY += y - ultimoY;
-
-                const limiteX = wWin - wEscalado;
-                const limiteY = hWin - hEscalado;
-
-                posX = Math.min(0, Math.max(limiteX, posX));
-                posY = Math.min(0, Math.max(limiteY, posY));
+                posX += (x - ultimoX);
+                posY += (y - ultimoY);
 
                 ultimoX = x;
                 ultimoY = y;
 
+                aplicarLimites();
                 atualizarTransformacao();
             } 
             else if (toquesAtivos.length === 2) {
@@ -619,10 +608,12 @@
                 if (distanciaInicial > 0) {
                     let novaEscala = escalaInicial * (distanciaAtual / distanciaInicial);
                     
+                    // Bloqueia zoom menor que o encaixe perfeito da tela
                     if (novaEscala < escalaBaseMinima) novaEscala = escalaBaseMinima;
                     if (novaEscala > escalaBaseMinima * 3) novaEscala = escalaBaseMinima * 3;
 
                     escalaAtual = novaEscala;
+                    aplicarLimites();
                     atualizarTransformacao();
                 }
             }
