@@ -362,22 +362,34 @@
            ======================================================== */
         @media (max-width: 850px) {
             
-            /* Título reestruturado para celular */
+              /* CAIXA DO TÍTULO COMPACTA À ESQUERDA (SEM ESPAÇOS VAZIOS) */
             .titulo {
-                top: 25px;
-                left: 50%;
-                transform: translateX(-50%);
-                padding: 10px 20px;
-                min-width: 280px;
-                width: 90%;
+                top: 20px;            /* Distância do topo */
+                left: 15px;           /* Colada no canto esquerdo */
+                transform: none;      /* Remove qualquer centralização */
+                
+                padding: 15px 20px;   /* Mantém seu padding / espaçamento interno */
+                min-width: unset;     /* Anula o limite de 420px do PC */
+                width: max-content;   /* A caixa encolhe e assume exatamente o tamanho do texto */
+                text-align: left;     /* Alinha o texto à esquerda de dentro da caixa */
+            }
+        
+            /* Opcional: Alinha também os links do menu para a esquerda se abrirem */
+            .menu-links {
+                left: 0;
+                top: 100%;
+                text-align: left;
             }
             .titulo h1 {
-                font-size: 18px;
+                font-size: 20px;
             }
             .titulo p {
-                font-size: 10px;
+                font-size: 14px;
                 margin: 4px 0 0;
             }
+
+            
+}
 
             /* Botão ESCUTE posicionado no celular */
             .escute {
@@ -385,7 +397,7 @@
                 height: 190px;
                 font-size: 28px;
                 left: 960px;
-                top: 380px; /* Ajuste aqui se quiser subir ou descer o escute no celular */
+                top: 280px; /* Ajuste aqui se quiser subir ou descer o escute no celular */
                 transform: translateX(-50%);
             }
             .escute img {
@@ -521,10 +533,18 @@
             // SE FOR PC, abre no MEIO verticalmente.
             if (wWin <= 850) {
                 posY = 0; // Topo no celular
+                
+                // AQUI VOCÊ CONTROLA O ZOOM MENOR NO CELULAR:
+                // 0.85 deixa 15% mais afastado. Teste 0.8 se quiser mais afastado ainda.
+                escalaAtual = escalaBaseMinima * 0.85; 
             } else {
                 posY = (hWin - hEscalado) / 2; // Centro no PC
             }
 
+            const wEscalado = larguraRef * escalaAtual;
+            const hEscalado = alturaRef * escalaAtual;
+
+            posX = (wWin - wEscalado) / 2;
             atualizarTransformacao();
         }
 
