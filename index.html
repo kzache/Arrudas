@@ -159,7 +159,7 @@
             text-decoration: underline;
         }
 
-        /* BOTÃO ESCUTE (PADRÃO PC) */
+        /* BOTÃO ESCUTE (DESKTOP) */
         .escute {
             position: absolute;
             left: 960px;
@@ -206,19 +206,19 @@
             margin-top: -125px;
         }
 
-        /* AVISO DE FONES */
+        /* AVISO DE FONES (DESKTOP — Mesma posição exata do botão escute) */
         .aviso-fone {
             position: absolute;
             left: 960px;
-            top: 535px;
+            top: 80px;
             transform: translateX(-50%);
             z-index: 31;
-            width: 520px;
+            width: 480px;
             padding: 20px 28px;
-            background-color: rgba(28, 67, 84, 0.82);
+            background-color: rgba(28, 67, 84, 0.9);
             color: #e8e0cf;
             text-align: center;
-            font-size: 21px;
+            font-size: 20px;
             line-height: 1.4;
             border-radius: 16px;
             opacity: 0;
@@ -364,18 +364,38 @@
             
             .titulo {
                 top: 20px;
-                left: 15px;
-                transform: none;
                 padding: 15px 20px;
                 min-width: unset;
                 width: max-content;
-                text-align: left;
             }
         
-            .menu-links {
-                left: 0;
-                top: 100%;
-                text-align: left;
+            /* Modo Retrato (Vertical) -> Título Centralizado */
+            @media (orientation: portrait) {
+                .titulo {
+                    left: 50%;
+                    transform: translateX(-50%);
+                    text-align: center;
+                }
+                .menu-links {
+                    left: 50%;
+                    transform: translateX(-50%);
+                    top: 100%;
+                    text-align: center;
+                }
+            }
+
+            /* Modo Paisagem (Horizontal) -> Título à Esquerda */
+            @media (orientation: landscape) {
+                .titulo {
+                    left: 15px;
+                    transform: none;
+                    text-align: left;
+                }
+                .menu-links {
+                    left: 0;
+                    top: 100%;
+                    text-align: left;
+                }
             }
 
             .titulo h1 {
@@ -387,6 +407,7 @@
                 margin: 4px 0 0;
             }
 
+            /* BOTÃO ESCUTE NO CELULAR */
             .escute {
                 width: 190px;
                 height: 190px;
@@ -404,10 +425,11 @@
                 margin-top: -110px;
             }
 
+            /* AVISO DE FONES NO CELULAR (Mesma posição exata do botão escute) */
             .aviso-fone {
                 left: 960px;
-                top: 420px;
-                width: 400px;
+                top: 220px;
+                width: 380px;
                 font-size: 16px;
                 padding: 16px 20px;
                 transform: translateX(-50%);
@@ -515,8 +537,6 @@
             const wEscalado = larguraRef * escalaAtual;
             const hEscalado = alturaRef * escalaAtual;
 
-            // Se o mapa escalado for maior que a tela, limita para não aparecer fundo creme.
-            // Se for menor, centraliza na tela.
             if (wEscalado >= wWin) {
                 const limiteX = wWin - wEscalado;
                 posX = Math.min(0, Math.max(limiteX, posX));
@@ -537,18 +557,19 @@
             const hWin = window.innerHeight;
 
             escalaBaseMinima = Math.max(wWin / larguraRef, hWin / alturaRef);
-            escalaAtual = escalaBaseMinima;
+
+            if (wWin <= 850) {
+                posY = 0; 
+                escalaAtual = escalaBaseMinima * 0.85; // ZOOM DE 0.85 APLICADO NO CELULAR
+            } else {
+                escalaAtual = escalaBaseMinima;
+                posY = (hWin - (alturaRef * escalaAtual)) / 2;
+            }
 
             const wEscalado = larguraRef * escalaAtual;
             const hEscalado = alturaRef * escalaAtual;
 
             posX = (wWin - wEscalado) / 2;
-
-            if (wWin <= 850) {
-                posY = 0; // Alinhado ao topo
-            } else {
-                posY = (hWin - hEscalado) / 2; // Centralizado no PC
-            }
 
             aplicarLimites();
             atualizarTransformacao();
@@ -561,7 +582,6 @@
             setTimeout(inicializarPosicaoDinamica, 300);
         });
 
-        // CONTROLE DE TOQUE E ZOOM LÓGICO
         let toquesAtivos = [];
         let distanciaInicial = 0;
         let escalaInicial = 1;
@@ -608,7 +628,6 @@
                 if (distanciaInicial > 0) {
                     let novaEscala = escalaInicial * (distanciaAtual / distanciaInicial);
                     
-                    // Bloqueia zoom menor que o encaixe perfeito da tela
                     if (novaEscala < escalaBaseMinima) novaEscala = escalaBaseMinima;
                     if (novaEscala > escalaBaseMinima * 3) novaEscala = escalaBaseMinima * 3;
 
