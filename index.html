@@ -159,7 +159,7 @@
             text-decoration: underline;
         }
 
-        /* BOTÃO ESCUTE (DESKTOP) */
+        /* BOTÃO ESCUTE (DESKTOP) — Com transição gradual restaurada */
         .escute {
             position: absolute;
             left: 960px;
@@ -173,6 +173,7 @@
             align-items: center;
             justify-content: center;
             padding: 12px;
+            gap: 0;
             background-color: rgba(28, 67, 84, 0.20);
             border: none;
             border-radius: 50%;
@@ -182,12 +183,13 @@
             cursor: pointer;
             opacity: 1;
             visibility: visible;
-            transition: opacity 1.8s ease;
+            transition: opacity 1.8s ease, visibility 0s linear;
         }
 
         .escute.oculto {
             opacity: 0;
             pointer-events: none;
+            transition: opacity 1.8s ease, visibility 0s linear 1.8s;
         }
 
         .escute img {
@@ -206,7 +208,7 @@
             margin-top: -125px;
         }
 
-        /* AVISO DE FONES (DESKTOP — Mesma posição exata do botão escute) */
+        /* AVISO DE FONES (Mesma posição exata do botão escute) */
         .aviso-fone {
             position: absolute;
             left: 960px;
@@ -557,13 +559,14 @@
             const hWin = window.innerHeight;
 
             escalaBaseMinima = Math.max(wWin / larguraRef, hWin / alturaRef);
+            
+            // ZOOM VOLTOU PARA 1 (Sem bordas creme no celular)
+            escalaAtual = escalaBaseMinima;
 
             if (wWin <= 850) {
-                posY = 0; 
-                escalaAtual = escalaBaseMinima * 0.85; // ZOOM DE 0.85 APLICADO NO CELULAR
+                posY = 0; // Topo no celular
             } else {
-                escalaAtual = escalaBaseMinima;
-                posY = (hWin - (alturaRef * escalaAtual)) / 2;
+                posY = (hWin - (alturaRef * escalaAtual)) / 2; // Centro no PC
             }
 
             const wEscalado = larguraRef * escalaAtual;
