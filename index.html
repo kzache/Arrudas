@@ -707,18 +707,19 @@
         function carregarEIniciarWaveform() {
             if (!wavesurfer) {
                 try {
-                    wavesurfer = WaveSurfer.create({
-                        container: "#waveform",
-                        url: audioUrl,
-                        height: 220,
-                        waveColor: "#B79A78",
-                        progressColor: "#6F7770",
-                        cursorWidth: 0,
-                        normalize: false,
-                        interact: false,
-                        barWidth: 2,
-                        barGap: 1,
-                        barRadius: 3
+        wavesurfer = WaveSurfer.create({
+                container: "#waveform",
+                url: audioUrl,
+                backend: 'MediaElement', // <--- ADICIONE ESTA LINHA AQUI
+                height: 220,
+                waveColor: "#B79A78",
+                progressColor: "#6F7770",
+                cursorWidth: 0,
+                normalize: false,
+                interact: false,
+                barWidth: 2,
+                barGap: 1,
+                barRadius: 3
                     });
 
                     wavesurfer.on("ready", function () {
