@@ -209,9 +209,7 @@
             margin-top: -125px;
         }
 
-        /* AVISO DE FONES (DESKTOP) 
-           - top: 315px (Abaixado para ficar mais abaixo do botão)
-           - font-size: 24px (Aumentado) */
+        /* AVISO DE FONES (DESKTOP) */
         .aviso-fone {
             position: absolute;
             left: 960px;
@@ -374,7 +372,6 @@
                 width: max-content;
             }
         
-            /* Modo Retrato (Vertical) -> Título Centralizado */
             @media (orientation: portrait) {
                 .titulo {
                     left: 50%;
@@ -389,7 +386,6 @@
                 }
             }
 
-            /* Modo Paisagem (Horizontal) -> Título à Esquerda */
             @media (orientation: landscape) {
                 .titulo {
                     left: 15px;
@@ -412,7 +408,6 @@
                 margin: 4px 0 0;
             }
 
-            /* BOTÃO ESCUTE NO CELULAR */
             .escute {
                 width: 190px;
                 height: 190px;
@@ -430,9 +425,6 @@
                 margin-top: -110px;
             }
 
-            /* AVISO DE FONES NO CELULAR 
-               - top: 450px (Abaixado para afastar do botão)
-               - font-size: 19px (Aumentado) */
             .aviso-fone {
                 left: 960px;
                 top: 450px;
@@ -475,7 +467,8 @@
         </div>
 
         <div class="escute" id="escute">
-            <img src="orelha.png" alt="Orelha — escute">
+            <!-- Alt limpo para evitar o texto "orelha" fantasma na tela -->
+            <img src="orelha.png" alt="">
             <span>ESCUTE</span>
         </div>
 
@@ -484,7 +477,6 @@
         </div>
 
         <div class="audio" id="audioPlayer">
-            <!-- Mensagem de carregamento encurtada -->
             <div class="carregando-audio" id="carregandoAudio">Carregando...</div>
 
             <button
@@ -568,9 +560,9 @@
             escalaAtual = escalaBaseMinima;
 
             if (wWin <= 850) {
-                posY = 0; // Topo no celular
+                posY = 0; 
             } else {
-                posY = (hWin - (alturaRef * escalaAtual)) / 2; // Centro no PC
+                posY = (hWin - (alturaRef * escalaAtual)) / 2; 
             }
 
             const wEscalado = larguraRef * escalaAtual;
@@ -677,7 +669,6 @@
         const tempo = document.getElementById("tempo");
         const waveformVisualizacao = document.getElementById("waveformVisualizacao");
 
-        // ATUALIZADO PARA O NOVO FORMATO M4A DO CLOUDFLARE R2
         const audioUrl = "https://pub-0c523da3e80b4a0ab591837050bc71cb.r2.dev/arrudas_peca_sonora.m4a";
 
         let wavesurfer = null;
@@ -707,19 +698,25 @@
         function carregarEIniciarWaveform() {
             if (!wavesurfer) {
                 try {
-        wavesurfer = WaveSurfer.create({
-                container: "#waveform",
-                url: audioUrl,
-                backend: 'MediaElement', // <--- ADICIONE ESTA LINHA AQUI
-                height: 220,
-                waveColor: "#B79A78",
-                progressColor: "#6F7770",
-                cursorWidth: 0,
-                normalize: false,
-                interact: false,
-                barWidth: 2,
-                barGap: 1,
-                barRadius: 3
+                    // OTIMIZAÇÃO CRUCIAL PARA VELOCIDADE:
+                    // Força o WaveSurfer a usar renderização leve e player nativo sem decodificação bloqueante
+                    wavesurfer = WaveSurfer.create({
+                        container: "#waveform",
+                        url: audioUrl,
+                        backend: 'MediaElement',
+                        mediaControls: false,
+                        height: 220,
+                        waveColor: "#B79A78",
+                        progressColor: "#6F7770",
+                        cursorWidth: 0,
+                        normalize: false,
+                        interact: false,
+                        barWidth: 2,
+                        barGap: 1,
+                        barRadius: 3,
+                        xhr: {
+                            cache: 'default'
+                        }
                     });
 
                     wavesurfer.on("ready", function () {
