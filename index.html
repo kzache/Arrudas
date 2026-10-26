@@ -704,7 +704,6 @@
                         container: "#waveform",
                         url: audioUrl,
                         backend: 'MediaElement',
-                        mediaControls: false,
                         height: 220,
                         waveColor: "#B79A78",
                         progressColor: "#6F7770",
@@ -714,9 +713,10 @@
                         barWidth: 2,
                         barGap: 1,
                         barRadius: 3,
-                        xhr: {
-                            cache: 'default'
-                        }
+                        // Passamos uma estrutura leve para o player abrir instantaneamente
+                        // sem esperar o download pesado do gráfico de 21MB:
+                        peaks: [[0, 0.1, 0.2, 0.5, 0.3, 0.1, 0.4, 0.6, 0.2, 0]],
+                        duration: 300 
                     });
 
                     wavesurfer.on("ready", function () {
