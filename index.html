@@ -698,14 +698,15 @@
         function carregarEIniciarWaveform() {
         if (!wavesurfer) {
             try {
-                // Criamos um elemento de áudio nativo HTML para streaming progressivo instantâneo
+                // Cria um elemento de áudio nativo puro para streaming instantâneo
                 const audioElement = document.createElement('audio');
                 audioElement.src = audioUrl;
-                audioElement.preload = 'auto';
+                audioElement.preload = 'metadata'; // Carrega apenas os metadatos iniciais instantaneamente
+                audioElement.load();
 
                 wavesurfer = WaveSurfer.create({
                     container: "#waveform",
-                    media: audioElement, // <--- O SEGREDO: Força o WaveSurfer a usar streaming nativo
+                    media: audioElement,
                     height: 220,
                     waveColor: "#B79A78",
                     progressColor: "#6F7770",
@@ -720,8 +721,8 @@
                 wavesurfer.on("ready", function () {
                     audioPlayer.classList.add("pronto");
                     atualizarTempo();
-                    // AUTOPLAY: Dispara o som assim que o player puder iniciar o streaming
-                    wavesurfer.play().catch(err => console.log("Autoplay retido pelo navegador:", err));
+                    // Toca automaticamente assim que o streaming permitir
+                    wavesurfer.play().catch(err => console.log("Autoplay restrito:", err));
                 });
 
                 wavesurfer.on("timeupdate", atualizarTempo);
@@ -750,7 +751,6 @@
             }, 100);
         }
     }
-
         escute.addEventListener("click", function () {
             escute.classList.add("oculto");
             audioPlayer.classList.add("aberto");
