@@ -4,51 +4,54 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
-    <title>Arrudas</title>
+    <title>Arrudas - Memórias Sonoras de um Território-Rio</title>
 
     <style>
         :root {
             --cor-arrudas: #1c4354;
+            --cor-fundo: #d8d0bc;
         }
 
         * {
             box-sizing: border-box;
         }
 
-        button,
-        input,
-        textarea,
-        select {
-            font-family: "Courier New", monospace;
-        }
-
-        html,
-        body {
+        html, body {
             margin: 0;
             padding: 0;
             width: 100%;
             height: 100%;
-            overflow: hidden;
             font-family: "Courier New", monospace;
             color: #222;
-            background-color: #d8d0bc;
-            user-select: none;
+            background-color: var(--cor-fundo);
+            overflow-x: hidden;
         }
 
-        /* ÁREA DE REFERÊNCIA GLOBAL (1920x1080) - A estrutura exata original */
-        .tela-referencia {
-            position: absolute;
-            left: 0;
-            top: 0;
-            width: 1920px;
-            height: 1080px;
-            transform-origin: 0 0;
-            z-index: 1;
-            background-color: #d8d0bc;
-            will-change: transform;
+        /* ==========================================
+           1. MODO COMPUTADOR (Desktop > 850px)
+           ========================================== */
+        @media (min-width: 851px) {
+            body { overflow: hidden; }
+            .tela-referencia {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 1920px;
+                height: 1080px;
+                transform-origin: 0 0;
+                z-index: 1;
+                background-color: var(--cor-fundo);
+                will-change: transform;
+            }
+            .mapa-mobile { display: none; }
+            .ui-mobile { display: none; }
         }
 
-        /* MAPA BASE */
+        @media (max-width: 850px) {
+            .tela-referencia { display: none; }
+        }
+
+        /* ELEMENTOS DO PC */
         .mapa {
             position: absolute;
             top: 0;
@@ -56,23 +59,15 @@
             width: 1920px;
             height: 1080px;
             z-index: 1;
-            background-color: #d8d0bc;
         }
-
         .mapa iframe {
             display: block;
             width: 100%;
             height: 100%;
             border: none;
-            margin: 0;
-            padding: 0;
             pointer-events: none;
             filter: sepia(75%) saturate(65%) brightness(90%) contrast(95%) !important;
-            outline: none !important;
-            box-shadow: none !important;
         }
-
-        /* DESENHO DO ARRUDAS */
         .desenho-arrudas {
             position: absolute;
             top: 3%;
@@ -81,15 +76,8 @@
             height: 110%;
             z-index: 2;
             pointer-events: none;
-            opacity: 0;
-            animation: entradaDesenho 2s ease-out 2.2s forwards;
             transform: translate(33px, 33px);
-            filter: none;
-            background-image: linear-gradient(
-                45deg,
-                #651b28,
-                var(--cor-arrudas)
-            );
+            background-image: linear-gradient(45deg, #651b28, var(--cor-arrudas));
             -webkit-mask-image: url("desenho_mapa.svg");
             mask-image: url("desenho_mapa.svg");
             -webkit-mask-repeat: no-repeat;
@@ -99,15 +87,6 @@
             -webkit-mask-size: 100% 100%;
             mask-size: 100% 100%;
         }
-
-        @keyframes entradaDesenho {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-
-        /* ========================================================
-           PADRÃO DESKTOP (ORIGINAL)
-           ======================================================== */
         .titulo {
             position: absolute;
             top: 60px;
@@ -115,22 +94,11 @@
             z-index: 20;
             background-color: rgba(243, 240, 232, 0.94);
             padding: 25px 40px;
-            text-align: center;
-            min-width: 420px;
             cursor: pointer;
+            min-width: 420px;
         }
-
-        .titulo h1 {
-            margin: 0;
-            font-size: 38px;
-            font-weight: bold;
-        }
-
-        .titulo p {
-            margin: 10px 0 0;
-            font-size: 18px;
-        }
-
+        .titulo h1 { margin: 0; font-size: 38px; font-weight: bold; }
+        .titulo p { margin: 10px 0 0; font-size: 18px; }
         .menu-links {
             position: absolute;
             top: 0;
@@ -139,26 +107,10 @@
             width: 220px;
             background-color: rgba(243, 240, 232, 0.94);
             padding: 15px 20px;
-            text-align: left;
         }
+        .titulo.aberto .menu-links { display: block; }
+        .menu-links a { display: block; text-decoration: none; color: #222; font-size: 20px; padding: 7px 0; }
 
-        .titulo.aberto .menu-links {
-            display: block;
-        }
-
-        .menu-links a {
-            display: block;
-            text-decoration: none;
-            color: #222;
-            font-size: 20px;
-            padding: 7px 0;
-        }
-
-        .menu-links a:hover {
-            text-decoration: underline;
-        }
-
-        /* BOTÃO ESCUTE (DESKTOP) */
         .escute {
             position: absolute;
             left: 960px;
@@ -171,44 +123,17 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            padding: 12px;
-            gap: 0;
             background-color: rgba(28, 67, 84, 0.20);
             border: none;
             border-radius: 50%;
             font-size: 35px;
             font-weight: bold;
-            text-align: center;
             cursor: pointer;
-            opacity: 1;
-            visibility: visible;
-            transition: opacity 1.8s ease, visibility 1.8s linear;
         }
+        .escute.oculto { opacity: 0 !important; visibility: hidden !important; pointer-events: none !important; }
+        .escute img { width: 250px; height: 240px; object-fit: contain; position: relative; top: -62px; }
+        .escute span { display: block; position: relative; z-index: 1; margin-top: -125px; color: var(--cor-arrudas); }
 
-        .escute.oculto {
-            opacity: 0 !important;
-            visibility: hidden !important;
-            pointer-events: none !important;
-            transition: opacity 1.8s ease, visibility 1.8s linear !important;
-        }
-
-        .escute img {
-            display: block;
-            width: 250px;
-            height: 240px;
-            object-fit: contain;
-            position: relative;
-            top: -62px;
-        }
-
-        .escute span {
-            display: block;
-            position: relative;
-            z-index: 1;
-            margin-top: -125px;
-        }
-
-        /* AVISO DE FONES (DESKTOP) */
         .aviso-fone {
             position: absolute;
             left: 960px;
@@ -221,27 +146,13 @@
             color: #e8e0cf;
             text-align: center;
             font-size: 24px;
-            line-height: 1.4;
             border-radius: 16px;
             opacity: 0;
             visibility: hidden;
-            pointer-events: none;
-            transition: opacity 1.5s ease, visibility 1.5s linear;
+            transition: opacity 1.5s ease;
         }
+        .aviso-fone.visivel { opacity: 1 !important; visibility: visible !important; }
 
-        .aviso-fone.visivel {
-            opacity: 1 !important;
-            visibility: visible !important;
-            transition: opacity 1.5s ease, visibility 0s linear !important;
-        }
-
-        .aviso-fone.oculto {
-            opacity: 0 !important;
-            visibility: hidden !important;
-            transition: opacity 1.5s ease, visibility 1.5s linear !important;
-        }
-
-        /* PAINEL DE ÁUDIO COM ONDA SONORA INTERATIVA (Nas coordenadas originais exatas) */
         .audio {
             display: none;
             position: absolute;
@@ -250,64 +161,175 @@
             z-index: 30;
             width: 1500px;
             background: transparent;
-            border: none;
+        }
+        .audio.aberto { display: block; }
+
+
+        /* ==========================================
+           2. MODO CELULAR (Mobile <= 850px)
+           ========================================== */
+        @media (max-width: 850px) {
+            .mapa-mobile {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100vw;
+                height: 100vh;
+                z-index: 1;
+            }
+            .mapa-mobile iframe {
+                width: 100%;
+                height: 100%;
+                border: none;
+                filter: sepia(75%) saturate(65%) brightness(90%) contrast(95%);
+            }
+
+            /* Desenho do Arrudas adaptado para cobrir perfeitamente a tela do celular */
+            .desenho-arrudas-mob {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100vw;
+                height: 100vh;
+                z-index: 2;
+                pointer-events: none;
+                background-image: linear-gradient(45deg, #651b28, var(--cor-arrudas));
+                -webkit-mask-image: url("desenho_mapa.svg");
+                mask-image: url("desenho_mapa.svg");
+                -webkit-mask-repeat: no-repeat;
+                mask-repeat: no-repeat;
+                -webkit-mask-position: center;
+                mask-position: center;
+                -webkit-mask-size: contain;
+                mask-size: contain;
+            }
+
+            .ui-mobile {
+                position: relative;
+                z-index: 10;
+                width: 100vw;
+                height: 100vh;
+                display: flex;
+                flex-direction: column;
+                justify-content: space-between;
+                padding: 15px;
+                pointer-events: none;
+            }
+            .ui-mobile > * { pointer-events: auto; }
+
+            .titulo-mob {
+                background-color: rgba(243, 240, 232, 0.95);
+                padding: 15px;
+                border-radius: 8px;
+                width: max-content;
+                max-width: 90%;
+                cursor: pointer;
+                box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            }
+            .titulo-mob h1 { margin: 0; font-size: 20px; font-weight: bold; }
+            .titulo-mob p { margin: 5px 0 0; font-size: 13px; }
+            .menu-links-mob {
+                display: none;
+                margin-top: 10px;
+                border-top: 1px solid #ccc;
+                padding-top: 8px;
+            }
+            .titulo-mob.aberto .menu-links-mob { display: block; }
+            .menu-links-mob a { display: block; text-decoration: none; color: #222; font-size: 15px; padding: 4px 0; }
+
+            .centro-mob {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                margin: auto;
+                text-align: center;
+                gap: 15px;
+            }
+
+            .escute-mob {
+                width: 150px;
+                height: 150px;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                background-color: rgba(28, 67, 84, 0.25);
+                border: none;
+                border-radius: 50%;
+                cursor: pointer;
+                box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            }
+            .escute-mob.oculto { display: none; }
+            .escute-mob img { width: 170px; height: 160px; object-fit: contain; margin-top: -20px; }
+            .escute-mob span { font-size: 22px; font-weight: bold; color: var(--cor-arrudas); margin-top: -70px; z-index: 2; }
+
+            .aviso-fone-mob {
+                background-color: rgba(28, 67, 84, 0.9);
+                color: #e8e0cf;
+                padding: 12px 18px;
+                border-radius: 10px;
+                font-size: 14px;
+                max-width: 320px;
+                text-align: center;
+                display: none;
+            }
+            .aviso-fone-mob.visivel { display: block; }
+
+            .audio-mob {
+                display: none;
+                background-color: rgba(243, 240, 232, 0.96);
+                padding: 15px;
+                border-radius: 14px;
+                width: 100%;
+                box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+                margin-bottom: 10px;
+            }
+            .audio-mob.aberto { display: block; }
         }
 
-        .audio.aberto {
-            display: block;
-        }
-
+        /* COMPONENTES COMPARTILHADOS DO PLAYER */
         .player-flex {
             display: flex;
             align-items: center;
-            gap: 25px;
+            gap: 15px;
             background-color: rgba(243, 240, 232, 0.95);
-            padding: 25px 45px;
-            border-radius: 80px;
+            padding: 15px 25px;
+            border-radius: 50px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.2);
             position: relative;
+            width: 100%;
         }
-
         .botao-play {
-            width: 70px;
-            height: 70px;
+            width: 55px;
+            height: 55px;
             border-radius: 50%;
             background-color: var(--cor-arrudas);
             color: #fff;
             border: none;
-            font-size: 28px;
+            font-size: 22px;
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
             flex-shrink: 0;
         }
-
         .waveform-container {
             flex-grow: 1;
             position: relative;
-            height: 55px;
+            height: 40px;
             cursor: pointer;
             display: flex;
             align-items: center;
         }
-
-        /* ONDA SONORA REAL DE FUNDO */
         .waveform-bg {
             position: absolute;
             width: 100%;
-            height: 45px;
-            background-image: repeating-linear-gradient(
-                90deg,
-                #B79A78,
-                #B79A78 4px,
-                transparent 4px,
-                transparent 9px
-            );
+            height: 32px;
+            background-image: repeating-linear-gradient(90deg, #B79A78, #B79A78 3px, transparent 3px, transparent 7px);
             mask-image: linear-gradient(90deg, #000 15%, #666 40%, #000 70%, #444 100%);
             -webkit-mask-image: linear-gradient(90deg, #000 15%, #666 40%, #000 70%, #444 100%);
         }
-
         .progresso-onda {
             position: absolute;
             left: 0;
@@ -319,7 +341,6 @@
             pointer-events: none;
             border-radius: 4px;
         }
-
         input[type="range"] {
             position: absolute;
             width: 100%;
@@ -328,411 +349,259 @@
             cursor: pointer;
             z-index: 5;
         }
-
         .fechar-audio {
             position: absolute;
-            top: -25px;
+            top: -15px;
             right: 0;
             background: rgba(243, 240, 232, 0.95);
             border: none;
-            width: 42px;
-            height: 42px;
+            width: 32px;
+            height: 32px;
             border-radius: 50%;
-            font-size: 24px;
+            font-size: 18px;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-            color: #222;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
         }
-
         .tempos-info {
-            font-size: 20px;
+            font-size: 14px;
             font-weight: bold;
             color: #222;
-            min-width: 140px;
+            min-width: 90px;
             text-align: right;
-        }
-
-        /* ========================================================
-           EXCLUSIVO PARA CELULAR (Suas regras originais exatas)
-           ======================================================== */
-        @media (max-width: 850px) {
-            .titulo {
-                top: 20px;
-                padding: 15px 20px;
-                min-width: unset;
-                width: max-content;
-            }
-        
-            @media (orientation: portrait) {
-                .titulo {
-                    left: 50%;
-                    transform: translateX(-50%);
-                    text-align: center;
-                }
-                .menu-links {
-                    left: 50%;
-                    transform: translateX(-50%);
-                    top: 100%;
-                    text-align: center;
-                }
-            }
-
-            @media (orientation: landscape) {
-                .titulo {
-                    left: 15px;
-                    transform: none;
-                    text-align: left;
-                }
-                .menu-links {
-                    left: 0;
-                    top: 100%;
-                    text-align: left;
-                }
-            }
-
-            .titulo h1 { font-size: 20px; }
-            .titulo p { font-size: 14px; margin: 4px 0 0; }
-
-            .escute {
-                width: 190px;
-                height: 190px;
-                font-size: 28px;
-                left: 960px;
-                top: 220px;
-                transform: translateX(-50%);
-            }
-            .escute img {
-                width: 220px;
-                height: 210px;
-                top: -55px;
-            }
-            .escute span {
-                margin-top: -110px;
-            }
-
-            .aviso-fone {
-                left: 960px;
-                top: 450px;
-                width: 420px;
-                font-size: 19px;
-                padding: 18px 22px;
-                transform: translateX(-50%);
-            }
-
-            .audio {
-                left: 210px;
-                top: 320px;
-                width: 1500px;
-            }
         }
     </style>
 </head>
+<body>
 
-<body class="carregando">
-
+    <!-- ================= DESKTOP HTML ================= -->
     <div class="tela-referencia" id="telaReferencia">
-        
         <div class="mapa">
-            <iframe
-                allowfullscreen
-                allow="geolocation"
-                src="//umap.openstreetmap.fr/pt-br/map/mapa_1471708?scaleControl=false&miniMapControl=false&scrollWheelZoom=false&zoomControl=false&editMode=disabled&moreControl=false&searchControl=false&tilelayersControl=false&embedControl=false&datalayersControl=false&onLoadPanel=none&captionBar=false&captionMenus=false&fullscreenControl=false&locateControl=false&captionControl=false&printControl=false&measureControl=false&dragging=false">
-            </iframe>
-
+            <iframe src="//umap.openstreetmap.fr/pt-br/map/mapa_1471708?scaleControl=false&miniMapControl=false&scrollWheelZoom=false&zoomControl=false&editMode=disabled&moreControl=false&searchControl=false&tilelayersControl=false&embedControl=false&datalayersControl=false&onLoadPanel=none&captionBar=false&captionMenus=false&fullscreenControl=false&locateControl=false&captionControl=false&printControl=false&measureControl=false&dragging=false"></iframe>
             <div class="desenho-arrudas" aria-hidden="true"></div>
         </div>
 
-        <div class="titulo" id="titulo">
+        <div class="titulo" id="tituloPc">
             <h1>ARRUDAS</h1>
             <p>Memórias Sonoras de um Território-Rio</p>
-
             <div class="menu-links">
                 <a href="sobre.html">Sobre o projeto</a>
             </div>
         </div>
 
-        <div class="escute" id="escute">
+        <button class="escute" id="escutePc">
             <img src="orelha.png" alt="">
             <span>ESCUTE</span>
-        </div>
+        </button>
 
-        <div class="aviso-fone" id="avisoFone" role="status">
+        <div class="aviso-fone" id="avisoFonePc">
             Para uma experiência sonora imersiva, use fones de ouvido.
         </div>
 
-        <div class="audio" id="audioPlayer">
-            <button class="fechar-audio" id="fecharAudio" type="button" aria-label="Fechar áudio">×</button>
-
+        <div class="audio" id="audioPlayerPc">
+            <button class="fechar-audio" id="fecharAudioPc">×</button>
             <div class="player-flex">
-                <button class="botao-play" id="botaoPlay" type="button">▶</button>
-
-                <div class="waveform-container" id="waveformContainer">
+                <button class="botao-play" id="botaoPlayPc">▶</button>
+                <div class="waveform-container">
                     <div class="waveform-bg"></div>
-                    <div class="progresso-onda" id="progressoOnda"></div>
-                    <input type="range" id="barraProgresso" value="0" max="100" step="0.1">
+                    <div class="progresso-onda" id="progressoOndaPc"></div>
+                    <input type="range" id="barraProgressoPc" value="0" max="100" step="0.1">
                 </div>
+                <div class="tempos-info" id="tempoAtualPc">00:00 / 00:00</div>
+            </div>
+        </div>
+    </div>
 
-                <div class="tempos-info" id="tempoAtual">00:00 / 00:00</div>
+
+    <!-- ================= MOBILE HTML ================= -->
+    <div class="mapa-mobile">
+        <iframe src="//umap.openstreetmap.fr/pt-br/map/mapa_1471708?scaleControl=false&miniMapControl=false&scrollWheelZoom=true&zoomControl=false&editMode=disabled&moreControl=false&searchControl=false&tilelayersControl=false&embedControl=false&datalayersControl=false&onLoadPanel=none&captionBar=false&captionMenus=false&fullscreenControl=false&locateControl=false&captionControl=false&printControl=false&measureControl=false&dragging=true"></iframe>
+        <!-- Desenho artístico sobreposto no celular -->
+        <div class="desenho-arrudas-mob" aria-hidden="true"></div>
+    </div>
+
+    <div class="ui-mobile">
+        <div class="titulo-mob" id="tituloMob">
+            <h1>ARRUDAS</h1>
+            <p>Memórias Sonoras de um Território-Rio</p>
+            <div class="menu-links-mob">
+                <a href="sobre.html">Sobre o projeto</a>
             </div>
         </div>
 
+        <div class="centro-mob">
+            <button class="escute-mob" id="escuteMob">
+                <img src="orelha.png" alt="">
+                <span>ESCUTE</span>
+            </button>
+            <div class="aviso-fone-mob" id="avisoFoneMob">
+                Para uma experiência sonora imersiva, use fones de ouvido.
+            </div>
+        </div>
+
+        <div class="audio-mob" id="audioPlayerMob">
+            <button class="fechar-audio" id="fecharAudioMob">×</button>
+            <div class="player-flex" style="padding: 10px 15px; border-radius: 20px;">
+                <button class="botao-play" id="botaoPlayMob" style="width: 45px; height: 45px; font-size: 16px;">▶</button>
+                <div class="waveform-container">
+                    <div class="waveform-bg"></div>
+                    <div class="progresso-onda" id="progressoOndaMob"></div>
+                    <input type="range" id="barraProgressoMob" value="0" max="100" step="0.1">
+                </div>
+                <div class="tempos-info" id="tempoAtualMob" style="font-size: 12px; min-width: 75px;">00:00</div>
+            </div>
+        </div>
     </div>
 
-    <!-- ÁUDIO NATIVO RÁPIDO -->
+
+    <!-- ================= ÁUDIO ÚNICO COMPARTILHADO ================= -->
     <audio id="meuAudio" preload="auto">
         <source src="https://pub-0c523da3e80b4a0ab591837050bc71cb.r2.dev/arrudas_peca_sonora.m4a" type="audio/mp4">
         Seu navegador não suporta elemento de áudio.
     </audio>
 
     <script>
+        // Lógica de Escala do PC
         const telaReferencia = document.getElementById("telaReferencia");
-
-        let escalaAtual = 1;
-        let escalaBaseMinima = 1;
-        let posX = 0;
-        let posY = 0;
-
-        const larguraRef = 1920;
-        const alturaRef = 1080;
+        let escalaAtual = 1, posX = 0, posY = 0;
+        const larguraRef = 1920, alturaRef = 1080;
 
         function atualizarTransformacao() {
-            telaReferencia.style.transform = `translate(${posX}px, ${posY}px) scale(${escalaAtual})`;
-        }
-
-        function aplicarLimites() {
-            const wWin = window.innerWidth;
-            const hWin = window.innerHeight;
-            const wEscalado = larguraRef * escalaAtual;
-            const hEscalado = alturaRef * escalaAtual;
-
-            if (wEscalado >= wWin) {
-                const limiteX = wWin - wEscalado;
-                posX = Math.min(0, Math.max(limiteX, posX));
-            } else {
-                posX = (wWin - wEscalado) / 2;
-            }
-
-            if (hEscalado >= hWin) {
-                const limiteY = hWin - hEscalado;
-                posY = Math.min(0, Math.max(limiteY, posY));
-            } else {
-                posY = (hWin - hEscalado) / 2;
+            if (window.innerWidth > 850) {
+                telaReferencia.style.transform = `translate(${posX}px, ${posY}px) scale(${escalaAtual})`;
             }
         }
-
-        function inicializarPosicaoDinamica() {
-            const wWin = window.innerWidth;
-            const hWin = window.innerHeight;
-
-            escalaBaseMinima = Math.max(wWin / larguraRef, hWin / alturaRef);
-            escalaAtual = escalaBaseMinima;
-
-            if (wWin <= 850) {
-                posY = 0; 
-            } else {
-                posY = (hWin - (alturaRef * escalaAtual)) / 2; 
-            }
-
-            const wEscalado = larguraRef * escalaAtual;
-            posX = (wWin - wEscalado) / 2;
-
-            aplicarLimites();
+        function inicializarPc() {
+            if (window.innerWidth <= 850) return;
+            const wWin = window.innerWidth, hWin = window.innerHeight;
+            escalaAtual = Math.max(wWin / larguraRef, hWin / alturaRef);
+            posY = (hWin - (alturaRef * escalaAtual)) / 2;
+            posX = (wWin - (larguraRef * escalaAtual)) / 2;
             atualizarTransformacao();
         }
+        window.addEventListener("resize", inicializarPc);
+        inicializarPc();
 
-        inicializarPosicaoDinamica();
+        // Controles de UI (Título Menus)
+        const tituloPc = document.getElementById("tituloPc");
+        const tituloMob = document.getElementById("tituloMob");
+        tituloPc.addEventListener("click", (e) => { if (e.target.tagName !== "A") tituloPc.classList.toggle("aberto"); });
+        tituloMob.addEventListener("click", (e) => { if (e.target.tagName !== "A") tituloMob.classList.toggle("aberto"); });
 
-        window.addEventListener("resize", inicializarPosicaoDinamica);
-        window.addEventListener("orientationchange", () => {
-            setTimeout(inicializarPosicaoDinamica, 300);
-        });
-
-        let toquesAtivos = [];
-        let distanciaInicial = 0;
-        let escalaInicial = 1;
-        let ultimoX = 0;
-        let ultimoY = 0;
-
-        document.addEventListener("touchstart", (e) => {
-            toquesAtivos = Array.from(e.touches);
-            if (toquesAtivos.length === 1) {
-                ultimoX = toquesAtivos[0].clientX;
-                ultimoY = toquesAtivos[0].clientY;
-            } else if (toquesAtivos.length === 2) {
-                distanciaInicial = Math.hypot(
-                    toquesAtivos[0].clientX - toquesAtivos[1].clientX,
-                    toquesAtivos[0].clientY - toquesAtivos[1].clientY
-                );
-                escalaInicial = escalaAtual;
-            }
-        }, { passive: false });
-
-        document.addEventListener("touchmove", (e) => {
-            e.preventDefault();
-            toquesAtivos = Array.from(e.touches);
-
-            if (toquesAtivos.length === 1) {
-                const x = toquesAtivos[0].clientX;
-                const y = toquesAtivos[0].clientY;
-
-                posX += (x - ultimoX);
-                posY += (y - ultimoY);
-
-                ultimoX = x;
-                ultimoY = y;
-
-                aplicarLimites();
-                atualizarTransformacao();
-            } 
-            else if (toquesAtivos.length === 2) {
-                const distanciaAtual = Math.hypot(
-                    toquesAtivos[0].clientX - toquesAtivos[1].clientX,
-                    toquesAtivos[0].clientY - toquesAtivos[1].clientY
-                );
-
-                if (distanciaInicial > 0) {
-                    let novaEscala = escalaInicial * (distanciaAtual / distanciaInicial);
-                    
-                    if (novaEscala < escalaBaseMinima) novaEscala = escalaBaseMinima;
-                    if (novaEscala > escalaBaseMinima * 3) novaEscala = escalaBaseMinima * 3;
-
-                    escalaAtual = novaEscala;
-                    aplicarLimites();
-                    atualizarTransformacao();
-                }
-            }
-        }, { passive: false });
-
-        document.addEventListener("touchend", (e) => {
-            toquesAtivos = Array.from(e.touches);
-        });
-
-        const titulo = document.getElementById("titulo");
-        const escute = document.getElementById("escute");
-        const avisoFone = document.getElementById("avisoFone");
-        const mapaIframe = document.querySelector(".mapa iframe");
-
-        let elementosExibidos = false;
-
-        function mostrarElementos() {
-            if (elementosExibidos) return;
-            elementosExibidos = true;
-
-            setTimeout(function () {
-                document.body.classList.remove("carregando");
-                titulo.style.visibility = "visible";
-                escute.style.visibility = "visible";
-                titulo.style.opacity = "1";
-                escute.style.opacity = "1";
-            }, 500);
-        }
-
-        mapaIframe.addEventListener("load", mostrarElementos, { once: true });
-        setTimeout(mostrarElementos, 3000);
-
-        const audioPlayer = document.getElementById("audioPlayer");
-        const fecharAudio = document.getElementById("fecharAudio");
-        const botaoPlay = document.getElementById("botaoPlay");
+        // Player de Áudio Unificado
         const audio = document.getElementById("meuAudio");
-        const barraProgresso = document.getElementById("barraProgresso");
-        const progressoOnda = document.getElementById("progressoOnda");
-        const tempoAtual = document.getElementById("tempoAtual");
+        
+        const escutePc = document.getElementById("escutePc");
+        const audioPlayerPc = document.getElementById("audioPlayerPc");
+        const avisoFonePc = document.getElementById("avisoFonePc");
+        const botaoPlayPc = document.getElementById("botaoPlayPc");
+        const barraProgressoPc = document.getElementById("barraProgressoPc");
+        const progressoOndaPc = document.getElementById("progressoOndaPc");
+        const tempoAtualPc = document.getElementById("tempoAtualPc");
+        const fecharAudioPc = document.getElementById("fecharAudioPc");
 
-        let avisoFoneTimer = null;
-        let avisoFoneTimerIniciado = false;
+        const escuteMob = document.getElementById("escuteMob");
+        const audioPlayerMob = document.getElementById("audioPlayerMob");
+        const avisoFoneMob = document.getElementById("avisoFoneMob");
+        const botaoPlayMob = document.getElementById("botaoPlayMob");
+        const barraProgressoMob = document.getElementById("barraProgressoMob");
+        const progressoOndaMob = document.getElementById("progressoOndaMob");
+        const tempoAtualMob = document.getElementById("tempoAtualMob");
+        const fecharAudioMob = document.getElementById("fecharAudioMob");
 
-        titulo.addEventListener("click", function (event) {
-            if (event.target.tagName !== "A") {
-                titulo.classList.toggle("aberto");
-            }
-        });
+        let avisoTimer = null;
 
         function formatarTempo(segundos) {
             if (isNaN(segundos)) return "00:00";
-            const minutos = Math.floor(segundos / 60);
-            const segundosRestantes = Math.floor(segundos % 60);
-            return String(minutos).padStart(2, "0") + ":" + String(segundosRestantes).padStart(2, "0");
+            const min = Math.floor(segundos / 60);
+            const seg = Math.floor(segundos % 60);
+            return String(min).padStart(2, "0") + ":" + String(seg).padStart(2, "0");
         }
 
-        audio.addEventListener("loadedmetadata", () => {
-            tempoAtual.textContent = "00:00 / " + formatarTempo(audio.duration);
+        escutePc.addEventListener("click", () => {
+            escutePc.classList.add("oculto");
+            audioPlayerPc.classList.add("aberto");
+            avisoFonePc.classList.add("visivel");
+            audio.play().then(() => { botaoPlayPc.textContent = "❚❚"; }).catch(e => console.log(e));
+            avisoTimer = setTimeout(() => avisoFonePc.classList.remove("visivel"), 15000);
         });
 
-        escute.addEventListener("click", function () {
-            escute.classList.add("oculto");
-            audioPlayer.classList.add("aberto");
-
-            if (avisoFoneTimer !== null) clearTimeout(avisoFoneTimer);
-            avisoFoneTimer = null;
-            avisoFoneTimerIniciado = false;
-
-            avisoFone.classList.remove("oculto");
-            avisoFone.classList.add("visivel");
-
-            audio.play().then(() => {
-                botaoPlay.textContent = "❚❚";
-            }).catch(err => {
-                console.log("Autoplay restrito:", err);
-            });
+        escuteMob.addEventListener("click", () => {
+            escuteMob.classList.add("oculto");
+            audioPlayerMob.classList.add("aberto");
+            avisoFoneMob.classList.add("visivel");
+            audio.play().then(() => { botaoPlayMob.textContent = "❚❚"; }).catch(e => console.log(e));
+            avisoTimer = setTimeout(() => avisoFoneMob.classList.remove("visivel"), 15000);
         });
 
-        fecharAudio.addEventListener("click", function () {
-            audio.pause();
-            audio.currentTime = 0;
-            botaoPlay.textContent = "▶";
-            progressoOnda.style.width = "0%";
-            audioPlayer.classList.remove("aberto");
-            escute.classList.remove("oculto");
-
-            if (avisoFoneTimer !== null) clearTimeout(avisoFoneTimer);
-            avisoFoneTimer = null;
-            avisoFoneTimerIniciado = false;
-
-            avisoFone.classList.remove("visivel", "oculto");
-        });
-
-        botaoPlay.addEventListener("click", function (event) {
-            event.stopPropagation();
+        function alternarPlay() {
             if (audio.paused) {
                 audio.play();
-                botaoPlay.textContent = "❚❚";
+                botaoPlayPc.textContent = "❚❚";
+                botaoPlayMob.textContent = "❚❚";
             } else {
                 audio.pause();
-                botaoPlay.textContent = "▶";
+                botaoPlayPc.textContent = "▶";
+                botaoPlayMob.textContent = "▶";
             }
-        });
+        }
+        botaoPlayPc.addEventListener("click", alternarPlay);
+        botaoPlayMob.addEventListener("click", alternarPlay);
 
         audio.addEventListener("timeupdate", () => {
             if (audio.duration) {
                 const progresso = (audio.currentTime / audio.duration) * 100;
-                barraProgresso.value = progresso;
-                progressoOnda.style.width = progresso + "%";
-                tempoAtual.textContent = formatarTempo(audio.currentTime) + " / " + formatarTempo(audio.duration);
-
-                if (!avisoFoneTimerIniciado && avisoFone.classList.contains("visivel")) {
-                    avisoFoneTimerIniciado = true;
-                    avisoFoneTimer = setTimeout(() => {
-                        avisoFone.classList.remove("visivel");
-                        avisoFone.classList.add("oculto");
-                    }, 15000);
-                }
+                barraProgressoPc.value = progresso;
+                barraProgressoMob.value = progresso;
+                progressoOndaPc.style.width = progresso + "%";
+                progressoOndaMob.style.width = progresso + "%";
+                
+                const textoTempo = formatarTempo(audio.currentTime) + " / " + formatarTempo(audio.duration);
+                tempoAtualPc.textContent = textoTempo;
+                tempoAtualMob.textContent = formatarTempo(audio.currentTime);
             }
         });
 
-        barraProgresso.addEventListener("input", () => {
+        barraProgressoPc.addEventListener("input", () => {
             if (audio.duration) {
-                const novoTempo = (barraProgresso.value / 100) * audio.duration;
-                audio.currentTime = novoTempo;
-                progressoOnda.style.width = barraProgresso.value + "%";
+                audio.currentTime = (barraProgressoPc.value / 100) * audio.duration;
             }
+        });
+        barraProgressoMob.addEventListener("input", () => {
+            if (audio.duration) {
+                audio.currentTime = (barraProgressoMob.value / 100) * audio.duration;
+            }
+        });
+
+        fecharAudioPc.addEventListener("click", () => {
+            audio.pause();
+            audio.currentTime = 0;
+            botaoPlayPc.textContent = "▶";
+            progressoOndaPc.style.width = "0%";
+            audioPlayerPc.classList.remove("aberto");
+            escutePc.classList.remove("oculto");
+            avisoFonePc.classList.remove("visivel");
+            if (avisoTimer) clearTimeout(avisoTimer);
+        });
+
+        fecharAudioMob.addEventListener("click", () => {
+            audio.pause();
+            audio.currentTime = 0;
+            botaoPlayMob.textContent = "▶";
+            progressoOndaMob.style.width = "0%";
+            audioPlayerMob.classList.remove("aberto");
+            escuteMob.classList.remove("oculto");
+            avisoFoneMob.classList.remove("visivel");
+            if (avisoTimer) clearTimeout(avisoTimer);
         });
 
         audio.addEventListener("ended", () => {
-            botaoPlay.textContent = "▶";
-            progressoOnda.style.width = "0%";
+            botaoPlayPc.textContent = "▶";
+            botaoPlayMob.textContent = "▶";
+            progressoOndaPc.style.width = "0%";
+            progressoOndaMob.style.width = "0%";
             audio.currentTime = 0;
         });
     </script>
