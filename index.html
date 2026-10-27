@@ -4,140 +4,90 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
-    <title>Arrudas</title>
+    <title>Arrudas - Memórias Sonoras de um Território-Rio</title>
 
     <style>
         :root {
             --cor-arrudas: #1c4354;
+            --cor-fundo: #d8d0bc;
         }
 
         * {
             box-sizing: border-box;
         }
 
-        button,
-        input,
-        textarea,
-        select {
-            font-family: "Courier New", monospace;
-        }
-
-        html,
-        body {
+        html, body {
             margin: 0;
             padding: 0;
             width: 100%;
             height: 100%;
-            overflow: hidden;
             font-family: "Courier New", monospace;
             color: #222;
-            background-color: #d8d0bc;
-            user-select: none;
+            background-color: var(--cor-fundo);
+            overflow-x: hidden;
         }
 
-        /* ÁREA DE REFERÊNCIA GLOBAL (1920x1080) */
-        .tela-referencia {
-            position: absolute;
-            left: 0;
-            top: 0;
-            width: 1920px;
-            height: 1080px;
-            transform-origin: 0 0;
-            z-index: 1;
-            background-color: #d8d0bc;
-            will-change: transform;
-        }
-
-        /* MAPA BASE */
-        .mapa {
-            position: absolute;
+        /* MAPA DE FUNDO */
+        .mapa-container {
+            position: fixed;
             top: 0;
             left: 0;
-            width: 1920px;
-            height: 1080px;
+            width: 100vw;
+            height: 100vh;
             z-index: 1;
-            background-color: #d8d0bc;
         }
 
-        .mapa iframe {
-            display: block;
+        .mapa-container iframe {
             width: 100%;
             height: 100%;
             border: none;
-            margin: 0;
-            padding: 0;
+            pointer-events: auto;
+            filter: sepia(75%) saturate(65%) brightness(90%) contrast(95%);
+        }
+
+        /* CAMADA DE INTERFACE */
+        .interface-camada {
+            position: relative;
+            z-index: 10;
+            width: 100%;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 20px;
             pointer-events: none;
-            filter: sepia(75%) saturate(65%) brightness(90%) contrast(95%) !important;
-            outline: none !important;
-            box-shadow: none !important;
         }
 
-        /* DESENHO DO ARRUDAS */
-        .desenho-arrudas {
-            position: absolute;
-            top: 3%;
-            left: -6%;
-            width: 110%;
-            height: 110%;
-            z-index: 2;
-            pointer-events: none;
-            opacity: 0;
-            animation: entradaDesenho 2s ease-out 2.2s forwards;
-            transform: translate(33px, 33px);
-            filter: none;
-            background-image: linear-gradient(
-                45deg,
-                #651b28,
-                var(--cor-arrudas)
-            );
-            -webkit-mask-image: url("desenho_mapa.svg");
-            mask-image: url("desenho_mapa.svg");
-            -webkit-mask-repeat: no-repeat;
-            mask-repeat: no-repeat;
-            -webkit-mask-position: center;
-            mask-position: center;
-            -webkit-mask-size: 100% 100%;
-            mask-size: 100% 100%;
+        .interface-camada > * {
+            pointer-events: auto;
         }
 
-        @keyframes entradaDesenho {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-
-        /* PADRÃO DESKTOP */
+        /* TÍTULO DO PROJETO */
         .titulo {
-            position: absolute;
-            top: 60px;
-            left: 60px;
-            z-index: 20;
             background-color: rgba(243, 240, 232, 0.94);
-            padding: 25px 40px;
-            text-align: center;
-            min-width: 420px;
+            padding: 20px 30px;
+            border-radius: 8px;
+            max-width: 450px;
             cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
         }
 
         .titulo h1 {
             margin: 0;
-            font-size: 38px;
+            font-size: clamp(22px, 4vw, 36px);
             font-weight: bold;
         }
 
         .titulo p {
-            margin: 10px 0 0;
-            font-size: 18px;
+            margin: 8px 0 0;
+            font-size: clamp(14px, 2vw, 16px);
         }
 
         .menu-links {
-            position: absolute;
-            top: 0;
-            left: 100%;
             display: none;
-            width: 220px;
-            background-color: rgba(243, 240, 232, 0.94);
-            padding: 15px 20px;
-            text-align: left;
+            margin-top: 15px;
+            border-top: 1px solid #ccc;
+            padding-top: 10px;
         }
 
         .titulo.aberto .menu-links {
@@ -148,313 +98,260 @@
             display: block;
             text-decoration: none;
             color: #222;
-            font-size: 20px;
-            padding: 7px 0;
+            font-size: 16px;
+            padding: 5px 0;
         }
 
         .menu-links a:hover {
             text-decoration: underline;
         }
 
-        /* BOTÃO ESCUTE (DESKTOP) */
-        .escute {
-            position: absolute;
-            left: 960px;
-            top: 80px;
-            transform: translateX(-50%);
-            z-index: 30;
-            width: 190px;
-            height: 190px;
+        /* CENTRO: BOTÃO ESCUTE / AVISO */
+        .centro-container {
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            padding: 12px;
-            gap: 0;
-            background-color: rgba(28, 67, 84, 0.20);
+            margin: auto;
+            text-align: center;
+            gap: 20px;
+        }
+
+        .escute {
+            width: 180px;
+            height: 180px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background-color: rgba(28, 67, 84, 0.25);
             border: none;
             border-radius: 50%;
-            font-size: 35px;
-            font-weight: bold;
-            text-align: center;
             cursor: pointer;
-            opacity: 1;
-            visibility: visible;
-            transition: opacity 1.8s ease, visibility 1.8s linear;
+            transition: transform 0.3s ease, background-color 0.3s ease;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+        }
+
+        .escute:hover {
+            transform: scale(1.05);
+            background-color: rgba(28, 67, 84, 0.35);
         }
 
         .escute.oculto {
-            opacity: 0 !important;
-            visibility: hidden !important;
-            pointer-events: none !important;
-            transition: opacity 1.8s ease, visibility 1.8s linear !important;
+            display: none;
         }
 
         .escute img {
-            display: block;
-            width: 250px;
-            height: 240px;
+            width: 200px;
+            height: 180px;
             object-fit: contain;
-            position: relative;
-            top: -62px;
+            margin-top: -30px;
         }
 
         .escute span {
-            display: block;
-            position: relative;
-            z-index: 1;
-            margin-top: -125px;
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--cor-arrudas);
+            margin-top: -85px;
+            z-index: 2;
         }
 
         /* AVISO DE FONES */
         .aviso-fone {
-            position: absolute;
-            left: 960px;
-            top: 315px;
-            transform: translateX(-50%);
-            z-index: 31;
-            width: 540px;
-            padding: 22px 30px;
             background-color: rgba(28, 67, 84, 0.9);
             color: #e8e0cf;
+            padding: 15px 25px;
+            border-radius: 12px;
+            font-size: 16px;
+            max-width: 400px;
             text-align: center;
-            font-size: 24px;
-            line-height: 1.4;
-            border-radius: 16px;
             opacity: 0;
             visibility: hidden;
-            pointer-events: none;
-            transition: opacity 1.5s ease, visibility 1.5s linear;
+            transition: opacity 0.5s ease;
         }
 
         .aviso-fone.visivel {
-            opacity: 1 !important;
-            visibility: visible !important;
-            transition: opacity 1.5s ease, visibility 0s linear !important;
+            opacity: 1;
+            visibility: visible;
         }
 
         .aviso-fone.oculto {
-            opacity: 0 !important;
-            visibility: hidden !important;
-            transition: opacity 1.5s ease, visibility 1.5s linear !important;
-        }
-
-        /* PAINEL DE ÁUDIO */
-        .audio {
             display: none;
-            position: absolute;
-            left: 210px;
-            top: 400px;
-            z-index: 30;
-            width: 1500px;
-            background: transparent;
-            backdrop-filter: none;
-            -webkit-backdrop-filter: none;
-            border-radius: 0;
-            padding: 10px 0;
-            border: none;
-            box-shadow: none;
         }
 
-        .audio.aberto {
+        /* PAINEL DE ÁUDIO INFERIOR */
+        .audio-painel {
+            display: none;
+            background-color: rgba(243, 240, 232, 0.96);
+            padding: 20px;
+            border-radius: 16px;
+            max-width: 600px;
+            width: 100%;
+            margin: 0 auto;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            position: relative;
+        }
+
+        .audio-painel.aberto {
             display: block;
-        }
-
-        .carregando-audio {
-            text-align: center;
-            font-size: 18px;
-            color: #1c4354;
-            padding: 40px 0;
-            font-weight: bold;
-        }
-
-        .audio.pronto .carregando-audio {
-            display: none;
-        }
-
-        .fechar-audio,
-        .player {
-            display: none;
-        }
-
-        .audio.pronto .fechar-audio,
-        .audio.pronto .player {
-            display: block;
-            visibility: visible;
         }
 
         .fechar-audio {
             position: absolute;
-            top: -40px;
-            right: 0;
-            z-index: 10;
+            top: 10px;
+            right: 15px;
+            background: none;
             border: none;
-            background: rgba(243, 240, 232, 0.8);
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            color: #222;
-            font-size: 28px;
-            line-height: 1;
+            font-size: 24px;
             cursor: pointer;
+            color: #555;
+        }
+
+        .player-conteudo {
             display: flex;
             align-items: center;
-            justify-content: center;
-        }
-
-        .player,
-        .waveform-bloco {
-            width: 100%;
-        }
-
-        .waveform-visualizacao {
-            position: relative;
-            width: 100%;
-            height: 220px;
-            cursor: pointer;
-            background: transparent;
-            border: none;
-            overflow: hidden;
-        }
-
-        #waveform {
-            width: 100%;
-            height: 220px;
-            opacity: 1;
+            gap: 15px;
+            margin-top: 10px;
         }
 
         .botao-play {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            z-index: 6;
+            width: 55px;
+            height: 55px;
+            border-radius: 50%;
+            background-color: var(--cor-arrudas);
+            color: #fff;
+            border: none;
+            font-size: 20px;
             display: flex;
             align-items: center;
             justify-content: center;
-            width: 65px;
-            height: 65px;
-            border: none;
-            border-radius: 50%;
-            background: rgba(243, 240, 232, 0.95);
-            font-size: 26px;
-            color: #222;
             cursor: pointer;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+            flex-shrink: 0;
         }
 
-        .controles-waveform {
+        .barra-progresso-container {
+            flex-grow: 1;
             display: flex;
-            align-items: center;
-            justify-content: flex-end;
-            gap: 12px;
-            margin-top: 14px;
+            flex-direction: column;
+            gap: 5px;
         }
 
-        .tempo {
-            font-size: 16px;
-            text-align: right;
+        input[type="range"] {
+            width: 100%;
+            accent-color: var(--cor-arrudas);
+            cursor: pointer;
+        }
+
+        .tempos-info {
+            display: flex;
+            justify-content: space-between;
+            font-size: 14px;
             font-weight: bold;
+            color: #444;
         }
 
-        /* AJUSTES MOBILE RESPONSIVOS SUAVES */
-        @media (max-width: 850px) {
+        /* ONDA SONORA ANIMADA EM CSS (EQUALIZADOR) */
+        .onda-sonora {
+            display: flex;
+            align-items: flex-end;
+            gap: 3px;
+            height: 22px;
+            padding: 0 5px;
+        }
+
+        .onda-sonora .barra {
+            width: 3px;
+            height: 4px;
+            background-color: #B79A78;
+            border-radius: 2px;
+            transition: height 0.2s ease;
+        }
+
+        .onda-sonora.rodando .barra:nth-child(1) { animation: ondaAnim 0.7s infinite ease-in-out; }
+        .onda-sonora.rodando .barra:nth-child(2) { animation: ondaAnim 0.4s infinite ease-in-out 0.1s; }
+        .onda-sonora.rodando .barra:nth-child(3) { animation: ondaAnim 0.6s infinite ease-in-out 0.2s; }
+        .onda-sonora.rodando .barra:nth-child(4) { animation: ondaAnim 0.5s infinite ease-in-out 0.3s; }
+        .onda-sonora.rodando .barra:nth-child(5) { animation: ondaAnim 0.8s infinite ease-in-out 0.4s; }
+
+        @keyframes ondaAnim {
+            0%, 100% { height: 4px; }
+            50% { height: 20px; }
+        }
+
+        .player-topo {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 5px;
+            padding-right: 25px;
+        }
+
+        /* AJUSTES PARA TELAS PEQUENAS */
+        @media (max-width: 600px) {
+            .interface-camada {
+                padding: 15px;
+            }
             .titulo {
-                top: 20px;
-                left: 20px;
-                padding: 15px 20px;
-                min-width: unset;
-                max-width: 90vw;
-            }
-            .titulo h1 { font-size: 22px; }
-            .titulo p { font-size: 13px; }
-
-            .escute {
-                left: 50%;
-                top: 150px;
-                transform: translateX(-50%);
-            }
-
-            .aviso-fone {
-                left: 50%;
-                top: 360px;
-                width: 90vw;
-                max-width: 400px;
-                font-size: 16px;
-                transform: translateX(-50%);
-            }
-
-            .audio {
-                left: 5%;
-                top: 150px;
-                width: 90%;
+                padding: 15px;
             }
         }
     </style>
 </head>
+<body>
 
-<body class="carregando">
+    <!-- MAPA AO FUNDO -->
+    <div class="mapa-container">
+        <iframe src="//umap.openstreetmap.fr/pt-br/map/mapa_1471708?scaleControl=false&miniMapControl=false&scrollWheelZoom=true&zoomControl=true&editMode=disabled&moreControl=false&searchControl=false&tilelayersControl=false&embedControl=false&datalayersControl=false&onLoadPanel=none&captionBar=false&captionMenus=false&fullscreenControl=false&locateControl=false&captionControl=false&printControl=false&measureControl=true"></iframe>
+    </div>
 
-    <div class="tela-referencia" id="telaReferencia">
+    <!-- INTERFACE -->
+    <div class="interface-camada">
         
-        <div class="mapa">
-            <iframe
-                allowfullscreen
-                allow="geolocation"
-                src="//umap.openstreetmap.fr/pt-br/map/mapa_1471708?scaleControl=false&miniMapControl=false&scrollWheelZoom=false&zoomControl=false&editMode=disabled&moreControl=false&searchControl=false&tilelayersControl=false&embedControl=false&datalayersControl=false&onLoadPanel=none&captionBar=false&captionMenus=false&fullscreenControl=false&locateControl=false&captionControl=false&printControl=false&measureControl=false&dragging=false">
-            </iframe>
-
-            <div class="desenho-arrudas" aria-hidden="true"></div>
-        </div>
-
+        <!-- CABEÇALHO / TÍTULO -->
         <div class="titulo" id="titulo">
             <h1>ARRUDAS</h1>
             <p>Memórias Sonoras de um Território-Rio</p>
-
             <div class="menu-links">
                 <a href="sobre.html">Sobre o projeto</a>
             </div>
         </div>
 
-        <div class="escute" id="escute">
-            <img src="orelha.png" alt="">
-            <span>ESCUTE</span>
-        </div>
-
-        <div class="aviso-fone" id="avisoFone" role="status">
-            Para uma experiência sonora imersiva, use fones de ouvido.
-        </div>
-
-        <div class="audio" id="audioPlayer">
-            <div class="carregando-audio" id="carregandoAudio">Carregando...</div>
-
-            <button
-                class="fechar-audio"
-                id="fecharAudio"
-                type="button"
-                aria-label="Fechar áudio">
-                ×
+        <!-- CENTRO -->
+        <div class="centro-container">
+            <button class="escute" id="escute">
+                <img src="orelha.png" alt="Orelha">
+                <span>ESCUTE</span>
             </button>
 
-            <div class="player">
-                <div class="waveform-bloco">
-                    <div
-                        class="waveform-visualizacao"
-                        id="waveformVisualizacao">
+            <div class="aviso-fone" id="avisoFone">
+                Para uma experiência sonora imersiva, use fones de ouvido.
+            </div>
+        </div>
 
-                        <div id="waveform"></div>
-
-                        <button
-                            class="botao-play"
-                            id="botaoPlay"
-                            aria-label="Reproduzir"
-                            type="button">
-                            ▶
-                        </button>
-                    </div>
-
-                    <div class="controles-waveform">
-                        <div class="tempo" id="tempo">00:00 / 00:00</div>
+        <!-- PAINEL DE ÁUDIO -->
+        <div class="audio-painel" id="audioPainel">
+            <button class="fechar-audio" id="fecharAudio">×</button>
+            
+            <div class="player-topo">
+                <div style="font-weight: bold; font-size: 15px;">Peça Sonora - Arrudas</div>
+                <!-- Onda sonora animada -->
+                <div class="onda-sonora" id="visualizadorOnda">
+                    <span class="barra"></span>
+                    <span class="barra"></span>
+                    <span class="barra"></span>
+                    <span class="barra"></span>
+                    <span class="barra"></span>
+                </div>
+            </div>
+            
+            <div class="player-conteudo">
+                <button class="botao-play" id="botaoPlay">▶</button>
+                
+                <div class="barra-progresso-container">
+                    <input type="range" id="barraProgresso" value="0" max="100" step="0.1">
+                    <div class="tempos-info">
+                        <span id="tempoAtual">00:00</span>
+                        <span id="tempoTotal">00:00</span>
                     </div>
                 </div>
             </div>
@@ -462,274 +359,104 @@
 
     </div>
 
-    <script type="module">
-        import WaveSurfer from 'https://cdn.jsdelivr.net/npm/wavesurfer.js@8/dist/wavesurfer.esm.js';
+    <!-- ELEMENTO DE ÁUDIO NATIVO -->
+    <audio id="meuAudio" preload="auto">
+        <source src="https://pub-0c523da3e80b4a0ab591837050bc71cb.r2.dev/arrudas_peca_sonora.m4a" type="audio/mp4">
+        Seu navegador não suporta elemento de áudio.
+    </audio>
 
-        const telaReferencia = document.getElementById("telaReferencia");
-
-        let escalaAtual = 1;
-        let escalaBaseMinima = 1;
-        let posX = 0;
-        let posY = 0;
-
-        const larguraRef = 1920;
-        const alturaRef = 1080;
-
-        function atualizarTransformacao() {
-            telaReferencia.style.transform = `translate(${posX}px, ${posY}px) scale(${escalaAtual})`;
-        }
-
-        function aplicarLimites() {
-            const wWin = window.innerWidth;
-            const hWin = window.innerHeight;
-            const wEscalado = larguraRef * escalaAtual;
-            const hEscalado = alturaRef * escalaAtual;
-
-            if (wEscalado >= wWin) {
-                const limiteX = wWin - wEscalado;
-                posX = Math.min(0, Math.max(limiteX, posX));
-            } else {
-                posX = (wWin - wEscalado) / 2;
-            }
-
-            if (hEscalado >= hWin) {
-                const limiteY = hWin - hEscalado;
-                posY = Math.min(0, Math.max(limiteY, posY));
-            } else {
-                posY = (hWin - hEscalado) / 2;
-            }
-        }
-
-        function inicializarPosicaoDinamica() {
-            const wWin = window.innerWidth;
-            const hWin = window.innerHeight;
-
-            escalaBaseMinima = Math.max(wWin / larguraRef, hWin / alturaRef);
-            escalaAtual = escalaBaseMinima;
-
-            if (wWin <= 850) {
-                posY = 0; 
-            } else {
-                posY = (hWin - (alturaRef * escalaAtual)) / 2; 
-            }
-
-            const wEscalado = larguraRef * escalaAtual;
-            posX = (wWin - wEscalado) / 2;
-
-            aplicarLimites();
-            atualizarTransformacao();
-        }
-
-        inicializarPosicaoDinamica();
-
-        window.addEventListener("resize", inicializarPosicaoDinamica);
-        window.addEventListener("orientationchange", () => {
-            setTimeout(inicializarPosicaoDinamica, 300);
-        });
-
-        let toquesAtivos = [];
-        let distanciaInicial = 0;
-        let escalaInicial = 1;
-        let ultimoX = 0;
-        let ultimoY = 0;
-
-        // Permite o toque e pinça livremente na tela
-        document.addEventListener("touchstart", (e) => {
-            toquesAtivos = Array.from(e.touches);
-            if (toquesAtivos.length === 1) {
-                ultimoX = toquesAtivos[0].clientX;
-                ultimoY = toquesAtivos[0].clientY;
-            } else if (toquesAtivos.length === 2) {
-                distanciaInicial = Math.hypot(
-                    toquesAtivos[0].clientX - toquesAtivos[1].clientX,
-                    toquesAtivos[0].clientY - toquesAtivos[1].clientY
-                );
-                escalaInicial = escalaAtual;
-            }
-        }, { passive: true });
-
-        document.addEventListener("touchmove", (e) => {
-            toquesAtivos = Array.from(e.touches);
-
-            if (toquesAtivos.length === 1 && escalaAtual > escalaBaseMinima) {
-                const x = toquesAtivos[0].clientX;
-                const y = toquesAtivos[0].clientY;
-
-                posX += (x - ultimoX);
-                posY += (y - ultimoY);
-
-                ultimoX = x;
-                ultimoY = y;
-
-                aplicarLimites();
-                atualizarTransformacao();
-            } else if (toquesAtivos.length === 2) {
-                const distanciaAtual = Math.hypot(
-                    toquesAtivos[0].clientX - toquesAtivos[1].clientX,
-                    toquesAtivos[0].clientY - toquesAtivos[1].clientY
-                );
-
-                if (distanciaInicial > 0) {
-                    let novaEscala = escalaInicial * (distanciaAtual / distanciaInicial);
-                    
-                    if (novaEscala < escalaBaseMinima) novaEscala = escalaBaseMinima;
-                    if (novaEscala > escalaBaseMinima * 3) novaEscala = escalaBaseMinima * 3;
-
-                    escalaAtual = novaEscala;
-                    aplicarLimites();
-                    atualizarTransformacao();
-                }
-            }
-        }, { passive: true });
-
+    <script>
         const titulo = document.getElementById("titulo");
         const escute = document.getElementById("escute");
         const avisoFone = document.getElementById("avisoFone");
-        const mapaIframe = document.querySelector(".mapa iframe");
-
-        let elementosExibidos = false;
-
-        function mostrarElementos() {
-            if (elementosExibidos) return;
-            elementosExibidos = true;
-
-            setTimeout(function () {
-                document.body.classList.remove("carregando");
-                titulo.style.visibility = "visible";
-                escute.style.visibility = "visible";
-                titulo.style.opacity = "1";
-                escute.style.opacity = "1";
-            }, 500);
-        }
-
-        mapaIframe.addEventListener("load", mostrarElementos, { once: true });
-        setTimeout(mostrarElementos, 3000);
-
-        const audioPlayer = document.getElementById("audioPlayer");
+        const audioPainel = document.getElementById("audioPainel");
         const fecharAudio = document.getElementById("fecharAudio");
         const botaoPlay = document.getElementById("botaoPlay");
-        const tempo = document.getElementById("tempo");
-        const waveformVisualizacao = document.getElementById("waveformVisualizacao");
+        const audio = document.getElementById("meuAudio");
+        const barraProgresso = document.getElementById("barraProgresso");
+        const tempoAtual = document.getElementById("tempoAtual");
+        const tempoTotal = document.getElementById("tempoTotal");
+        const visualizadorOnda = document.getElementById("visualizadorOnda");
 
-        const audioUrl = "https://pub-0c523da3e80b4a0ab591837050bc71cb.r2.dev/arrudas_peca_sonora.m4a";
+        let avisoTimer = null;
 
-        let wavesurfer = null;
-        let avisoFoneTimer = null;
-        let avisoFoneTimerIniciado = false;
-
-        titulo.addEventListener("click", function (event) {
-            if (event.target.tagName !== "A") {
+        titulo.addEventListener("click", (e) => {
+            if (e.target.tagName !== "A") {
                 titulo.classList.toggle("aberto");
             }
         });
 
         function formatarTempo(segundos) {
-            const minutos = Math.floor(segundos / 60);
-            const segundosRestantes = Math.floor(segundos % 60);
-            return String(minutos).padStart(2, "0") + ":" + String(segundosRestantes).padStart(2, "0");
+            if (isNaN(segundos)) return "00:00";
+            const min = Math.floor(segundos / 60);
+            const seg = Math.floor(segundos % 60);
+            return String(min).padStart(2, "0") + ":" + String(seg).padStart(2, "0");
         }
 
-        function atualizarTempo() {
-            if (!wavesurfer) return;
-            const duracao = wavesurfer.getDuration();
-            if (!duracao || !Number.isFinite(duracao)) return;
-            const atual = wavesurfer.getCurrentTime();
-            tempo.textContent = formatarTempo(atual) + " / " + formatarTempo(duracao);
-        }
+        audio.addEventListener("loadedmetadata", () => {
+            tempoTotal.textContent = formatarTempo(audio.duration);
+        });
 
-        function carregarEIniciarWaveform() {
-            if (!wavesurfer) {
-                try {
-                    const audioElement = document.createElement('audio');
-                    audioElement.src = audioUrl;
-                    audioElement.preload = 'auto';
-
-                    wavesurfer = WaveSurfer.create({
-                        container: "#waveform",
-                        media: audioElement,
-                        height: 220,
-                        waveColor: "#B79A78",
-                        progressColor: "#6F7770",
-                        cursorWidth: 0,
-                        normalize: false,
-                        interact: false,
-                        barWidth: 2,
-                        barGap: 1,
-                        barRadius: 3
-                    });
-
-                    wavesurfer.on("ready", function () {
-                        audioPlayer.classList.add("pronto");
-                        atualizarTempo();
-                        wavesurfer.play().catch(err => console.log("Autoplay retido:", err));
-                    });
-
-                    wavesurfer.on("timeupdate", atualizarTempo);
-
-                    wavesurfer.on("play", function () {
-                        botaoPlay.textContent = "Ⅱ";
-                        if (!avisoFoneTimerIniciado && avisoFone.classList.contains("visivel")) {
-                            avisoFoneTimerIniciado = true;
-                            avisoFoneTimer = setTimeout(() => {
-                                avisoFone.classList.remove("visivel");
-                                avisoFone.classList.add("oculto");
-                            }, 15000);
-                        }
-                    });
-
-                    wavesurfer.on("pause", () => botaoPlay.textContent = "▶");
-                    wavesurfer.on("finish", () => { botaoPlay.textContent = "▶"; atualizarTempo(); });
-                } catch (erro) {
-                    console.error("Erro no WaveSurfer:", erro);
-                }
-            } else {
-                setTimeout(() => {
-                    if (wavesurfer) {
-                        wavesurfer.play().catch(() => {});
-                    }
-                }, 100);
-            }
-        }
-
-        escute.addEventListener("click", function () {
+        escute.addEventListener("click", () => {
             escute.classList.add("oculto");
-            audioPlayer.classList.add("aberto");
-
-            if (avisoFoneTimer !== null) clearTimeout(avisoFoneTimer);
-            avisoFoneTimer = null;
-            avisoFoneTimerIniciado = false;
-
-            avisoFone.classList.remove("oculto");
+            audioPainel.classList.add("aberto");
             avisoFone.classList.add("visivel");
 
-            setTimeout(carregarEIniciarWaveform, 50);
+            audio.play().then(() => {
+                botaoPlay.textContent = "❚❚";
+                visualizadorOnda.classList.add("rodando");
+            }).catch(err => {
+                console.log("Autoplay restrito:", err);
+            });
+
+            avisoTimer = setTimeout(() => {
+                avisoFone.classList.remove("visivel");
+                avisoFone.classList.add("oculto");
+            }, 15000);
         });
 
-        fecharAudio.addEventListener("click", function () {
-            if (wavesurfer) wavesurfer.pause();
-            audioPlayer.classList.remove("aberto");
-            escute.classList.remove("oculto");
-
-            if (avisoFoneTimer !== null) clearTimeout(avisoFoneTimer);
-            avisoFoneTimer = null;
-            avisoFoneTimerIniciado = false;
-
-            avisoFone.classList.remove("visivel", "oculto");
-        });
-
-        botaoPlay.addEventListener("click", async function (event) {
-            event.stopPropagation();
-            if (wavesurfer) {
-                await wavesurfer.playPause();
+        botaoPlay.addEventListener("click", () => {
+            if (audio.paused) {
+                audio.play();
+                botaoPlay.textContent = "❚❚";
+                visualizadorOnda.classList.add("rodando");
+            } else {
+                audio.pause();
+                botaoPlay.textContent = "▶";
+                visualizadorOnda.classList.remove("rodando");
             }
         });
 
-        waveformVisualizacao.addEventListener("click", function (event) {
-            if (event.target === botaoPlay || !wavesurfer || !wavesurfer.getDuration()) return;
-            const area = waveformVisualizacao.getBoundingClientRect();
-            const proporcao = Math.max(0, Math.min(1, (event.clientX - area.left) / area.width));
-            wavesurfer.seekTo(proporcao);
-            atualizarTempo();
+        audio.addEventListener("timeupdate", () => {
+            if (audio.duration) {
+                const progresso = (audio.currentTime / audio.duration) * 100;
+                barraProgresso.value = progresso;
+                tempoAtual.textContent = formatarTempo(audio.currentTime);
+            }
+        });
+
+        barraProgresso.addEventListener("input", () => {
+            if (audio.duration) {
+                const novoTempo = (barraProgresso.value / 100) * audio.duration;
+                audio.currentTime = novoTempo;
+            }
+        });
+
+        fecharAudio.addEventListener("click", () => {
+            audio.pause();
+            audio.currentTime = 0;
+            botaoPlay.textContent = "▶";
+            visualizadorOnda.classList.remove("rodando");
+            audioPainel.classList.remove("aberto");
+            escute.classList.remove("oculto");
+            avisoFone.classList.remove("visivel", "oculto");
+            if (avisoTimer) clearTimeout(avisoTimer);
+        });
+
+        audio.addEventListener("ended", () => {
+            botaoPlay.textContent = "▶";
+            visualizadorOnda.classList.remove("rodando");
+            audio.currentTime = 0;
         });
     </script>
 </body>
