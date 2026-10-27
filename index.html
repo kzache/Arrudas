@@ -333,9 +333,11 @@
             .dock-mob > * { pointer-events: auto; }
 
             .escute-mob {
-                margin-bottom: 60vh;   /* sobe o botão: aumente para subir mais, diminua para descer */
-                width: 150px;
-                height: 150px;
+                --d: min(150px, 34vh);   /* diâmetro: máx. 150px, encolhe em telas baixas */
+                /* 60vh, mas nunca deixa o botão passar do topo da tela */
+                margin-bottom: min(60vh, calc(100vh - var(--d) - 130px));
+                width: var(--d);
+                height: var(--d);
                 display: flex;
                 flex-direction: column;
                 align-items: center;
@@ -347,9 +349,22 @@
                 -webkit-tap-highlight-color: transparent;
             }
             .escute-mob.oculto { display: none; }
-            .escute-mob img { width: 201px; height: 193px; object-fit: contain; position: relative; top: -42px; }
-            .escute-mob span { display: block; position: relative; z-index: 1; margin-top: -95px; color: var(--cor-arrudas); font-size: 28px; font-weight: bold; }
-
+            .escute-mob img {
+                width: calc(var(--d) * 1.34);
+                height: calc(var(--d) * 1.287);
+                object-fit: contain;
+                position: relative;
+                top: calc(var(--d) * -0.28);
+            }
+            .escute-mob span {
+                display: block;
+                position: relative;
+                z-index: 1;
+                margin-top: calc(var(--d) * -0.633);
+                color: var(--cor-arrudas);
+                font-size: calc(var(--d) * 0.1867);
+                font-weight: bold;
+            }
             .aviso-mob {
                 position: absolute;
                 bottom: 100%;
