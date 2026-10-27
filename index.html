@@ -3,7 +3,7 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes, viewport-fit=cover">
     <title>Arrudas - Memórias Sonoras de um Território-Rio</title>
 
     <style>
@@ -12,9 +12,7 @@
             --cor-fundo: #d8d0bc;
         }
 
-        * {
-            box-sizing: border-box;
-        }
+        * { box-sizing: border-box; }
 
         html, body {
             margin: 0;
@@ -26,10 +24,11 @@
             background-color: var(--cor-fundo);
             overflow: hidden;
             user-select: none;
+            overscroll-behavior: none;
         }
 
         /* ==========================================
-           1. MODO COMPUTADOR (Desktop > 850px)
+           1. MODO COMPUTADOR (Desktop > 850px) — INALTERADO
            ========================================== */
         @media (min-width: 851px) {
             .tela-referencia {
@@ -43,14 +42,14 @@
                 background-color: var(--cor-fundo);
                 will-change: transform;
             }
-            .container-mobile { display: none; }
+            .mobile { display: none; }
         }
 
         @media (max-width: 850px) {
             .tela-referencia { display: none; }
         }
 
-        /* ELEMENTOS DO PC */
+        /* ELEMENTOS DO PC (e mapa/desenho, compartilhados com o mobile) */
         .mapa {
             position: absolute;
             top: 0;
@@ -163,44 +162,6 @@
 
 
         /* ==========================================
-           2. MODO CELULAR (Mobile <= 850px)
-           ========================================== */
-        @media (max-width: 850px) {
-            .container-mobile {
-                position: absolute;
-                left: 0;
-                top: 0;
-                width: 1920px;
-                height: 1080px;
-                transform-origin: 0 0;
-                z-index: 1;
-                background-color: var(--cor-fundo);
-                will-change: transform;
-            }
-            .tela-referencia { display: none; }
-
-            /* Ajustes específicos de posição para o celular dentro da matriz 1920x1080 */
-            #tituloMob {
-                top: 50px;
-                left: 50px;
-            }
-            #escuteMob {
-                left: 960px;
-                top: 250px; /* Deslocado para baixo do desenho para não sobrepor */
-            }
-            #avisoFoneMob {
-                left: 960px;
-                top: 470px;
-            }
-            #audioPlayerMob {
-                left: 210px;
-                top: 650px; /* Posicionado visível na parte inferior da tela */
-                width: 1500px;
-            }
-        }
-
-
-        /* ==========================================
            COMPONENTES COMPARTILHADOS DO PLAYER
            ========================================== */
         .player-flex {
@@ -286,14 +247,144 @@
             min-width: 130px;
             text-align: right;
         }
+
+
+        /* ==========================================================
+           2. MODO CELULAR (<= 850px) — ARQUITETURA EM 2 CAMADAS
+
+           CAMADA 1 (.fundo-mob): só mapa + desenho, dentro de um "palco"
+           1920x1080 escalado em modo COVER (mesma geometria do desktop,
+           então mapa e SVG nunca se desalinham). Altura = 100lvh, que
+           NÃO muda quando a barra do navegador some/aparece.
+
+           CAMADA 2 (.ui-mob): título, ESCUTE, aviso e player em tamanho
+           REAL (px/vw), sem scale. Sempre dentro da tela visível (dvh +
+           safe-area). Nada de UI dentro da matriz escalada.
+           ========================================================== */
+        .mobile { display: none; }
+
+        @media (max-width: 850px) {
+            .mobile { display: block; position: fixed; inset: 0; overflow: hidden; background: var(--cor-fundo); }
+
+            /* --- Camada 1: fundo --- */
+            .fundo-mob {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100vh;      /* fallback */
+                height: 100lvh;     /* estável: ignora a barra do navegador */
+                overflow: hidden;
+                z-index: 1;
+                touch-action: none;
+                pointer-events: none;
+            }
+            .palco-mob {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 1920px;
+                height: 1080px;
+                transform-origin: 0 0;
+                will-change: transform;
+            }
+
+            /* --- Camada 2: interface em tamanho real --- */
+            .ui-mob {
+                position: fixed;
+                inset: 0;
+                z-index: 10;
+                pointer-events: none;   /* só os filhos clicáveis recebem toque */
+                padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+            }
+            .ui-mob > * { pointer-events: auto; }
+
+            /* Título (menu abre PARA BAIXO, não para a direita) */
+            .titulo-mob {
+                position: absolute;
+                top: calc(env(safe-area-inset-top) + 14px);
+                left: 14px;
+                max-width: min(80vw, 320px);
+                padding: 12px 16px;
+                background-color: rgba(243, 240, 232, 0.94);
+                cursor: pointer;
+            }
+            .titulo-mob h1 { margin: 0; font-size: 22px; font-weight: bold; line-height: 1.1; }
+            .titulo-mob p { margin: 6px 0 0; font-size: 12px; line-height: 1.3; }
+            .menu-links-mob { display: none; padding-top: 6px; }
+            .titulo-mob.aberto .menu-links-mob { display: block; }
+            .menu-links-mob a { display: block; text-decoration: none; color: #222; font-size: 16px; padding: 8px 0; }
+
+            /* Dock inferior: ESCUTE → (some) → player no mesmo lugar */
+            .dock-mob {
+                position: absolute;
+                left: 0;
+                right: 0;
+                bottom: calc(env(safe-area-inset-bottom) + 22px);
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                pointer-events: none;
+            }
+            .dock-mob > * { pointer-events: auto; }
+
+            .escute-mob {
+                width: 120px;
+                height: 120px;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                background-color: rgba(28, 67, 84, 0.20);
+                border: none;
+                border-radius: 50%;
+                cursor: pointer;
+                -webkit-tap-highlight-color: transparent;
+            }
+            .escute-mob.oculto { display: none; }
+            .escute-mob img { width: 158px; height: 152px; object-fit: contain; position: relative; top: -39px; }
+            .escute-mob span { display: block; position: relative; z-index: 1; margin-top: -79px; color: var(--cor-arrudas); font-size: 22px; font-weight: bold; }
+
+            .aviso-mob {
+                position: absolute;
+                bottom: 100%;
+                margin-bottom: 14px;
+                width: min(90vw, 340px);
+                padding: 12px 16px;
+                background-color: rgba(28, 67, 84, 0.9);
+                color: #e8e0cf;
+                text-align: center;
+                font-size: 14px;
+                line-height: 1.35;
+                border-radius: 12px;
+                opacity: 0;
+                visibility: hidden;
+                transition: opacity 1.5s ease;
+            }
+            .aviso-mob.visivel { opacity: 1; visibility: visible; }
+
+            .audio-mob {
+                display: none;
+                position: relative;
+                width: calc(100% - 28px);
+                max-width: 560px;
+            }
+            .audio-mob.aberto { display: block; }
+            .audio-mob .fechar-audio { top: -16px; right: 6px; width: 32px; height: 32px; font-size: 20px; }
+            .audio-mob .player-flex { padding: 10px 14px; gap: 10px; border-radius: 40px; }
+            .audio-mob .botao-play { width: 46px; height: 46px; font-size: 18px; }
+            .audio-mob .waveform-container { height: 40px; min-width: 0; }
+            .audio-mob .waveform-bg { height: 30px; }
+            .audio-mob .tempos-info { font-size: 11px; min-width: 86px; }
+        }
     </style>
 </head>
 <body>
 
-    <!-- ================= DESKTOP HTML ================= -->
+    <!-- ================= DESKTOP HTML (inalterado) ================= -->
     <div class="tela-referencia" id="telaReferencia">
         <div class="mapa">
-            <iframe src="//umap.openstreetmap.fr/pt-br/map/mapa_1471708?scaleControl=false&miniMapControl=false&scrollWheelZoom=false&zoomControl=false&editMode=disabled&moreControl=false&searchControl=false&tilelayersControl=false&embedControl=false&datalayersControl=false&onLoadPanel=none&captionBar=false&captionMenus=false&fullscreenControl=false&locateControl=false&captionControl=false&printControl=false&measureControl=false&dragging=false"></iframe>
+            <iframe loading="lazy" src="//umap.openstreetmap.fr/pt-br/map/mapa_1471708?scaleControl=false&miniMapControl=false&scrollWheelZoom=false&zoomControl=false&editMode=disabled&moreControl=false&searchControl=false&tilelayersControl=false&embedControl=false&datalayersControl=false&onLoadPanel=none&captionBar=false&captionMenus=false&fullscreenControl=false&locateControl=false&captionControl=false&printControl=false&measureControl=false&dragging=false"></iframe>
             <div class="desenho-arrudas" aria-hidden="true"></div>
         </div>
 
@@ -329,40 +420,51 @@
     </div>
 
 
-    <!-- ================= MOBILE HTML ================= -->
-    <div class="container-mobile" id="containerMobile">
-        <div class="mapa">
-            <iframe src="//umap.openstreetmap.fr/pt-br/map/mapa_1471708?scaleControl=false&miniMapControl=false&scrollWheelZoom=false&zoomControl=false&editMode=disabled&moreControl=false&searchControl=false&tilelayersControl=false&embedControl=false&datalayersControl=false&onLoadPanel=none&captionBar=false&captionMenus=false&fullscreenControl=false&locateControl=false&captionControl=false&printControl=false&measureControl=false&dragging=false"></iframe>
-            <div class="desenho-arrudas" aria-hidden="true"></div>
-        </div>
+    <!-- ================= MOBILE HTML (2 camadas) ================= -->
+    <div class="mobile" id="containerMobile">
 
-        <div class="titulo" id="tituloMob">
-            <h1>ARRUDAS</h1>
-            <p>Memórias Sonoras de um Território-Rio</p>
-            <div class="menu-links">
-                <a href="sobre.html">Sobre o projeto</a>
+        <!-- Camada 1: mapa + desenho (palco escalado em cover) -->
+        <div class="fundo-mob" id="fundoMob">
+            <div class="palco-mob" id="palcoMob">
+                <div class="mapa">
+                    <iframe loading="lazy" src="//umap.openstreetmap.fr/pt-br/map/mapa_1471708?scaleControl=false&miniMapControl=false&scrollWheelZoom=false&zoomControl=false&editMode=disabled&moreControl=false&searchControl=false&tilelayersControl=false&embedControl=false&datalayersControl=false&onLoadPanel=none&captionBar=false&captionMenus=false&fullscreenControl=false&locateControl=false&captionControl=false&printControl=false&measureControl=false&dragging=false"></iframe>
+                    <div class="desenho-arrudas" aria-hidden="true"></div>
+                </div>
             </div>
         </div>
 
-        <button class="escute" id="escuteMob">
-            <img src="orelha.png" alt="">
-            <span>ESCUTE</span>
-        </button>
-
-        <div class="aviso-fone" id="avisoFoneMob">
-            Para uma experiência sonora imersiva, use fones de ouvido.
-        </div>
-
-        <div class="audio" id="audioPlayerMob">
-            <button class="fechar-audio" id="fecharAudioMob">×</button>
-            <div class="player-flex">
-                <button class="botao-play" id="botaoPlayMob">▶</button>
-                <div class="waveform-container">
-                    <div class="waveform-bg"></div>
-                    <div class="progresso-onda" id="progressoOndaMob"></div>
-                    <input type="range" id="barraProgressoMob" value="0" max="100" step="0.1">
+        <!-- Camada 2: interface em tamanho real -->
+        <div class="ui-mob">
+            <div class="titulo-mob" id="tituloMob">
+                <h1>ARRUDAS</h1>
+                <p>Memórias Sonoras de um Território-Rio</p>
+                <div class="menu-links-mob">
+                    <a href="sobre.html">Sobre o projeto</a>
                 </div>
-                <div class="tempos-info" id="tempoAtualMob">00:00 / 00:00</div>
+            </div>
+
+            <div class="dock-mob">
+                <div class="aviso-mob" id="avisoFoneMob">
+                    Para uma experiência sonora imersiva, use fones de ouvido.
+                </div>
+
+                <button class="escute-mob" id="escuteMob">
+                    <img src="orelha.png" alt="">
+                    <span>ESCUTE</span>
+                </button>
+
+                <div class="audio-mob" id="audioPlayerMob">
+                    <button class="fechar-audio" id="fecharAudioMob">×</button>
+                    <div class="player-flex">
+                        <button class="botao-play" id="botaoPlayMob">▶</button>
+                        <div class="waveform-container">
+                            <div class="waveform-bg"></div>
+                            <div class="progresso-onda" id="progressoOndaMob"></div>
+                            <input type="range" id="barraProgressoMob" value="0" max="100" step="0.1">
+                        </div>
+                        <div class="tempos-info" id="tempoAtualMob">00:00 / 00:00</div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -376,10 +478,20 @@
 
     <script>
         const telaReferencia = document.getElementById("telaReferencia");
-        const containerMobile = document.getElementById("containerMobile");
+        const fundoMob = document.getElementById("fundoMob");
+        const palcoMob = document.getElementById("palcoMob");
 
         const larguraRef = 1920;
         const alturaRef = 1080;
+
+        /* ---- AJUSTES DO MOBILE ----
+           MODO_MOB: "cover"   = mapa preenche a tela toda (recorta as laterais)
+                     "contain" = mostra o mapa/desenho inteiro (sobram faixas)
+           FOCO_X / FOCO_Y: 0 a 1. Qual parte do recorte fica visível.
+                     0 = esquerda/topo, 0.5 = centro, 1 = direita/base. */
+        const MODO_MOB = "cover";
+        const FOCO_X = 0.5;
+        const FOCO_Y = 0.5;
 
         function ajustarTelas() {
             const wWin = window.innerWidth;
@@ -391,10 +503,15 @@
                 const posY = (hWin - (alturaRef * escala)) / 2;
                 telaReferencia.style.transform = `translate(${posX}px, ${posY}px) scale(${escala})`;
             } else {
-                const escala = Math.min(wWin / larguraRef, hWin / alturaRef);
-                const posX = (wWin - (larguraRef * escala)) / 2;
-                const posY = (hWin - (alturaRef * escala)) / 2;
-                containerMobile.style.transform = `translate(${posX}px, ${posY}px) scale(${escala})`;
+                // mede a camada de fundo (100lvh): não oscila com a barra do navegador
+                const w = fundoMob.clientWidth;
+                const h = fundoMob.clientHeight;
+                if (!w || !h) return;
+                const fx = w / larguraRef, fy = h / alturaRef;
+                const escala = MODO_MOB === "contain" ? Math.min(fx, fy) : Math.max(fx, fy);
+                const posX = (w - larguraRef * escala) * FOCO_X;
+                const posY = (h - alturaRef * escala) * FOCO_Y;
+                palcoMob.style.transform = `translate(${posX}px, ${posY}px) scale(${escala})`;
             }
         }
 
@@ -473,7 +590,7 @@
                 barraProgressoMob.value = progresso;
                 progressoOndaPc.style.width = progresso + "%";
                 progressoOndaMob.style.width = progresso + "%";
-                
+
                 const textoTempo = formatarTempo(audio.currentTime) + " / " + formatarTempo(audio.duration);
                 tempoAtualPc.textContent = textoTempo;
                 tempoAtualMob.textContent = textoTempo;
