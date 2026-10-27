@@ -33,7 +33,6 @@
             color: #222;
             background-color: #d8d0bc;
             user-select: none;
-            touch-action: none;
         }
 
         /* ÁREA DE REFERÊNCIA GLOBAL (1920x1080) */
@@ -106,9 +105,7 @@
             to { opacity: 1; }
         }
 
-        /* ========================================================
-           PADRÃO DESKTOP
-           ======================================================== */
+        /* PADRÃO DESKTOP */
         .titulo {
             position: absolute;
             top: 60px;
@@ -209,7 +206,7 @@
             margin-top: -125px;
         }
 
-        /* AVISO DE FONES (DESKTOP) */
+        /* AVISO DE FONES */
         .aviso-fone {
             position: absolute;
             left: 960px;
@@ -360,84 +357,37 @@
             font-weight: bold;
         }
 
-        /* ========================================================
-           EXCLUSIVO PARA CELULAR
-           ======================================================== */
+        /* AJUSTES MOBILE RESPONSIVOS SUAVES */
         @media (max-width: 850px) {
-            
             .titulo {
                 top: 20px;
+                left: 20px;
                 padding: 15px 20px;
                 min-width: unset;
-                width: max-content;
+                max-width: 90vw;
             }
-        
-            @media (orientation: portrait) {
-                .titulo {
-                    left: 50%;
-                    transform: translateX(-50%);
-                    text-align: center;
-                }
-                .menu-links {
-                    left: 50%;
-                    transform: translateX(-50%);
-                    top: 100%;
-                    text-align: center;
-                }
-            }
-
-            @media (orientation: landscape) {
-                .titulo {
-                    left: 15px;
-                    transform: none;
-                    text-align: left;
-                }
-                .menu-links {
-                    left: 0;
-                    top: 100%;
-                    text-align: left;
-                }
-            }
-
-            .titulo h1 {
-                font-size: 20px;
-            }
-
-            .titulo p {
-                font-size: 14px;
-                margin: 4px 0 0;
-            }
+            .titulo h1 { font-size: 22px; }
+            .titulo p { font-size: 13px; }
 
             .escute {
-                width: 190px;
-                height: 190px;
-                font-size: 28px;
-                left: 960px;
-                top: 220px;
+                left: 50%;
+                top: 150px;
                 transform: translateX(-50%);
-            }
-            .escute img {
-                width: 220px;
-                height: 210px;
-                top: -55px;
-            }
-            .escute span {
-                margin-top: -110px;
             }
 
             .aviso-fone {
-                left: 960px;
-                top: 450px;
-                width: 420px;
-                font-size: 19px;
-                padding: 18px 22px;
+                left: 50%;
+                top: 360px;
+                width: 90vw;
+                max-width: 400px;
+                font-size: 16px;
                 transform: translateX(-50%);
             }
 
             .audio {
-                left: 210px;
-                top: 320px;
-                width: 1500px;
+                left: 5%;
+                top: 150px;
+                width: 90%;
             }
         }
     </style>
@@ -513,8 +463,7 @@
     </div>
 
     <script type="module">
-        import WaveSurfer from
-            'https://cdn.jsdelivr.net/npm/wavesurfer.js@8/dist/wavesurfer.esm.js';
+        import WaveSurfer from 'https://cdn.jsdelivr.net/npm/wavesurfer.js@8/dist/wavesurfer.esm.js';
 
         const telaReferencia = document.getElementById("telaReferencia");
 
@@ -565,7 +514,6 @@
             }
 
             const wEscalado = larguraRef * escalaAtual;
-
             posX = (wWin - wEscalado) / 2;
 
             aplicarLimites();
@@ -585,6 +533,7 @@
         let ultimoX = 0;
         let ultimoY = 0;
 
+        // Permite o toque e pinça livremente na tela
         document.addEventListener("touchstart", (e) => {
             toquesAtivos = Array.from(e.touches);
             if (toquesAtivos.length === 1) {
@@ -597,13 +546,12 @@
                 );
                 escalaInicial = escalaAtual;
             }
-        }, { passive: false });
+        }, { passive: true });
 
         document.addEventListener("touchmove", (e) => {
-            e.preventDefault();
             toquesAtivos = Array.from(e.touches);
 
-            if (toquesAtivos.length === 1) {
+            if (toquesAtivos.length === 1 && escalaAtual > escalaBaseMinima) {
                 const x = toquesAtivos[0].clientX;
                 const y = toquesAtivos[0].clientY;
 
@@ -615,8 +563,7 @@
 
                 aplicarLimites();
                 atualizarTransformacao();
-            } 
-            else if (toquesAtivos.length === 2) {
+            } else if (toquesAtivos.length === 2) {
                 const distanciaAtual = Math.hypot(
                     toquesAtivos[0].clientX - toquesAtivos[1].clientX,
                     toquesAtivos[0].clientY - toquesAtivos[1].clientY
@@ -633,11 +580,7 @@
                     atualizarTransformacao();
                 }
             }
-        }, { passive: false });
-
-        document.addEventListener("touchend", (e) => {
-            toquesAtivos = Array.from(e.touches);
-        });
+        }, { passive: true });
 
         const titulo = document.getElementById("titulo");
         const escute = document.getElementById("escute");
@@ -668,7 +611,6 @@
         const tempo = document.getElementById("tempo");
         const waveformVisualizacao = document.getElementById("waveformVisualizacao");
 
-        // Endereço atualizado com o arquivo .aac otimizado (Fast Start)
         const audioUrl = "https://pub-0c523da3e80b4a0ab591837050bc71cb.r2.dev/arrudas_peca_sonora.m4a";
 
         let wavesurfer = null;
@@ -696,61 +638,59 @@
         }
 
         function carregarEIniciarWaveform() {
-        if (!wavesurfer) {
-            try {
-                // Cria um elemento de áudio nativo puro para streaming instantâneo
-                const audioElement = document.createElement('audio');
-                audioElement.src = audioUrl;
-                audioElement.preload = 'metadata'; // Carrega apenas os metadatos iniciais instantaneamente
-                audioElement.load();
+            if (!wavesurfer) {
+                try {
+                    const audioElement = document.createElement('audio');
+                    audioElement.src = audioUrl;
+                    audioElement.preload = 'auto';
 
-                wavesurfer = WaveSurfer.create({
-                    container: "#waveform",
-                    media: audioElement,
-                    height: 220,
-                    waveColor: "#B79A78",
-                    progressColor: "#6F7770",
-                    cursorWidth: 0,
-                    normalize: false,
-                    interact: false,
-                    barWidth: 2,
-                    barGap: 1,
-                    barRadius: 3
-                });
+                    wavesurfer = WaveSurfer.create({
+                        container: "#waveform",
+                        media: audioElement,
+                        height: 220,
+                        waveColor: "#B79A78",
+                        progressColor: "#6F7770",
+                        cursorWidth: 0,
+                        normalize: false,
+                        interact: false,
+                        barWidth: 2,
+                        barGap: 1,
+                        barRadius: 3
+                    });
 
-                wavesurfer.on("ready", function () {
-                    audioPlayer.classList.add("pronto");
-                    atualizarTempo();
-                    // Toca automaticamente assim que o streaming permitir
-                    wavesurfer.play().catch(err => console.log("Autoplay restrito:", err));
-                });
+                    wavesurfer.on("ready", function () {
+                        audioPlayer.classList.add("pronto");
+                        atualizarTempo();
+                        wavesurfer.play().catch(err => console.log("Autoplay retido:", err));
+                    });
 
-                wavesurfer.on("timeupdate", atualizarTempo);
+                    wavesurfer.on("timeupdate", atualizarTempo);
 
-                wavesurfer.on("play", function () {
-                    botaoPlay.textContent = "Ⅱ";
-                    if (!avisoFoneTimerIniciado && avisoFone.classList.contains("visivel")) {
-                        avisoFoneTimerIniciado = true;
-                        avisoFoneTimer = setTimeout(() => {
-                            avisoFone.classList.remove("visivel");
-                            avisoFone.classList.add("oculto");
-                        }, 15000);
-                    }
-                });
+                    wavesurfer.on("play", function () {
+                        botaoPlay.textContent = "Ⅱ";
+                        if (!avisoFoneTimerIniciado && avisoFone.classList.contains("visivel")) {
+                            avisoFoneTimerIniciado = true;
+                            avisoFoneTimer = setTimeout(() => {
+                                avisoFone.classList.remove("visivel");
+                                avisoFone.classList.add("oculto");
+                            }, 15000);
+                        }
+                    });
 
-                wavesurfer.on("pause", () => botaoPlay.textContent = "▶");
-                wavesurfer.on("finish", () => { botaoPlay.textContent = "▶"; atualizarTempo(); });
-            } catch (erro) {
-                console.error("Erro no WaveSurfer:", erro);
-            }
-        } else {
-            setTimeout(() => {
-                if (wavesurfer) {
-                    wavesurfer.play().catch(() => {});
+                    wavesurfer.on("pause", () => botaoPlay.textContent = "▶");
+                    wavesurfer.on("finish", () => { botaoPlay.textContent = "▶"; atualizarTempo(); });
+                } catch (erro) {
+                    console.error("Erro no WaveSurfer:", erro);
                 }
-            }, 100);
+            } else {
+                setTimeout(() => {
+                    if (wavesurfer) {
+                        wavesurfer.play().catch(() => {});
+                    }
+                }, 100);
+            }
         }
-    }
+
         escute.addEventListener("click", function () {
             escute.classList.add("oculto");
             audioPlayer.classList.add("aberto");
