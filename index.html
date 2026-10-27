@@ -4,26 +4,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
-    <title>Arrudas</title>
+    <title>Arrudas - Memórias Sonoras de um Território-Rio</title>
 
     <style>
         :root {
             --cor-arrudas: #1c4354;
+            --cor-fundo: #d8d0bc;
         }
 
         * {
             box-sizing: border-box;
         }
 
-        button,
-        input,
-        textarea,
-        select {
-            font-family: "Courier New", monospace;
-        }
-
-        html,
-        body {
+        html, body {
             margin: 0;
             padding: 0;
             width: 100%;
@@ -31,32 +24,26 @@
             overflow: hidden;
             font-family: "Courier New", monospace;
             color: #222;
-            background-color: #d8d0bc;
-            user-select: none;
+            background-color: var(--cor-fundo);
         }
 
-        /* ÁREA DE REFERÊNCIA GLOBAL (1920x1080) - Mantém a estrutura exata que você aprovou */
-        .tela-referencia {
-            position: absolute;
-            left: 0;
-            top: 0;
-            width: 1920px;
-            height: 1080px;
-            transform-origin: 0 0;
-            z-index: 1;
-            background-color: #d8d0bc;
-            will-change: transform;
+        /* CONTAINER GLOBAL ESTÁVEL */
+        .app-container {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+            background-color: var(--cor-fundo);
         }
 
-        /* MAPA BASE */
+        /* MAPA DE FUNDO FIXO */
         .mapa {
             position: absolute;
             top: 0;
             left: 0;
-            width: 1920px;
-            height: 1080px;
+            width: 100%;
+            height: 100%;
             z-index: 1;
-            background-color: #d8d0bc;
         }
 
         .mapa iframe {
@@ -64,27 +51,22 @@
             width: 100%;
             height: 100%;
             border: none;
-            margin: 0;
-            padding: 0;
-            pointer-events: none;
-            filter: sepia(75%) saturate(65%) brightness(90%) contrast(95%) !important;
-            outline: none !important;
-            box-shadow: none !important;
+            pointer-events: auto;
+            filter: sepia(75%) saturate(65%) brightness(90%) contrast(95%);
         }
 
-        /* DESENHO DO ARRUDAS */
+        /* DESENHO DO ARRUDAS SOBREPOSTO */
         .desenho-arrudas {
             position: absolute;
-            top: 3%;
-            left: -6%;
-            width: 110%;
-            height: 110%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 100vw;
+            height: 100vh;
             z-index: 2;
             pointer-events: none;
             opacity: 0;
-            animation: entradaDesenho 2s ease-out 2.2s forwards;
-            transform: translate(33px, 33px);
-            filter: none;
+            animation: entradaDesenho 2s ease-out 1s forwards;
             background-image: linear-gradient(
                 45deg,
                 #651b28,
@@ -96,8 +78,8 @@
             mask-repeat: no-repeat;
             -webkit-mask-position: center;
             mask-position: center;
-            -webkit-mask-size: 100% 100%;
-            mask-size: 100% 100%;
+            -webkit-mask-size: contain;
+            mask-size: contain;
         }
 
         @keyframes entradaDesenho {
@@ -105,39 +87,52 @@
             to { opacity: 1; }
         }
 
-        /* TÍTULO */
-        .titulo {
+        /* CAMADA DE INTERFACE (UI) FLUIDA */
+        .interface-ui {
             position: absolute;
-            top: 60px;
-            left: 60px;
-            z-index: 20;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 10;
+            pointer-events: none;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 4vw;
+        }
+
+        .interface-ui > * {
+            pointer-events: auto;
+        }
+
+        /* TÍTULO NO CANTO SUPERIOR ESQUERDO */
+        .titulo {
             background-color: rgba(243, 240, 232, 0.94);
-            padding: 25px 40px;
-            text-align: center;
-            min-width: 420px;
+            padding: 20px 30px;
+            border-radius: 8px;
+            max-width: 420px;
             cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+            align-self: flex-start;
         }
 
         .titulo h1 {
             margin: 0;
-            font-size: 38px;
+            font-size: clamp(22px, 3vw, 36px);
             font-weight: bold;
         }
 
         .titulo p {
-            margin: 10px 0 0;
-            font-size: 18px;
+            margin: 8px 0 0;
+            font-size: clamp(13px, 1.5vw, 18px);
         }
 
         .menu-links {
-            position: absolute;
-            top: 0;
-            left: 100%;
             display: none;
-            width: 220px;
-            background-color: rgba(243, 240, 232, 0.94);
-            padding: 15px 20px;
-            text-align: left;
+            margin-top: 15px;
+            border-top: 1px solid #ccc;
+            padding-top: 10px;
         }
 
         .titulo.aberto .menu-links {
@@ -148,132 +143,127 @@
             display: block;
             text-decoration: none;
             color: #222;
-            font-size: 20px;
-            padding: 7px 0;
+            font-size: 18px;
+            padding: 5px 0;
         }
 
         .menu-links a:hover {
             text-decoration: underline;
         }
 
-        /* BOTÃO ESCUTE */
-        .escute {
+        /* CENTRO: BOTÃO ESCUTE E AVISO */
+        .centro-acao {
             position: absolute;
-            left: 960px;
-            top: 80px;
-            transform: translateX(-50%);
-            z-index: 30;
-            width: 190px;
-            height: 190px;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+            text-align: center;
+            width: 90%;
+            max-width: 500px;
+        }
+
+        .escute {
+            width: 170px;
+            height: 170px;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            padding: 12px;
-            gap: 0;
-            background-color: rgba(28, 67, 84, 0.20);
+            background-color: rgba(28, 67, 84, 0.25);
             border: none;
             border-radius: 50%;
-            font-size: 35px;
-            font-weight: bold;
-            text-align: center;
             cursor: pointer;
-            opacity: 1;
-            visibility: visible;
-            transition: opacity 1.8s ease, visibility 1.8s linear;
+            transition: transform 0.3s ease, background-color 0.3s ease, opacity 0.8s ease;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+        }
+
+        .escute:hover {
+            transform: scale(1.05);
+            background-color: rgba(28, 67, 84, 0.35);
         }
 
         .escute.oculto {
-            opacity: 0 !important;
-            visibility: hidden !important;
-            pointer-events: none !important;
-            transition: opacity 1.8s ease, visibility 1.8s linear !important;
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
         }
 
         .escute img {
-            display: block;
-            width: 250px;
-            height: 240px;
+            width: 200px;
+            height: 180px;
             object-fit: contain;
-            position: relative;
-            top: -62px;
+            margin-top: -25px;
         }
 
         .escute span {
-            display: block;
-            position: relative;
-            z-index: 1;
-            margin-top: -125px;
+            font-size: 26px;
+            font-weight: bold;
+            color: var(--cor-arrudas);
+            margin-top: -85px;
+            z-index: 2;
         }
 
         /* AVISO DE FONES */
         .aviso-fone {
-            position: absolute;
-            left: 960px;
-            top: 315px;
-            transform: translateX(-50%);
-            z-index: 31;
-            width: 540px;
-            padding: 22px 30px;
             background-color: rgba(28, 67, 84, 0.9);
             color: #e8e0cf;
+            padding: 15px 25px;
+            border-radius: 12px;
+            font-size: 16px;
             text-align: center;
-            font-size: 24px;
-            line-height: 1.4;
-            border-radius: 16px;
             opacity: 0;
             visibility: hidden;
-            pointer-events: none;
-            transition: opacity 1.5s ease, visibility 1.5s linear;
+            transition: opacity 0.5s ease;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            width: 100%;
         }
 
         .aviso-fone.visivel {
-            opacity: 1 !important;
-            visibility: visible !important;
-            transition: opacity 1.5s ease, visibility 0s linear !important;
+            opacity: 1;
+            visibility: visible;
         }
 
-        .aviso-fone.oculto {
-            opacity: 0 !important;
-            visibility: hidden !important;
-            transition: opacity 1.5s ease, visibility 1.5s linear !important;
-        }
-
-        /* PAINEL DE ÁUDIO COM ONDA SONORA (Sem caixa rígida) */
-        .audio {
-            display: none;
+        /* PAINEL DE ÁUDIO INFERIOR (COM ONDA SONORA REAL INTERATIVA) */
+        .audio-painel {
             position: absolute;
-            left: 210px;
-            top: 400px;
-            z-index: 30;
-            width: 1500px;
+            bottom: 4vh;
+            left: 50%;
+            transform: translateX(-50%);
+            display: none;
             background: transparent;
-            border: none;
+            width: 90%;
+            max-width: 650px;
+            padding: 10px;
         }
 
-        .audio.aberto {
+        .audio-painel.aberto {
             display: block;
         }
 
         .player-flex {
             display: flex;
             align-items: center;
-            gap: 20px;
-            background-color: rgba(243, 240, 232, 0.92);
-            padding: 20px 35px;
-            border-radius: 60px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            gap: 15px;
+            background-color: rgba(243, 240, 232, 0.94);
+            backdrop-filter: blur(5px);
+            padding: 15px 25px;
+            border-radius: 50px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.25);
             position: relative;
         }
 
         .botao-play {
-            width: 65px;
-            height: 65px;
+            width: 50px;
+            height: 50px;
             border-radius: 50%;
             background-color: var(--cor-arrudas);
             color: #fff;
             border: none;
-            font-size: 26px;
+            font-size: 20px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -284,26 +274,26 @@
         .waveform-container {
             flex-grow: 1;
             position: relative;
-            height: 50px;
+            height: 40px;
             cursor: pointer;
             display: flex;
             align-items: center;
         }
 
-        /* ONDA SONORA REAL DE FUNDO */
+        /* ONDA SONORA DE FUNDO INTERATIVA */
         .waveform-bg {
             position: absolute;
             width: 100%;
-            height: 40px;
+            height: 35px;
             background-image: repeating-linear-gradient(
                 90deg,
                 #B79A78,
-                #B79A78 4px,
-                transparent 4px,
-                transparent 9px
+                #B79A78 3px,
+                transparent 3px,
+                transparent 7px
             );
-            mask-image: linear-gradient(90deg, #000 15%, #666 40%, #000 70%, #444 100%);
-            -webkit-mask-image: linear-gradient(90deg, #000 15%, #666 40%, #000 70%, #444 100%);
+            mask-image: linear-gradient(90deg, #000 20%, #666 50%, #000 80%, #444 100%);
+            -webkit-mask-image: linear-gradient(90deg, #000 20%, #666 50%, #000 80%, #444 100%);
         }
 
         .progresso-onda {
@@ -329,306 +319,128 @@
 
         .fechar-audio {
             position: absolute;
-            top: -20px;
+            top: -15px;
             right: 0;
             background: rgba(243, 240, 232, 0.95);
             border: none;
-            width: 38px;
-            height: 38px;
+            width: 32px;
+            height: 32px;
             border-radius: 50%;
-            font-size: 22px;
+            font-size: 20px;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
             color: #222;
         }
 
         .tempos-info {
-            font-size: 18px;
+            font-size: 14px;
             font-weight: bold;
-            color: #222;
-            min-width: 110px;
+            color: #333;
+            min-width: 45px;
             text-align: right;
         }
 
-        /* REGRAS EXCLUSIVAS PARA CELULAR (Mantém a posição correta que funcionava) */
-        @media (max-width: 850px) {
+        /* AJUSTES ESPECÍFICOS PARA DISPOSITIVOS MÓVEIS */
+        @media (max-width: 768px) {
+            .interface-ui {
+                padding: 15px;
+            }
             .titulo {
-                top: 20px;
-                padding: 15px 20px;
-                min-width: unset;
-                width: max-content;
+                padding: 12px 18px;
             }
-        
-            @media (orientation: portrait) {
-                .titulo {
-                    left: 50%;
-                    transform: translateX(-50%);
-                    text-align: center;
-                }
-                .menu-links {
-                    left: 50%;
-                    transform: translateX(-50%);
-                    top: 100%;
-                    text-align: center;
-                }
-            }
-
-            @media (orientation: landscape) {
-                .titulo {
-                    left: 15px;
-                    transform: none;
-                    text-align: left;
-                }
-                .menu-links {
-                    left: 0;
-                    top: 100%;
-                    text-align: left;
-                }
-            }
-
             .titulo h1 { font-size: 20px; }
-            .titulo p { font-size: 14px; margin: 4px 0 0; }
+            .titulo p { font-size: 12px; }
 
             .escute {
-                width: 190px;
-                height: 190px;
-                font-size: 28px;
-                left: 960px;
-                top: 220px;
-                transform: translateX(-50%);
+                width: 150px;
+                height: 150px;
             }
             .escute img {
-                width: 220px;
-                height: 210px;
-                top: -55px;
+                width: 170px;
+                height: 150px;
             }
             .escute span {
-                margin-top: -110px;
+                font-size: 22px;
+                margin-top: -75px;
             }
-
-            .aviso-fone {
-                left: 960px;
-                top: 450px;
-                width: 420px;
-                font-size: 19px;
-                padding: 18px 22px;
-                transform: translateX(-50%);
-            }
-
-            .audio {
-                left: 210px;
-                top: 320px;
-                width: 1500px;
+            .player-flex {
+                padding: 12px 18px;
+                border-radius: 25px;
             }
         }
     </style>
 </head>
-<body class="carregando">
+<body>
 
-    <div class="tela-referencia" id="telaReferencia">
+    <div class="app-container">
         
+        <!-- MAPA LIMPO (Sem controles extras do Umap) -->
         <div class="mapa">
-            <iframe
-                allowfullscreen
-                allow="geolocation"
-                src="//umap.openstreetmap.fr/pt-br/map/mapa_1471708?scaleControl=false&miniMapControl=false&scrollWheelZoom=false&zoomControl=false&editMode=disabled&moreControl=false&searchControl=false&tilelayersControl=false&embedControl=false&datalayersControl=false&onLoadPanel=none&captionBar=false&captionMenus=false&fullscreenControl=false&locateControl=false&captionControl=false&printControl=false&measureControl=false&dragging=false">
-            </iframe>
-
-            <div class="desenho-arrudas" aria-hidden="true"></div>
+            <iframe src="//umap.openstreetmap.fr/pt-br/map/mapa_1471708?scaleControl=false&miniMapControl=false&scrollWheelZoom=true&zoomControl=false&editMode=disabled&moreControl=false&searchControl=false&tilelayersControl=false&embedControl=false&datalayersControl=false&onLoadPanel=none&captionBar=false&captionMenus=false&fullscreenControl=false&locateControl=false&captionControl=false&printControl=false&measureControl=false&dragging=true"></iframe>
         </div>
 
-        <div class="titulo" id="titulo">
-            <h1>ARRUDAS</h1>
-            <p>Memórias Sonoras de um Território-Rio</p>
+        <!-- DESENHO ARTÍSTICO DO ARRUDAS -->
+        <div class="desenho-arrudas" aria-hidden="true"></div>
 
-            <div class="menu-links">
-                <a href="sobre.html">Sobre o projeto</a>
-            </div>
-        </div>
-
-        <div class="escute" id="escute">
-            <img src="orelha.png" alt="">
-            <span>ESCUTE</span>
-        </div>
-
-        <div class="aviso-fone" id="avisoFone" role="status">
-            Para uma experiência sonora imersiva, use fones de ouvido.
-        </div>
-
-        <div class="audio" id="audioPlayer">
-            <button class="fechar-audio" id="fecharAudio" type="button" aria-label="Fechar áudio">×</button>
-
-            <div class="player-flex">
-                <button class="botao-play" id="botaoPlay" type="button">▶</button>
-
-                <div class="waveform-container" id="waveformContainer">
-                    <div class="waveform-bg"></div>
-                    <div class="progresso-onda" id="progressoOnda"></div>
-                    <input type="range" id="barraProgresso" value="0" max="100" step="0.1">
+        <!-- INTERFACE FLUIDA -->
+        <div class="interface-ui">
+            
+            <!-- TÍTULO -->
+            <div class="titulo" id="titulo">
+                <h1>ARRUDAS</h1>
+                <p>Memórias Sonoras de um Território-Rio</p>
+                <div class="menu-links">
+                    <a href="sobre.html">Sobre o projeto</a>
                 </div>
-
-                <div class="tempos-info" id="tempoAtual">00:00 / 00:00</div>
             </div>
+
+            <!-- CENTRO -->
+            <div class="centro-acao">
+                <button class="escute" id="escute">
+                    <img src="orelha.png" alt="Orelha">
+                    <span>ESCUTE</span>
+                </button>
+
+                <div class="aviso-fone" id="avisoFone">
+                    Para uma experiência sonora imersiva, use fones de ouvido.
+                </div>
+            </div>
+
+            <!-- PLAYER INFERIOR COM ONDA SONORA -->
+            <div class="audio-painel" id="audioPainel">
+                <button class="fechar-audio" id="fecharAudio">×</button>
+                
+                <div class="player-flex">
+                    <button class="botao-play" id="botaoPlay">▶</button>
+                    
+                    <div class="waveform-container" id="waveformContainer">
+                        <div class="waveform-bg"></div>
+                        <div class="progresso-onda" id="progressoOnda"></div>
+                        <input type="range" id="barraProgresso" value="0" max="100" step="0.1">
+                    </div>
+
+                    <div class="tempos-info" id="tempoAtual">00:00</div>
+                </div>
+            </div>
+
         </div>
 
     </div>
 
-    <!-- ÁUDIO NATIVO -->
+    <!-- ÁUDIO NATIVO COM STREAMING RÁPIDO -->
     <audio id="meuAudio" preload="auto">
         <source src="https://pub-0c523da3e80b4a0ab591837050bc71cb.r2.dev/arrudas_peca_sonora.m4a" type="audio/mp4">
         Seu navegador não suporta elemento de áudio.
     </audio>
 
     <script>
-        const telaReferencia = document.getElementById("telaReferencia");
-
-        let escalaAtual = 1;
-        let escalaBaseMinima = 1;
-        let posX = 0;
-        let posY = 0;
-
-        const larguraRef = 1920;
-        const alturaRef = 1080;
-
-        function atualizarTransformacao() {
-            telaReferencia.style.transform = `translate(${posX}px, ${posY}px) scale(${escalaAtual})`;
-        }
-
-        function aplicarLimites() {
-            const wWin = window.innerWidth;
-            const hWin = window.innerHeight;
-            const wEscalado = larguraRef * escalaAtual;
-            const hEscalado = alturaRef * escalaAtual;
-
-            if (wEscalado >= wWin) {
-                const limiteX = wWin - wEscalado;
-                posX = Math.min(0, Math.max(limiteX, posX));
-            } else {
-                posX = (wWin - wEscalado) / 2;
-            }
-
-            if (hEscalado >= hWin) {
-                const limiteY = hWin - hEscalado;
-                posY = Math.min(0, Math.max(limiteY, posY));
-            } else {
-                posY = (hWin - hEscalado) / 2;
-            }
-        }
-
-        function inicializarPosicaoDinamica() {
-            const wWin = window.innerWidth;
-            const hWin = window.innerHeight;
-
-            escalaBaseMinima = Math.max(wWin / larguraRef, hWin / alturaRef);
-            escalaAtual = escalaBaseMinima;
-
-            if (wWin <= 850) {
-                posY = 0; 
-            } else {
-                posY = (hWin - (alturaRef * escalaAtual)) / 2; 
-            }
-
-            const wEscalado = larguraRef * escalaAtual;
-            posX = (wWin - wEscalado) / 2;
-
-            aplicarLimites();
-            atualizarTransformacao();
-        }
-
-        inicializarPosicaoDinamica();
-
-        window.addEventListener("resize", inicializarPosicaoDinamica);
-        window.addEventListener("orientationchange", () => {
-            setTimeout(inicializarPosicaoDinamica, 300);
-        });
-
-        let toquesAtivos = [];
-        let distanciaInicial = 0;
-        let escalaInicial = 1;
-        let ultimoX = 0;
-        let ultimoY = 0;
-
-        document.addEventListener("touchstart", (e) => {
-            toquesAtivos = Array.from(e.touches);
-            if (toquesAtivos.length === 1) {
-                ultimoX = toquesAtivos[0].clientX;
-                ultimoY = toquesAtivos[0].clientY;
-            } else if (toquesAtivos.length === 2) {
-                distanciaInicial = Math.hypot(
-                    toquesAtivos[0].clientX - toquesAtivos[1].clientX,
-                    toquesAtivos[0].clientY - toquesAtivos[1].clientY
-                );
-                escalaInicial = escalaAtual;
-            }
-        }, { passive: false });
-
-        document.addEventListener("touchmove", (e) => {
-            e.preventDefault();
-            toquesAtivos = Array.from(e.touches);
-
-            if (toquesAtivos.length === 1) {
-                const x = toquesAtivos[0].clientX;
-                const y = toquesAtivos[0].clientY;
-
-                posX += (x - ultimoX);
-                posY += (y - ultimoY);
-
-                ultimoX = x;
-                ultimoY = y;
-
-                aplicarLimites();
-                atualizarTransformacao();
-            } 
-            else if (toquesAtivos.length === 2) {
-                const distanciaAtual = Math.hypot(
-                    toquesAtivos[0].clientX - toquesAtivos[1].clientX,
-                    toquesAtivos[0].clientY - toquesAtivos[1].clientY
-                );
-
-                if (distanciaInicial > 0) {
-                    let novaEscala = escalaInicial * (distanciaAtual / distanciaInicial);
-                    
-                    if (novaEscala < escalaBaseMinima) novaEscala = escalaBaseMinima;
-                    if (novaEscala > escalaBaseMinima * 3) novaEscala = escalaBaseMinima * 3;
-
-                    escalaAtual = novaEscala;
-                    aplicarLimites();
-                    atualizarTransformacao();
-                }
-            }
-        }, { passive: false });
-
-        document.addEventListener("touchend", (e) => {
-            toquesAtivos = Array.from(e.touches);
-        });
-
         const titulo = document.getElementById("titulo");
         const escute = document.getElementById("escute");
         const avisoFone = document.getElementById("avisoFone");
-        const mapaIframe = document.querySelector(".mapa iframe");
-
-        let elementosExibidos = false;
-
-        function mostrarElementos() {
-            if (elementosExibidos) return;
-            elementosExibidos = true;
-
-            setTimeout(function () {
-                document.body.classList.remove("carregando");
-                titulo.style.visibility = "visible";
-                escute.style.visibility = "visible";
-                titulo.style.opacity = "1";
-                escute.style.opacity = "1";
-            }, 500);
-        }
-
-        mapaIframe.addEventListener("load", mostrarElementos, { once: true });
-        setTimeout(mostrarElementos, 3000);
-
-        const audioPlayer = document.getElementById("audioPlayer");
+        const audioPainel = document.getElementById("audioPainel");
         const fecharAudio = document.getElementById("fecharAudio");
         const botaoPlay = document.getElementById("botaoPlay");
         const audio = document.getElementById("meuAudio");
@@ -636,35 +448,24 @@
         const progressoOnda = document.getElementById("progressoOnda");
         const tempoAtual = document.getElementById("tempoAtual");
 
-        let avisoFoneTimer = null;
-        let avisoFoneTimerIniciado = false;
+        let avisoTimer = null;
 
-        titulo.addEventListener("click", function (event) {
-            if (event.target.tagName !== "A") {
+        titulo.addEventListener("click", (e) => {
+            if (e.target.tagName !== "A") {
                 titulo.classList.toggle("aberto");
             }
         });
 
         function formatarTempo(segundos) {
             if (isNaN(segundos)) return "00:00";
-            const minutos = Math.floor(segundos / 60);
-            const segundosRestantes = Math.floor(segundos % 60);
-            return String(minutos).padStart(2, "0") + ":" + String(segundosRestantes).padStart(2, "0");
+            const min = Math.floor(segundos / 60);
+            const seg = Math.floor(segundos % 60);
+            return String(min).padStart(2, "0") + ":" + String(seg).padStart(2, "0");
         }
 
-        audio.addEventListener("loadedmetadata", () => {
-            tempoAtual.textContent = "00:00 / " + formatarTempo(audio.duration);
-        });
-
-        escute.addEventListener("click", function () {
+        escute.addEventListener("click", () => {
             escute.classList.add("oculto");
-            audioPlayer.classList.add("aberto");
-
-            if (avisoFoneTimer !== null) clearTimeout(avisoFoneTimer);
-            avisoFoneTimer = null;
-            avisoFoneTimerIniciado = false;
-
-            avisoFone.classList.remove("oculto");
+            audioPainel.classList.add("aberto");
             avisoFone.classList.add("visivel");
 
             audio.play().then(() => {
@@ -672,25 +473,13 @@
             }).catch(err => {
                 console.log("Autoplay restrito:", err);
             });
+
+            avisoTimer = setTimeout(() => {
+                avisoFone.classList.remove("visivel");
+            }, 15000);
         });
 
-        fecharAudio.addEventListener("click", function () {
-            audio.pause();
-            audio.currentTime = 0;
-            botaoPlay.textContent = "▶";
-            progressoOnda.style.width = "0%";
-            audioPlayer.classList.remove("aberto");
-            escute.classList.remove("oculto");
-
-            if (avisoFoneTimer !== null) clearTimeout(avisoFoneTimer);
-            avisoFoneTimer = null;
-            avisoFoneTimerIniciado = false;
-
-            avisoFone.classList.remove("visivel", "oculto");
-        });
-
-        botaoPlay.addEventListener("click", function (event) {
-            event.stopPropagation();
+        botaoPlay.addEventListener("click", () => {
             if (audio.paused) {
                 audio.play();
                 botaoPlay.textContent = "❚❚";
@@ -705,15 +494,7 @@
                 const progresso = (audio.currentTime / audio.duration) * 100;
                 barraProgresso.value = progresso;
                 progressoOnda.style.width = progresso + "%";
-                tempoAtual.textContent = formatarTempo(audio.currentTime) + " / " + formatarTempo(audio.duration);
-
-                if (!avisoFoneTimerIniciado && avisoFone.classList.contains("visivel")) {
-                    avisoFoneTimerIniciado = true;
-                    avisoFoneTimer = setTimeout(() => {
-                        avisoFone.classList.remove("visivel");
-                        avisoFone.classList.add("oculto");
-                    }, 15000);
-                }
+                tempoAtual.textContent = formatarTempo(audio.currentTime);
             }
         });
 
@@ -723,6 +504,17 @@
                 audio.currentTime = novoTempo;
                 progressoOnda.style.width = barraProgresso.value + "%";
             }
+        });
+
+        fecharAudio.addEventListener("click", () => {
+            audio.pause();
+            audio.currentTime = 0;
+            botaoPlay.textContent = "▶";
+            progressoOnda.style.width = "0%";
+            audioPainel.classList.remove("aberto");
+            escute.classList.remove("oculto");
+            avisoFone.classList.remove("visivel");
+            if (avisoTimer) clearTimeout(avisoTimer);
         });
 
         audio.addEventListener("ended", () => {
