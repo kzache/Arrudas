@@ -696,56 +696,60 @@
         }
 
         function carregarEIniciarWaveform() {
-            if (!wavesurfer) {
-                try {
-                    wavesurfer = WaveSurfer.create({
-                        container: "#waveform",
-                        url: audioUrl,
-                        height: 220,
-                        waveColor: "#B79A78",
-                        progressColor: "#6F7770",
-                        cursorWidth: 0,
-                        normalize: false,
-                        interact: false,
-                        barWidth: 2,
-                        barGap: 1,
-                        barRadius: 3
-                    });
+        if (!wavesurfer) {
+            try {
+                // Criamos um elemento de áudio nativo HTML para streaming progressivo instantâneo
+                const audioElement = document.createElement('audio');
+                audioElement.src = audioUrl;
+                audioElement.preload = 'auto';
 
-                    wavesurfer.on("ready", function () {
-                        audioPlayer.classList.add("pronto");
-                        atualizarTempo();
-                        // AUTOPLAY: Dispara o som assim que o áudio estiver pronto para rodar
-                        wavesurfer.play().catch(err => console.log("Autoplay retido pelo navegador:", err));
-                    });
+                wavesurfer = WaveSurfer.create({
+                    container: "#waveform",
+                    media: audioElement, // <--- O SEGREDO: Força o WaveSurfer a usar streaming nativo
+                    height: 220,
+                    waveColor: "#B79A78",
+                    progressColor: "#6F7770",
+                    cursorWidth: 0,
+                    normalize: false,
+                    interact: false,
+                    barWidth: 2,
+                    barGap: 1,
+                    barRadius: 3
+                });
 
-                    wavesurfer.on("timeupdate", atualizarTempo);
+                wavesurfer.on("ready", function () {
+                    audioPlayer.classList.add("pronto");
+                    atualizarTempo();
+                    // AUTOPLAY: Dispara o som assim que o player puder iniciar o streaming
+                    wavesurfer.play().catch(err => console.log("Autoplay retido pelo navegador:", err));
+                });
 
-                    wavesurfer.on("play", function () {
-                        botaoPlay.textContent = "Ⅱ";
-                        if (!avisoFoneTimerIniciado && avisoFone.classList.contains("visivel")) {
-                            avisoFoneTimerIniciado = true;
-                            avisoFoneTimer = setTimeout(() => {
-                                avisoFone.classList.remove("visivel");
-                                avisoFone.classList.add("oculto");
-                            }, 15000);
-                        }
-                    });
+                wavesurfer.on("timeupdate", atualizarTempo);
 
-                    wavesurfer.on("pause", () => botaoPlay.textContent = "▶");
-                    wavesurfer.on("finish", () => { botaoPlay.textContent = "▶"; atualizarTempo(); });
-                } catch (erro) {
-                    console.error("Erro no WaveSurfer:", erro);
-                }
-            } else {
-                setTimeout(() => {
-                    if (wavesurfer) {
-                        wavesurfer.setOptions({});
-                        wavesurfer.play().catch(() => {});
+                wavesurfer.on("play", function () {
+                    botaoPlay.textContent = "Ⅱ";
+                    if (!avisoFoneTimerIniciado && avisoFone.classList.contains("visivel")) {
+                        avisoFoneTimerIniciado = true;
+                        avisoFoneTimer = setTimeout(() => {
+                            avisoFone.classList.remove("visivel");
+                            avisoFone.classList.add("oculto");
+                        }, 15000);
                     }
-                }, 100);
+                });
+
+                wavesurfer.on("pause", () => botaoPlay.textContent = "▶");
+                wavesurfer.on("finish", () => { botaoPlay.textContent = "▶"; atualizarTempo(); });
+            } catch (erro) {
+                console.error("Erro no WaveSurfer:", erro);
             }
+        } else {
+            setTimeout(() => {
+                if (wavesurfer) {
+                    wavesurfer.play().catch(() => {});
+                }
+            }, 100);
         }
+    }
 
         escute.addEventListener("click", function () {
             escute.classList.add("oculto");
