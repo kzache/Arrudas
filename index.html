@@ -32,9 +32,9 @@
         }
 
         /* ==========================================
-           1. MODO COMPUTADOR (Desktop > 850px) — INALTERADO
+           1. MODO COMPUTADOR (largura > 850px e altura > 500px)
            ========================================== */
-        @media (min-width: 851px) {
+        @media (min-width: 851px) and (min-height: 501px) {
             .tela-referencia {
                 position: absolute;
                 left: 0;
@@ -49,7 +49,7 @@
             .mobile { display: none; }
         }
 
-        @media (max-width: 850px) {
+        @media (max-width: 850px), (max-height: 500px) {
             .tela-referencia { display: none; }
         }
 
@@ -254,7 +254,7 @@
 
 
         /* ==========================================================
-           2. MODO CELULAR (<= 850px) — ARQUITETURA EM 2 CAMADAS
+           2. MODO CELULAR (largura <= 850px OU altura <= 500px)
 
            CAMADA 1 (.fundo-mob): mapa + desenho dentro de um "palco"
            1920x1080 escalado em COVER. Pode ser ARRASTADO com 1 dedo
@@ -263,11 +263,11 @@
            Altura = 100lvh (não oscila com a barra do navegador).
 
            CAMADA 2 (.ui-mob): título, ESCUTE, aviso e player em tamanho
-           real, fixos na tela. Nada de UI dentro da matriz escalada.
+           real, fixos na tela.
            ========================================================== */
         .mobile { display: none; }
 
-        @media (max-width: 850px) {
+        @media (max-width: 850px), (max-height: 500px) {
             .mobile { display: block; position: fixed; inset: 0; overflow: hidden; background: var(--cor-fundo); }
 
             /* --- Camada 1: fundo (arrastável e com zoom) --- */
@@ -365,6 +365,7 @@
                 font-size: calc(var(--d) * 0.1867);
                 font-weight: bold;
             }
+
             .aviso-mob {
                 position: absolute;
                 bottom: 100%;
@@ -382,6 +383,31 @@
                 transition: opacity 1.5s ease;
             }
             .aviso-mob.visivel { opacity: 1; visibility: visible; }
+
+            /* Aviso "use na horizontal" (só celular em pé) */
+            .aviso-giro {
+                position: absolute;
+                left: 50%;
+                top: 50%;
+                transform: translate(-50%, -50%);
+                width: min(80vw, 300px);
+                padding: 14px 18px;
+                background-color: rgba(28, 67, 84, 0.92);
+                color: #e8e0cf;
+                text-align: center;
+                font-size: 14px;
+                line-height: 1.4;
+                border-radius: 12px;
+                opacity: 0;
+                visibility: hidden;
+                transition: opacity 0.8s ease, visibility 0.8s;
+                z-index: 40;
+            }
+            .aviso-giro.visivel { opacity: 1; visibility: visible; }
+
+            @media (orientation: landscape) {
+                .aviso-giro { display: none; }
+            }
 
             .audio-mob {
                 display: none;
@@ -401,7 +427,7 @@
 </head>
 <body>
 
-    <!-- ================= DESKTOP HTML (inalterado) ================= -->
+    <!-- ================= DESKTOP HTML ================= -->
     <div class="tela-referencia" id="telaReferencia">
         <div class="mapa">
             <iframe loading="lazy" src="//umap.openstreetmap.fr/pt-br/map/mapa_1471708?scaleControl=false&miniMapControl=false&scrollWheelZoom=false&zoomControl=false&editMode=disabled&moreControl=false&searchControl=false&tilelayersControl=false&embedControl=false&datalayersControl=false&onLoadPanel=none&captionBar=false&captionMenus=false&fullscreenControl=false&locateControl=false&captionControl=false&printControl=false&measureControl=false&dragging=false"></iframe>
@@ -455,6 +481,10 @@
 
         <!-- Camada 2: interface em tamanho real -->
         <div class="ui-mob">
+            <div class="aviso-giro" id="avisoGiro">
+                Para uma melhor experiência, use o celular na horizontal. ↻
+            </div>
+
             <div class="titulo-mob" id="tituloMob">
                 <h1>ARRUDAS</h1>
                 <p>Memórias Sonoras de um Território-Rio</p>
@@ -513,7 +543,7 @@
                      O zoom mínimo é sempre o tamanho inicial (1). */
         const MODO_MOB = "cover";
         const FOCO_X = 0.5;
-        const FOCO_Y = 0.5;
+        const FOCO_Y = 0;
         const ZOOM_MAX = 3;
 
         let focoX = FOCO_X;   // posição atual (muda ao arrastar/dar zoom)
@@ -543,7 +573,7 @@
             const wWin = window.innerWidth;
             const hWin = window.innerHeight;
 
-            if (wWin > 850) {
+            if (wWin > 850 && hWin > 500) {
                 const escala = Math.max(wWin / larguraRef, hWin / alturaRef);
                 const posX = (wWin - (larguraRef * escala)) / 2;
                 const posY = (hWin - (alturaRef * escala)) / 2;
@@ -554,7 +584,10 @@
         }
 
         window.addEventListener("resize", ajustarTelas);
-        window.addEventListener("orientationchange", () => setTimeout(ajustarTelas, 300));
+        window.addEventListener("orientationchange", () => setTimeout(() => {
+            focoX = FOCO_X; focoY = FOCO_Y; zoomMob = 1;
+            ajustarTelas();
+        }, 300));
         ajustarTelas();
 
         // ---- ARRASTAR (1 dedo) E ZOOM POR PINÇA (2 dedos) NO MAPA ----
@@ -730,6 +763,17 @@
             progressoOndaPc.style.width = "0%"; progressoOndaMob.style.width = "0%";
             audio.currentTime = 0;
         });
+
+        // ---- AVISO: USE NA HORIZONTAL (só celular em pé) ----
+        const avisoGiro = document.getElementById("avisoGiro");
+        function esconderAvisoGiro() { avisoGiro.classList.remove("visivel"); }
+
+        if (window.matchMedia("(max-width: 850px) and (orientation: portrait)").matches) {
+            setTimeout(() => avisoGiro.classList.add("visivel"), 800);
+            setTimeout(esconderAvisoGiro, 7000);
+        }
+        avisoGiro.addEventListener("click", esconderAvisoGiro);
+        window.addEventListener("orientationchange", esconderAvisoGiro);
     </script>
 </body>
 </html>
