@@ -467,7 +467,6 @@
         </div>
 
         <div class="escute" id="escute">
-            <!-- Alt limpo para evitar o texto "orelha" fantasma na tela -->
             <img src="orelha.png" alt="">
             <span>ESCUTE</span>
         </div>
@@ -698,8 +697,6 @@
         function carregarEIniciarWaveform() {
             if (!wavesurfer) {
                 try {
-                    // OTIMIZAÇÃO CRUCIAL PARA VELOCIDADE:
-                    // Força o WaveSurfer a usar renderização leve e player nativo sem decodificação bloqueante
                     wavesurfer = WaveSurfer.create({
                         container: "#waveform",
                         url: audioUrl,
@@ -713,8 +710,6 @@
                         barWidth: 2,
                         barGap: 1,
                         barRadius: 3,
-                        // Passamos uma estrutura leve para o player abrir instantaneamente
-                        // sem esperar o download pesado do gráfico de 21MB:
                         peaks: [[0, 0.1, 0.2, 0.5, 0.3, 0.1, 0.4, 0.6, 0.2, 0]],
                         duration: 300 
                     });
