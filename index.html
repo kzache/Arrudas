@@ -24,14 +24,14 @@
             font-family: "Courier New", monospace;
             color: #222;
             background-color: var(--cor-fundo);
-            overflow-x: hidden;
+            overflow: hidden;
+            user-select: none;
         }
 
         /* ==========================================
            1. MODO COMPUTADOR (Desktop > 850px)
            ========================================== */
         @media (min-width: 851px) {
-            body { overflow: hidden; }
             .tela-referencia {
                 position: absolute;
                 left: 0;
@@ -43,8 +43,7 @@
                 background-color: var(--cor-fundo);
                 will-change: transform;
             }
-            .mapa-mobile { display: none; }
-            .ui-mobile { display: none; }
+            .container-mobile { display: none; }
         }
 
         @media (max-width: 850px) {
@@ -126,13 +125,11 @@
             background-color: rgba(28, 67, 84, 0.20);
             border: none;
             border-radius: 50%;
-            font-size: 35px;
-            font-weight: bold;
             cursor: pointer;
         }
         .escute.oculto { opacity: 0 !important; visibility: hidden !important; pointer-events: none !important; }
         .escute img { width: 250px; height: 240px; object-fit: contain; position: relative; top: -62px; }
-        .escute span { display: block; position: relative; z-index: 1; margin-top: -125px; color: var(--cor-arrudas); }
+        .escute span { display: block; position: relative; z-index: 1; margin-top: -125px; color: var(--cor-arrudas); font-size: 35px; font-weight: bold; }
 
         .aviso-fone {
             position: absolute;
@@ -169,145 +166,62 @@
            2. MODO CELULAR (Mobile <= 850px)
            ========================================== */
         @media (max-width: 850px) {
-            .mapa-mobile {
-                position: fixed;
-                top: 0;
+            .container-mobile {
+                position: absolute;
                 left: 0;
-                width: 100vw;
-                height: 100vh;
+                top: 0;
+                width: 1920px;
+                height: 1080px;
+                transform-origin: 0 0;
                 z-index: 1;
+                background-color: var(--cor-fundo);
+                will-change: transform;
             }
-            .mapa-mobile iframe {
-                width: 100%;
-                height: 100%;
-                border: none;
-                filter: sepia(75%) saturate(65%) brightness(90%) contrast(95%);
-            }
+            .tela-referencia { display: none; }
 
-            /* Desenho do Arrudas adaptado para cobrir perfeitamente a tela do celular */
-            .desenho-arrudas-mob {
-                position: fixed;
-                top: 0;
-                left: 0;
-                width: 100vw;
-                height: 100vh;
-                z-index: 2;
-                pointer-events: none;
-                background-image: linear-gradient(45deg, #651b28, var(--cor-arrudas));
-                -webkit-mask-image: url("desenho_mapa.svg");
-                mask-image: url("desenho_mapa.svg");
-                -webkit-mask-repeat: no-repeat;
-                mask-repeat: no-repeat;
-                -webkit-mask-position: center;
-                mask-position: center;
-                -webkit-mask-size: contain;
-                mask-size: contain;
+            /* Ajustes específicos de posição para o celular dentro da matriz 1920x1080 */
+            #tituloMob {
+                top: 50px;
+                left: 50px;
             }
-
-            .ui-mobile {
-                position: relative;
-                z-index: 10;
-                width: 100vw;
-                height: 100vh;
-                display: flex;
-                flex-direction: column;
-                justify-content: space-between;
-                padding: 15px;
-                pointer-events: none;
+            #escuteMob {
+                left: 960px;
+                top: 250px; /* Deslocado para baixo do desenho para não sobrepor */
             }
-            .ui-mobile > * { pointer-events: auto; }
-
-            .titulo-mob {
-                background-color: rgba(243, 240, 232, 0.95);
-                padding: 15px;
-                border-radius: 8px;
-                width: max-content;
-                max-width: 90%;
-                cursor: pointer;
-                box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            #avisoFoneMob {
+                left: 960px;
+                top: 470px;
             }
-            .titulo-mob h1 { margin: 0; font-size: 20px; font-weight: bold; }
-            .titulo-mob p { margin: 5px 0 0; font-size: 13px; }
-            .menu-links-mob {
-                display: none;
-                margin-top: 10px;
-                border-top: 1px solid #ccc;
-                padding-top: 8px;
+            #audioPlayerMob {
+                left: 210px;
+                top: 650px; /* Posicionado visível na parte inferior da tela */
+                width: 1500px;
             }
-            .titulo-mob.aberto .menu-links-mob { display: block; }
-            .menu-links-mob a { display: block; text-decoration: none; color: #222; font-size: 15px; padding: 4px 0; }
-
-            .centro-mob {
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-                justify-content: center;
-                margin: auto;
-                text-align: center;
-                gap: 15px;
-            }
-
-            .escute-mob {
-                width: 150px;
-                height: 150px;
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-                justify-content: center;
-                background-color: rgba(28, 67, 84, 0.25);
-                border: none;
-                border-radius: 50%;
-                cursor: pointer;
-                box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-            }
-            .escute-mob.oculto { display: none; }
-            .escute-mob img { width: 170px; height: 160px; object-fit: contain; margin-top: -20px; }
-            .escute-mob span { font-size: 22px; font-weight: bold; color: var(--cor-arrudas); margin-top: -70px; z-index: 2; }
-
-            .aviso-fone-mob {
-                background-color: rgba(28, 67, 84, 0.9);
-                color: #e8e0cf;
-                padding: 12px 18px;
-                border-radius: 10px;
-                font-size: 14px;
-                max-width: 320px;
-                text-align: center;
-                display: none;
-            }
-            .aviso-fone-mob.visivel { display: block; }
-
-            .audio-mob {
-                display: none;
-                background-color: rgba(243, 240, 232, 0.96);
-                padding: 15px;
-                border-radius: 14px;
-                width: 100%;
-                box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-                margin-bottom: 10px;
-            }
-            .audio-mob.aberto { display: block; }
         }
 
-        /* COMPONENTES COMPARTILHADOS DO PLAYER */
+
+        /* ==========================================
+           COMPONENTES COMPARTILHADOS DO PLAYER
+           ========================================== */
         .player-flex {
             display: flex;
             align-items: center;
-            gap: 15px;
+            gap: 20px;
             background-color: rgba(243, 240, 232, 0.95);
-            padding: 15px 25px;
-            border-radius: 50px;
+            padding: 20px 40px;
+            border-radius: 60px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.2);
             position: relative;
             width: 100%;
         }
         .botao-play {
-            width: 55px;
-            height: 55px;
+            width: 65px;
+            height: 65px;
             border-radius: 50%;
             background-color: var(--cor-arrudas);
             color: #fff;
             border: none;
-            font-size: 22px;
+            font-size: 26px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -317,7 +231,7 @@
         .waveform-container {
             flex-grow: 1;
             position: relative;
-            height: 40px;
+            height: 50px;
             cursor: pointer;
             display: flex;
             align-items: center;
@@ -325,8 +239,8 @@
         .waveform-bg {
             position: absolute;
             width: 100%;
-            height: 32px;
-            background-image: repeating-linear-gradient(90deg, #B79A78, #B79A78 3px, transparent 3px, transparent 7px);
+            height: 40px;
+            background-image: repeating-linear-gradient(90deg, #B79A78, #B79A78 4px, transparent 4px, transparent 9px);
             mask-image: linear-gradient(90deg, #000 15%, #666 40%, #000 70%, #444 100%);
             -webkit-mask-image: linear-gradient(90deg, #000 15%, #666 40%, #000 70%, #444 100%);
         }
@@ -351,25 +265,25 @@
         }
         .fechar-audio {
             position: absolute;
-            top: -15px;
+            top: -20px;
             right: 0;
             background: rgba(243, 240, 232, 0.95);
             border: none;
-            width: 32px;
-            height: 32px;
+            width: 38px;
+            height: 38px;
             border-radius: 50%;
-            font-size: 18px;
+            font-size: 22px;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
         }
         .tempos-info {
-            font-size: 14px;
+            font-size: 18px;
             font-weight: bold;
             color: #222;
-            min-width: 90px;
+            min-width: 130px;
             text-align: right;
         }
     </style>
@@ -416,83 +330,85 @@
 
 
     <!-- ================= MOBILE HTML ================= -->
-    <div class="mapa-mobile">
-        <iframe src="//umap.openstreetmap.fr/pt-br/map/mapa_1471708?scaleControl=false&miniMapControl=false&scrollWheelZoom=true&zoomControl=false&editMode=disabled&moreControl=false&searchControl=false&tilelayersControl=false&embedControl=false&datalayersControl=false&onLoadPanel=none&captionBar=false&captionMenus=false&fullscreenControl=false&locateControl=false&captionControl=false&printControl=false&measureControl=false&dragging=true"></iframe>
-        <!-- Desenho artístico sobreposto no celular -->
-        <div class="desenho-arrudas-mob" aria-hidden="true"></div>
-    </div>
+    <div class="container-mobile" id="containerMobile">
+        <div class="mapa">
+            <iframe src="//umap.openstreetmap.fr/pt-br/map/mapa_1471708?scaleControl=false&miniMapControl=false&scrollWheelZoom=false&zoomControl=false&editMode=disabled&moreControl=false&searchControl=false&tilelayersControl=false&embedControl=false&datalayersControl=false&onLoadPanel=none&captionBar=false&captionMenus=false&fullscreenControl=false&locateControl=false&captionControl=false&printControl=false&measureControl=false&dragging=false"></iframe>
+            <div class="desenho-arrudas" aria-hidden="true"></div>
+        </div>
 
-    <div class="ui-mobile">
-        <div class="titulo-mob" id="tituloMob">
+        <div class="titulo" id="tituloMob">
             <h1>ARRUDAS</h1>
             <p>Memórias Sonoras de um Território-Rio</p>
-            <div class="menu-links-mob">
+            <div class="menu-links">
                 <a href="sobre.html">Sobre o projeto</a>
             </div>
         </div>
 
-        <div class="centro-mob">
-            <button class="escute-mob" id="escuteMob">
-                <img src="orelha.png" alt="">
-                <span>ESCUTE</span>
-            </button>
-            <div class="aviso-fone-mob" id="avisoFoneMob">
-                Para uma experiência sonora imersiva, use fones de ouvido.
-            </div>
+        <button class="escute" id="escuteMob">
+            <img src="orelha.png" alt="">
+            <span>ESCUTE</span>
+        </button>
+
+        <div class="aviso-fone" id="avisoFoneMob">
+            Para uma experiência sonora imersiva, use fones de ouvido.
         </div>
 
-        <div class="audio-mob" id="audioPlayerMob">
+        <div class="audio" id="audioPlayerMob">
             <button class="fechar-audio" id="fecharAudioMob">×</button>
-            <div class="player-flex" style="padding: 10px 15px; border-radius: 20px;">
-                <button class="botao-play" id="botaoPlayMob" style="width: 45px; height: 45px; font-size: 16px;">▶</button>
+            <div class="player-flex">
+                <button class="botao-play" id="botaoPlayMob">▶</button>
                 <div class="waveform-container">
                     <div class="waveform-bg"></div>
                     <div class="progresso-onda" id="progressoOndaMob"></div>
                     <input type="range" id="barraProgressoMob" value="0" max="100" step="0.1">
                 </div>
-                <div class="tempos-info" id="tempoAtualMob" style="font-size: 12px; min-width: 75px;">00:00</div>
+                <div class="tempos-info" id="tempoAtualMob">00:00 / 00:00</div>
             </div>
         </div>
     </div>
 
 
-    <!-- ================= ÁUDIO ÚNICO COMPARTILHADO ================= -->
+    <!-- ================= ÁUDIO UNIFICADO ================= -->
     <audio id="meuAudio" preload="auto">
         <source src="https://pub-0c523da3e80b4a0ab591837050bc71cb.r2.dev/arrudas_peca_sonora.m4a" type="audio/mp4">
         Seu navegador não suporta elemento de áudio.
     </audio>
 
     <script>
-        // Lógica de Escala do PC
         const telaReferencia = document.getElementById("telaReferencia");
-        let escalaAtual = 1, posX = 0, posY = 0;
-        const larguraRef = 1920, alturaRef = 1080;
+        const containerMobile = document.getElementById("containerMobile");
 
-        function atualizarTransformacao() {
-            if (window.innerWidth > 850) {
-                telaReferencia.style.transform = `translate(${posX}px, ${posY}px) scale(${escalaAtual})`;
+        const larguraRef = 1920;
+        const alturaRef = 1080;
+
+        function ajustarTelas() {
+            const wWin = window.innerWidth;
+            const hWin = window.innerHeight;
+
+            if (wWin > 850) {
+                const escala = Math.max(wWin / larguraRef, hWin / alturaRef);
+                const posX = (wWin - (larguraRef * escala)) / 2;
+                const posY = (hWin - (alturaRef * escala)) / 2;
+                telaReferencia.style.transform = `translate(${posX}px, ${posY}px) scale(${escala})`;
+            } else {
+                const escala = Math.min(wWin / larguraRef, hWin / alturaRef);
+                const posX = (wWin - (larguraRef * escala)) / 2;
+                const posY = (hWin - (alturaRef * escala)) / 2;
+                containerMobile.style.transform = `translate(${posX}px, ${posY}px) scale(${escala})`;
             }
         }
-        function inicializarPc() {
-            if (window.innerWidth <= 850) return;
-            const wWin = window.innerWidth, hWin = window.innerHeight;
-            escalaAtual = Math.max(wWin / larguraRef, hWin / alturaRef);
-            posY = (hWin - (alturaRef * escalaAtual)) / 2;
-            posX = (wWin - (larguraRef * escalaAtual)) / 2;
-            atualizarTransformacao();
-        }
-        window.addEventListener("resize", inicializarPc);
-        inicializarPc();
 
-        // Controles de UI (Título Menus)
+        window.addEventListener("resize", ajustarTelas);
+        window.addEventListener("orientationchange", () => setTimeout(ajustarTelas, 300));
+        ajustarTelas();
+
         const tituloPc = document.getElementById("tituloPc");
         const tituloMob = document.getElementById("tituloMob");
         tituloPc.addEventListener("click", (e) => { if (e.target.tagName !== "A") tituloPc.classList.toggle("aberto"); });
         tituloMob.addEventListener("click", (e) => { if (e.target.tagName !== "A") tituloMob.classList.toggle("aberto"); });
 
-        // Player de Áudio Unificado
         const audio = document.getElementById("meuAudio");
-        
+
         const escutePc = document.getElementById("escutePc");
         const audioPlayerPc = document.getElementById("audioPlayerPc");
         const avisoFonePc = document.getElementById("avisoFonePc");
@@ -560,48 +476,36 @@
                 
                 const textoTempo = formatarTempo(audio.currentTime) + " / " + formatarTempo(audio.duration);
                 tempoAtualPc.textContent = textoTempo;
-                tempoAtualMob.textContent = formatarTempo(audio.currentTime);
+                tempoAtualMob.textContent = textoTempo;
             }
         });
 
         barraProgressoPc.addEventListener("input", () => {
-            if (audio.duration) {
-                audio.currentTime = (barraProgressoPc.value / 100) * audio.duration;
-            }
+            if (audio.duration) audio.currentTime = (barraProgressoPc.value / 100) * audio.duration;
         });
         barraProgressoMob.addEventListener("input", () => {
-            if (audio.duration) {
-                audio.currentTime = (barraProgressoMob.value / 100) * audio.duration;
-            }
+            if (audio.duration) audio.currentTime = (barraProgressoMob.value / 100) * audio.duration;
         });
 
         fecharAudioPc.addEventListener("click", () => {
-            audio.pause();
-            audio.currentTime = 0;
-            botaoPlayPc.textContent = "▶";
-            progressoOndaPc.style.width = "0%";
-            audioPlayerPc.classList.remove("aberto");
-            escutePc.classList.remove("oculto");
+            audio.pause(); audio.currentTime = 0;
+            botaoPlayPc.textContent = "▶"; progressoOndaPc.style.width = "0%";
+            audioPlayerPc.classList.remove("aberto"); escutePc.classList.remove("oculto");
             avisoFonePc.classList.remove("visivel");
             if (avisoTimer) clearTimeout(avisoTimer);
         });
 
         fecharAudioMob.addEventListener("click", () => {
-            audio.pause();
-            audio.currentTime = 0;
-            botaoPlayMob.textContent = "▶";
-            progressoOndaMob.style.width = "0%";
-            audioPlayerMob.classList.remove("aberto");
-            escuteMob.classList.remove("oculto");
+            audio.pause(); audio.currentTime = 0;
+            botaoPlayMob.textContent = "▶"; progressoOndaMob.style.width = "0%";
+            audioPlayerMob.classList.remove("aberto"); escuteMob.classList.remove("oculto");
             avisoFoneMob.classList.remove("visivel");
             if (avisoTimer) clearTimeout(avisoTimer);
         });
 
         audio.addEventListener("ended", () => {
-            botaoPlayPc.textContent = "▶";
-            botaoPlayMob.textContent = "▶";
-            progressoOndaPc.style.width = "0%";
-            progressoOndaMob.style.width = "0%";
+            botaoPlayPc.textContent = "▶"; botaoPlayMob.textContent = "▶";
+            progressoOndaPc.style.width = "0%"; progressoOndaMob.style.width = "0%";
             audio.currentTime = 0;
         });
     </script>
