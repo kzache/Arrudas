@@ -697,7 +697,6 @@
         function carregarEIniciarWaveform() {
             if (!wavesurfer) {
                 try {
-                    // Retornamos ao WaveSurfer padrão limpo para desenhar a onda real progressivamente
                     wavesurfer = WaveSurfer.create({
                         container: "#waveform",
                         url: audioUrl,
@@ -715,6 +714,8 @@
                     wavesurfer.on("ready", function () {
                         audioPlayer.classList.add("pronto");
                         atualizarTempo();
+                        // AUTOPLAY: Toca automaticamente assim que o áudio estiver pronto para rodar
+                        wavesurfer.play().catch(err => console.log("Autoplay bloqueado pelo navegador:", err));
                     });
 
                     wavesurfer.on("timeupdate", atualizarTempo);
@@ -737,7 +738,10 @@
                 }
             } else {
                 setTimeout(() => {
-                    if (wavesurfer) wavesurfer.setOptions({});
+                    if (wavesurfer) {
+                        wavesurfer.setOptions({});
+                        wavesurfer.play().catch(() => {});
+                    }
                 }, 100);
             }
         }
