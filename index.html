@@ -253,7 +253,9 @@
            2. MODO CELULAR (<= 850px) — ARQUITETURA EM 2 CAMADAS
 
            CAMADA 1 (.fundo-mob): mapa + desenho dentro de um "palco"
-           1920x1080 escalado em COVER. Pode ser ARRASTADO com o dedo.
+           1920x1080 escalado em COVER. Pode ser ARRASTADO com 1 dedo
+           e AMPLIADO com pinça (2 dedos). Mapa e desenho ficam no
+           mesmo palco, então se movem e ampliam juntos.
            Altura = 100lvh (não oscila com a barra do navegador).
 
            CAMADA 2 (.ui-mob): título, ESCUTE, aviso e player em tamanho
@@ -264,7 +266,7 @@
         @media (max-width: 850px) {
             .mobile { display: block; position: fixed; inset: 0; overflow: hidden; background: var(--cor-fundo); }
 
-            /* --- Camada 1: fundo (arrastável) --- */
+            /* --- Camada 1: fundo (arrastável e com zoom) --- */
             .fundo-mob {
                 position: fixed;
                 top: 0;
@@ -327,7 +329,7 @@
             .dock-mob > * { pointer-events: auto; }
 
             .escute-mob {
-                margin-bottom: 15vh;   /* sobe o botão: aumente para subir mais, diminua para descer */
+                margin-bottom: 30vh;   /* sobe o botão: aumente para subir mais, diminua para descer */
                 width: 120px;
                 height: 120px;
                 display: flex;
@@ -422,7 +424,7 @@
     <!-- ================= MOBILE HTML (2 camadas) ================= -->
     <div class="mobile" id="containerMobile">
 
-        <!-- Camada 1: mapa + desenho (palco escalado em cover, arrastável) -->
+        <!-- Camada 1: mapa + desenho (palco escalado em cover, arrastável, com zoom) -->
         <div class="fundo-mob" id="fundoMob">
             <div class="palco-mob" id="palcoMob">
                 <div class="mapa">
@@ -488,21 +490,31 @@
                      "contain" = mostra o mapa/desenho inteiro (sobram faixas)
            FOCO_X / FOCO_Y: posição INICIAL do mapa (0 a 1).
                      0 = esquerda/topo, 0.5 = centro, 1 = direita/base.
-           Depois o usuário pode arrastar o mapa com o dedo. */
+           ZOOM_MAX: zoom máximo com pinça. 1 = sem zoom; 3 = até 3x.
+                     O zoom mínimo é sempre o tamanho inicial (1). */
         const MODO_MOB = "cover";
         const FOCO_X = 0.5;
         const FOCO_Y = 0.5;
+        const ZOOM_MAX = 3;
 
-        let focoX = FOCO_X;   // posição atual (muda ao arrastar)
+        let focoX = FOCO_X;   // posição atual (muda ao arrastar/dar zoom)
         let focoY = FOCO_Y;
+        let zoomMob = 1;      // zoom atual (1 a ZOOM_MAX)
         let escalaMob = 1;
+
+        const limitar = (v, min = 0, max = 1) => Math.min(max, Math.max(min, v));
+
+        function escalaBaseMob() {
+            const fx = fundoMob.clientWidth / larguraRef;
+            const fy = fundoMob.clientHeight / alturaRef;
+            return MODO_MOB === "contain" ? Math.min(fx, fy) : Math.max(fx, fy);
+        }
 
         function aplicarMob() {
             const w = fundoMob.clientWidth;
             const h = fundoMob.clientHeight;
             if (!w || !h) return;
-            const fx = w / larguraRef, fy = h / alturaRef;
-            escalaMob = MODO_MOB === "contain" ? Math.min(fx, fy) : Math.max(fx, fy);
+            escalaMob = escalaBaseMob() * zoomMob;
             const posX = (w - larguraRef * escalaMob) * focoX;
             const posY = (h - alturaRef * escalaMob) * focoY;
             palcoMob.style.transform = `translate(${posX}px, ${posY}px) scale(${escalaMob})`;
@@ -526,28 +538,68 @@
         window.addEventListener("orientationchange", () => setTimeout(ajustarTelas, 300));
         ajustarTelas();
 
-        // ---- ARRASTAR O MAPA NO CELULAR ----
-        let arrastando = false, ptrId = null, x0 = 0, y0 = 0, fx0 = 0, fy0 = 0;
-        const limitar = (v) => Math.min(1, Math.max(0, v));
+        // ---- ARRASTAR (1 dedo) E ZOOM POR PINÇA (2 dedos) NO MAPA ----
+        const ponteiros = new Map();   // id -> {x, y}
+        let arrasto = null;            // {x0, y0, fx0, fy0}
+        let pinca = null;              // {dist0, zoom0, cx, cy}
+
+        function iniciarArraste(p) {
+            arrasto = { x0: p.x, y0: p.y, fx0: focoX, fy0: focoY };
+            pinca = null;
+        }
+
+        function iniciarPinca() {
+            const [a, b] = [...ponteiros.values()];
+            const mx = (a.x + b.x) / 2, my = (a.y + b.y) / 2;
+            const posX = (fundoMob.clientWidth - larguraRef * escalaMob) * focoX;
+            const posY = (fundoMob.clientHeight - alturaRef * escalaMob) * focoY;
+            pinca = {
+                dist0: Math.hypot(a.x - b.x, a.y - b.y) || 1,
+                zoom0: zoomMob,
+                cx: (mx - posX) / escalaMob,   // ponto do mapa sob os dedos
+                cy: (my - posY) / escalaMob
+            };
+            arrasto = null;
+        }
 
         fundoMob.addEventListener("pointerdown", (e) => {
-            arrastando = true;
-            ptrId = e.pointerId;
-            x0 = e.clientX; y0 = e.clientY;
-            fx0 = focoX; fy0 = focoY;
+            ponteiros.set(e.pointerId, { x: e.clientX, y: e.clientY });
             fundoMob.setPointerCapture(e.pointerId);
+            if (ponteiros.size === 1) iniciarArraste(ponteiros.get(e.pointerId));
+            else if (ponteiros.size === 2) iniciarPinca();
         });
 
         fundoMob.addEventListener("pointermove", (e) => {
-            if (!arrastando || e.pointerId !== ptrId) return;
-            const rx = fundoMob.clientWidth - larguraRef * escalaMob;
-            const ry = fundoMob.clientHeight - alturaRef * escalaMob;
-            if (Math.abs(rx) > 1) focoX = limitar(fx0 + (e.clientX - x0) / rx);
-            if (Math.abs(ry) > 1) focoY = limitar(fy0 + (e.clientY - y0) / ry);
-            aplicarMob();
+            if (!ponteiros.has(e.pointerId)) return;
+            ponteiros.set(e.pointerId, { x: e.clientX, y: e.clientY });
+            const w = fundoMob.clientWidth, h = fundoMob.clientHeight;
+
+            if (pinca && ponteiros.size === 2) {
+                const [a, b] = [...ponteiros.values()];
+                const mx = (a.x + b.x) / 2, my = (a.y + b.y) / 2;
+                const dist = Math.hypot(a.x - b.x, a.y - b.y);
+                zoomMob = limitar(pinca.zoom0 * dist / pinca.dist0, 1, ZOOM_MAX);
+                const esc = escalaBaseMob() * zoomMob;
+                const rx = w - larguraRef * esc;
+                const ry = h - alturaRef * esc;
+                if (Math.abs(rx) > 1) focoX = limitar((mx - pinca.cx * esc) / rx);
+                if (Math.abs(ry) > 1) focoY = limitar((my - pinca.cy * esc) / ry);
+                aplicarMob();
+            } else if (arrasto && ponteiros.size === 1) {
+                const p = ponteiros.get(e.pointerId);
+                const rx = w - larguraRef * escalaMob;
+                const ry = h - alturaRef * escalaMob;
+                if (Math.abs(rx) > 1) focoX = limitar(arrasto.fx0 + (p.x - arrasto.x0) / rx);
+                if (Math.abs(ry) > 1) focoY = limitar(arrasto.fy0 + (p.y - arrasto.y0) / ry);
+                aplicarMob();
+            }
         });
 
-        const soltar = (e) => { if (e.pointerId === ptrId) arrastando = false; };
+        function soltar(e) {
+            ponteiros.delete(e.pointerId);
+            if (ponteiros.size === 1) iniciarArraste([...ponteiros.values()][0]);
+            else if (ponteiros.size === 0) { arrasto = null; pinca = null; }
+        }
         fundoMob.addEventListener("pointerup", soltar);
         fundoMob.addEventListener("pointercancel", soltar);
 
