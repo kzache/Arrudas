@@ -5,19 +5,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes, viewport-fit=cover">
     <title>Arrudas - Memórias Sonoras de um Território-Rio</title>
-
     <style>
         :root {
             --cor-arrudas: #1c4354;
             --cor-fundo: #d8d0bc;
         }
-
         * { box-sizing: border-box; }
-
-        button {
-            font-family: inherit;
-        }
-
+        button { font-family: inherit; }
         html, body {
             margin: 0;
             padding: 0;
@@ -30,9 +24,8 @@
             user-select: none;
             overscroll-behavior: none;
         }
-
         /* ==========================================
-           1. MODO COMPUTADOR (largura > 850px e altura > 500px)
+           1. MODO COMPUTADOR
            ========================================== */
         @media (min-width: 851px) and (min-height: 501px) {
             .tela-referencia {
@@ -48,12 +41,10 @@
             }
             .mobile { display: none; }
         }
-
         @media (max-width: 850px), (max-height: 500px) {
             .tela-referencia { display: none; }
         }
-
-        /* ELEMENTOS DO PC (e mapa/desenho, compartilhados com o mobile) */
+        /* ELEMENTOS DO PC */
         .mapa {
             position: absolute;
             top: 0;
@@ -95,7 +86,7 @@
             left: 60px;
             z-index: 20;
             background-color: rgba(243, 240, 232, 0.80);
-            color: #1c3844;  
+            color: #1c3844;
             padding: 25px 40px;
             cursor: pointer;
             min-width: 420px;
@@ -113,7 +104,6 @@
         }
         .titulo.aberto .menu-links { display: block; }
         .menu-links a { display: block; text-decoration: none; color: #222; font-size: 20px; padding: 7px 0; }
-
         .escute {
             position: absolute;
             left: 960px;
@@ -134,7 +124,6 @@
         .escute.oculto { opacity: 0 !important; visibility: hidden !important; pointer-events: none !important; }
         .escute img { width: 280px; height: 260px; object-fit: contain; position: relative; top: -70px; }
         .escute span { display: block; position: relative; z-index: 1; margin-top: -125px; color: #1c3844; font-size: 35px; font-weight: bold; }
-
         .aviso-fone {
             position: absolute;
             left: 960px;
@@ -153,7 +142,6 @@
             transition: opacity 1.5s ease;
         }
         .aviso-fone.visivel { opacity: 1 !important; visibility: visible !important; }
-
         .audio {
             display: none;
             position: absolute;
@@ -164,8 +152,7 @@
             background: transparent;
         }
         .audio.aberto { display: block; }
-
-
+        
         /* ==========================================
            COMPONENTES COMPARTILHADOS DO PLAYER
            ========================================== */
@@ -202,27 +189,10 @@
             display: flex;
             align-items: center;
         }
-        .waveform-bg {
-            position: absolute;
-            width: 100%;
-            height: 40px;
-            background-image: repeating-linear-gradient(90deg, #B79A78, #B79A78 4px, transparent 4px, transparent 9px);
-            mask-image: linear-gradient(90deg, #000 15%, #666 40%, #000 70%, #444 100%);
-            -webkit-mask-image: linear-gradient(90deg, #000 15%, #666 40%, #000 70%, #444 100%);
-        }
-        .progresso-onda {
-            position: absolute;
-            left: 0;
-            top: 0;
-            height: 100%;
-            width: 0%;
-            background-color: var(--cor-arrudas);
-            opacity: 0.35;
-            pointer-events: none;
-            border-radius: 4px;
-        }
-
-        /* Waveform real (canvas) — substitui a onda antiga */
+        /* Esconde a onda antiga */
+        .waveform-bg, .progresso-onda { display: none; }
+        
+        /* NOVA WAVEFORM EM CANVAS */
         .waveform-canvas {
             position: absolute;
             left: 0;
@@ -231,8 +201,6 @@
             height: 100%;
             pointer-events: none;
         }
-        .waveform-bg, .progresso-onda { display: none; }
-
         input[type="range"] {
             position: absolute;
             width: 100%;
@@ -264,33 +232,19 @@
             min-width: 130px;
             text-align: right;
         }
-
-
-        /* ==========================================================
-           2. MODO CELULAR (largura <= 850px OU altura <= 500px)
-
-           CAMADA 1 (.fundo-mob): mapa + desenho dentro de um "palco"
-           1920x1080 escalado em COVER. Pode ser ARRASTADO com 1 dedo
-           e AMPLIADO com pinça (2 dedos). Mapa e desenho ficam no
-           mesmo palco, então se movem e ampliam juntos.
-           Altura = 100lvh (não oscila com a barra do navegador).
-
-           CAMADA 2 (.ui-mob): título, ESCUTE, aviso e player em tamanho
-           real, fixos na tela.
-           ========================================================== */
+        /* ==========================================
+           2. MODO CELULAR
+           ========================================== */
         .mobile { display: none; }
-
         @media (max-width: 850px), (max-height: 500px) {
             .mobile { display: block; position: fixed; inset: 0; overflow: hidden; background: var(--cor-fundo); }
-
-            /* --- Camada 1: fundo (arrastável e com zoom) --- */
             .fundo-mob {
                 position: fixed;
                 top: 0;
                 left: 0;
                 width: 100%;
-                height: 100vh;      /* fallback */
-                height: 100lvh;     /* estável: ignora a barra do navegador */
+                height: 100vh;
+                height: 100lvh;
                 overflow: hidden;
                 z-index: 1;
                 touch-action: none;
@@ -305,18 +259,14 @@
                 transform-origin: 0 0;
                 will-change: transform;
             }
-
-            /* --- Camada 2: interface em tamanho real --- */
             .ui-mob {
                 position: fixed;
                 inset: 0;
                 z-index: 10;
-                pointer-events: none;   /* só os filhos clicáveis recebem toque */
+                pointer-events: none;
                 padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
             }
             .ui-mob > * { pointer-events: auto; }
-
-            /* Título (menu abre PARA BAIXO) */
             .titulo-mob {
                 position: absolute;
                 top: calc(env(safe-area-inset-top) + 14px);
@@ -332,8 +282,6 @@
             .menu-links-mob { display: none; padding-top: 6px; }
             .titulo-mob.aberto .menu-links-mob { display: block; }
             .menu-links-mob a { display: block; text-decoration: none; color: #222; font-size: 16px; padding: 8px 0; }
-
-            /* Dock inferior: ESCUTE → (some) → player no mesmo lugar */
             .dock-mob {
                 position: absolute;
                 left: 0;
@@ -345,10 +293,8 @@
                 pointer-events: none;
             }
             .dock-mob > * { pointer-events: auto; }
-
             .escute-mob {
-                --d: min(150px, 34vh);   /* diâmetro: máx. 150px, encolhe em telas baixas */
-                /* 60vh, mas nunca deixa o botão passar do topo da tela */
+                --d: min(150px, 34vh);
                 margin-bottom: min(55vh, calc(100vh - var(--d) - 130px));
                 width: var(--d);
                 height: var(--d);
@@ -380,13 +326,6 @@
                 font-size: calc(var(--d) * 0.1867);
                 font-weight: bold;
             }
-
-            @media (orientation: landscape) {
-                .escute-mob {
-                    margin-bottom: min(60vh, calc(100vh - var(--d) - 112px));
-                }   
-            }
-
             .aviso-mob {
                 position: absolute;
                 bottom: 100%;
@@ -404,8 +343,6 @@
                 transition: opacity 1.5s ease;
             }
             .aviso-mob.visivel { opacity: 1; visibility: visible; }
-
-            /* Aviso "use na horizontal" (só celular em pé) */
             .aviso-giro {
                 position: absolute;
                 left: 50%;
@@ -425,11 +362,9 @@
                 z-index: 40;
             }
             .aviso-giro.visivel { opacity: 1; visibility: visible; }
-
             @media (orientation: landscape) {
                 .aviso-giro { display: none; }
             }
-
             .audio-mob {
                 display: none;
                 position: relative;
@@ -441,20 +376,17 @@
             .audio-mob .player-flex { padding: 10px 14px; gap: 10px; border-radius: 40px; }
             .audio-mob .botao-play { width: 46px; height: 46px; font-size: 18px; }
             .audio-mob .waveform-container { height: 40px; min-width: 0; }
-            .audio-mob .waveform-bg { height: 30px; }
             .audio-mob .tempos-info { font-size: 11px; min-width: 86px; }
         }
     </style>
 </head>
 <body>
-
     <!-- ================= DESKTOP HTML ================= -->
     <div class="tela-referencia" id="telaReferencia">
         <div class="mapa">
-            <iframe loading="lazy" src="//umap.openstreetmap.fr/pt-br/map/mapa_1471708?scaleControl=false&miniMapControl=false&scrollWheelZoom=false&zoomControl=false&editMode=disabled&moreControl=false&searchControl=false&tilelayersControl=false&embedControl=false&datalayersControl=false&onLoadPanel=none&captionBar=false&captionMenus=false&fullscreenControl=false&locateControl=false&captionControl=false&printControl=false&measureControl=false&dragging=false"></iframe>
+            <iframe loading="lazy" src="//umap.openstreetmap.fr/pt-br/map/mapa_1471708?scaleControl=false&miniMapControl=false&scrollWheelZoom=false&zoomControl=false&editMode=disabled&moreControl=false&searchControl=false&tilelayersControl=false&embedControl=false&datalayersControl=false&onLoadPanel=none&captionBar=false&captionMenus=false&fullscreenControl=false&locateControl=false&printControl=false&measureControl=false&dragging=false"></iframe>
             <div class="desenho-arrudas" aria-hidden="true"></div>
         </div>
-
         <div class="titulo" id="tituloPc">
             <h1>Arrudas</h1>
             <p>Memórias Sonoras de um Território-Rio</p>
@@ -462,16 +394,13 @@
                 <a href="sobre.html">Sobre o projeto</a>
             </div>
         </div>
-
         <button class="escute" id="escutePc">
             <img src="orelha.png" alt="">
             <span>ESCUTE</span>
         </button>
-
         <div class="aviso-fone" id="avisoFonePc">
             Para uma experiência sonora imersiva, use fones de ouvido.
         </div>
-
         <div class="audio" id="audioPlayerPc">
             <button class="fechar-audio" id="fecharAudioPc">×</button>
             <div class="player-flex">
@@ -486,27 +415,20 @@
             </div>
         </div>
     </div>
-
-
-    <!-- ================= MOBILE HTML (2 camadas) ================= -->
+    <!-- ================= MOBILE HTML ================= -->
     <div class="mobile" id="containerMobile">
-
-        <!-- Camada 1: mapa + desenho (palco escalado em cover, arrastável, com zoom) -->
         <div class="fundo-mob" id="fundoMob">
             <div class="palco-mob" id="palcoMob">
                 <div class="mapa">
-                    <iframe loading="lazy" src="//umap.openstreetmap.fr/pt-br/map/mapa_1471708?scaleControl=false&miniMapControl=false&scrollWheelZoom=false&zoomControl=false&editMode=disabled&moreControl=false&searchControl=false&tilelayersControl=false&embedControl=false&datalayersControl=false&onLoadPanel=none&captionBar=false&captionMenus=false&fullscreenControl=false&locateControl=false&captionControl=false&printControl=false&measureControl=false&dragging=false"></iframe>
+                    <iframe loading="lazy" src="//umap.openstreetmap.fr/pt-br/map/mapa_1471708?scaleControl=false&miniMapControl=false&scrollWheelZoom=false&zoomControl=false&editMode=disabled&moreControl=false&searchControl=false&tilelayersControl=false&embedControl=false&datalayersControl=false&onLoadPanel=none&captionBar=false&captionMenus=false&fullscreenControl=false&locateControl=false&printControl=false&measureControl=false&dragging=false"></iframe>
                     <div class="desenho-arrudas" aria-hidden="true"></div>
                 </div>
             </div>
         </div>
-
-        <!-- Camada 2: interface em tamanho real -->
         <div class="ui-mob">
             <div class="aviso-giro" id="avisoGiro">
                 Para uma melhor experiência, use o celular na horizontal. ↻
             </div>
-
             <div class="titulo-mob" id="tituloMob">
                 <h1>Arrudas</h1>
                 <p>Memórias Sonoras de um Território-Rio</p>
@@ -514,17 +436,14 @@
                     <a href="sobre.html">Sobre o projeto</a>
                 </div>
             </div>
-
             <div class="dock-mob">
                 <div class="aviso-mob" id="avisoFoneMob">
                     Para uma experiência sonora imersiva, use fones de ouvido.
                 </div>
-
                 <button class="escute-mob" id="escuteMob">
                     <img src="orelha.png" alt="">
                     <span>ESCUTE</span>
                 </button>
-
                 <div class="audio-mob" id="audioPlayerMob">
                     <button class="fechar-audio" id="fecharAudioMob">×</button>
                     <div class="player-flex">
@@ -541,47 +460,31 @@
             </div>
         </div>
     </div>
-
-
     <!-- ================= ÁUDIO UNIFICADO ================= -->
     <audio id="meuAudio" preload="auto">
         <source src="https://pub-0c523da3e80b4a0ab591837050bc71cb.r2.dev/arrudas_peca_sonora.m4a" type="audio/mp4">
         Seu navegador não suporta elemento de áudio.
     </audio>
-
     <script>
         const telaReferencia = document.getElementById("telaReferencia");
         const fundoMob = document.getElementById("fundoMob");
         const palcoMob = document.getElementById("palcoMob");
-
         const larguraRef = 1920;
         const alturaRef = 1080;
-
-        /* ---- AJUSTES DO MOBILE ----
-           MODO_MOB: "cover"   = mapa preenche a tela toda (recorta as laterais)
-                     "contain" = mostra o mapa/desenho inteiro (sobram faixas)
-           FOCO_X / FOCO_Y: posição INICIAL do mapa (0 a 1).
-                     0 = esquerda/topo, 0.5 = centro, 1 = direita/base.
-           ZOOM_MAX: zoom máximo com pinça. 1 = sem zoom; 3 = até 3x.
-                     O zoom mínimo é sempre o tamanho inicial (1). */
         const MODO_MOB = "cover";
         const FOCO_X = 0.5;
         const FOCO_Y = 0;
         const ZOOM_MAX = 3;
-
-        let focoX = FOCO_X;   // posição atual (muda ao arrastar/dar zoom)
+        let focoX = FOCO_X;
         let focoY = FOCO_Y;
-        let zoomMob = 1;      // zoom atual (1 a ZOOM_MAX)
+        let zoomMob = 1;
         let escalaMob = 1;
-
         const limitar = (v, min = 0, max = 1) => Math.min(max, Math.max(min, v));
-
         function escalaBaseMob() {
             const fx = fundoMob.clientWidth / larguraRef;
             const fy = fundoMob.clientHeight / alturaRef;
             return MODO_MOB === "contain" ? Math.min(fx, fy) : Math.max(fx, fy);
         }
-
         function aplicarMob() {
             const w = fundoMob.clientWidth;
             const h = fundoMob.clientHeight;
@@ -591,11 +494,9 @@
             const posY = (h - alturaRef * escalaMob) * focoY;
             palcoMob.style.transform = `translate(${posX}px, ${posY}px) scale(${escalaMob})`;
         }
-
         function ajustarTelas() {
             const wWin = window.innerWidth;
             const hWin = window.innerHeight;
-
             if (wWin > 850 && hWin > 500) {
                 const escala = Math.max(wWin / larguraRef, hWin / alturaRef);
                 const posX = (wWin - (larguraRef * escala)) / 2;
@@ -605,7 +506,6 @@
                 aplicarMob();
             }
         }
-
         window.addEventListener("resize", ajustarTelas);
         window.addEventListener("orientationchange", () => setTimeout(() => {
             focoX = FOCO_X; focoY = FOCO_Y; zoomMob = 1;
@@ -613,16 +513,13 @@
         }, 300));
         ajustarTelas();
 
-        // ---- ARRASTAR (1 dedo) E ZOOM POR PINÇA (2 dedos) NO MAPA ----
-        const ponteiros = new Map();   // id -> {x, y}
-        let arrasto = null;            // {x0, y0, fx0, fy0}
-        let pinca = null;              // {dist0, zoom0, cx, cy}
-
+        const ponteiros = new Map();
+        let arrasto = null;
+        let pinca = null;
         function iniciarArraste(p) {
             arrasto = { x0: p.x, y0: p.y, fx0: focoX, fy0: focoY };
             pinca = null;
         }
-
         function iniciarPinca() {
             const [a, b] = [...ponteiros.values()];
             const mx = (a.x + b.x) / 2, my = (a.y + b.y) / 2;
@@ -631,24 +528,21 @@
             pinca = {
                 dist0: Math.hypot(a.x - b.x, a.y - b.y) || 1,
                 zoom0: zoomMob,
-                cx: (mx - posX) / escalaMob,   // ponto do mapa sob os dedos
+                cx: (mx - posX) / escalaMob,
                 cy: (my - posY) / escalaMob
             };
             arrasto = null;
         }
-
         fundoMob.addEventListener("pointerdown", (e) => {
             ponteiros.set(e.pointerId, { x: e.clientX, y: e.clientY });
             fundoMob.setPointerCapture(e.pointerId);
             if (ponteiros.size === 1) iniciarArraste(ponteiros.get(e.pointerId));
             else if (ponteiros.size === 2) iniciarPinca();
         });
-
         fundoMob.addEventListener("pointermove", (e) => {
             if (!ponteiros.has(e.pointerId)) return;
             ponteiros.set(e.pointerId, { x: e.clientX, y: e.clientY });
             const w = fundoMob.clientWidth, h = fundoMob.clientHeight;
-
             if (pinca && ponteiros.size === 2) {
                 const [a, b] = [...ponteiros.values()];
                 const mx = (a.x + b.x) / 2, my = (a.y + b.y) / 2;
@@ -669,7 +563,6 @@
                 aplicarMob();
             }
         });
-
         function soltar(e) {
             ponteiros.delete(e.pointerId);
             if (ponteiros.size === 1) iniciarArraste([...ponteiros.values()][0]);
@@ -678,15 +571,12 @@
         fundoMob.addEventListener("pointerup", soltar);
         fundoMob.addEventListener("pointercancel", soltar);
 
-        // ---- MENU DO TÍTULO ----
         const tituloPc = document.getElementById("tituloPc");
         const tituloMob = document.getElementById("tituloMob");
         tituloPc.addEventListener("click", (e) => { if (e.target.tagName !== "A") tituloPc.classList.toggle("aberto"); });
         tituloMob.addEventListener("click", (e) => { if (e.target.tagName !== "A") tituloMob.classList.toggle("aberto"); });
 
-        // ---- ÁUDIO ----
         const audio = document.getElementById("meuAudio");
-
         const escutePc = document.getElementById("escutePc");
         const audioPlayerPc = document.getElementById("audioPlayerPc");
         const avisoFonePc = document.getElementById("avisoFonePc");
@@ -695,7 +585,6 @@
         const progressoOndaPc = document.getElementById("progressoOndaPc");
         const tempoAtualPc = document.getElementById("tempoAtualPc");
         const fecharAudioPc = document.getElementById("fecharAudioPc");
-
         const escuteMob = document.getElementById("escuteMob");
         const audioPlayerMob = document.getElementById("audioPlayerMob");
         const avisoFoneMob = document.getElementById("avisoFoneMob");
@@ -704,7 +593,6 @@
         const progressoOndaMob = document.getElementById("progressoOndaMob");
         const tempoAtualMob = document.getElementById("tempoAtualMob");
         const fecharAudioMob = document.getElementById("fecharAudioMob");
-
         let avisoTimer = null;
 
         function formatarTempo(segundos) {
@@ -717,7 +605,7 @@
         escutePc.addEventListener("click", () => {
             escutePc.classList.add("oculto");
             audioPlayerPc.classList.add("aberto");
-            desenharOndas();
+            desenharOndas(); // Força o desenho imediato ao abrir
             avisoFonePc.classList.add("visivel");
             audio.play().then(() => { botaoPlayPc.textContent = "❚❚"; }).catch(e => console.log(e));
             avisoTimer = setTimeout(() => avisoFonePc.classList.remove("visivel"), 15000);
@@ -726,7 +614,7 @@
         escuteMob.addEventListener("click", () => {
             escuteMob.classList.add("oculto");
             audioPlayerMob.classList.add("aberto");
-            desenharOndas();
+            desenharOndas(); // Força o desenho imediato ao abrir
             avisoFoneMob.classList.add("visivel");
             audio.play().then(() => { botaoPlayMob.textContent = "❚❚"; }).catch(e => console.log(e));
             avisoTimer = setTimeout(() => avisoFoneMob.classList.remove("visivel"), 15000);
@@ -751,9 +639,6 @@
                 const progresso = (audio.currentTime / audio.duration) * 100;
                 barraProgressoPc.value = progresso;
                 barraProgressoMob.value = progresso;
-                progressoOndaPc.style.width = progresso + "%";
-                progressoOndaMob.style.width = progresso + "%";
-
                 const textoTempo = formatarTempo(audio.currentTime) + " / " + formatarTempo(audio.duration);
                 tempoAtualPc.textContent = textoTempo;
                 tempoAtualMob.textContent = textoTempo;
@@ -769,15 +654,14 @@
 
         fecharAudioPc.addEventListener("click", () => {
             audio.pause(); audio.currentTime = 0;
-            botaoPlayPc.textContent = "▶"; progressoOndaPc.style.width = "0%";
+            botaoPlayPc.textContent = "▶";
             audioPlayerPc.classList.remove("aberto"); escutePc.classList.remove("oculto");
             avisoFonePc.classList.remove("visivel");
             if (avisoTimer) clearTimeout(avisoTimer);
         });
-
         fecharAudioMob.addEventListener("click", () => {
             audio.pause(); audio.currentTime = 0;
-            botaoPlayMob.textContent = "▶"; progressoOndaMob.style.width = "0%";
+            botaoPlayMob.textContent = "▶";
             audioPlayerMob.classList.remove("aberto"); escuteMob.classList.remove("oculto");
             avisoFoneMob.classList.remove("visivel");
             if (avisoTimer) clearTimeout(avisoTimer);
@@ -785,9 +669,69 @@
 
         audio.addEventListener("ended", () => {
             botaoPlayPc.textContent = "▶"; botaoPlayMob.textContent = "▶";
-            progressoOndaPc.style.width = "0%"; progressoOndaMob.style.width = "0%";
             audio.currentTime = 0;
         });
 
-        // ---- AVISO: USE NA HORIZONTAL (só celular em pé) ----
         const avisoGiro = document.getElementById("avisoGiro");
+        function esconderAvisoGiro() { avisoGiro.classList.remove("visivel"); }
+        if (window.matchMedia("(max-width: 850px) and (orientation: portrait)").matches) {
+            setTimeout(() => avisoGiro.classList.add("visivel"), 800);
+            setTimeout(esconderAvisoGiro, 7000);
+        }
+        avisoGiro.addEventListener("click", esconderAvisoGiro);
+        window.addEventListener("orientationchange", esconderAvisoGiro);
+
+        // ---- WAVEFORM REAL (a partir do peaks.json) ----
+        let picos = null;
+        const canvasesOnda = [document.getElementById("ondaPc"), document.getElementById("ondaMob")];
+        
+        fetch("peaks.json")
+            .then(r => r.json())
+            .then(p => { picos = p; desenharOndas(); })
+            .catch(() => { picos = new Array(200).fill(0.35); desenharOndas(); });
+
+        function desenharOnda(cv, prog) {
+            const w = cv.clientWidth, h = cv.clientHeight;
+            if (!w || !h || !picos) return;
+            const r = Math.max(2, window.devicePixelRatio || 1);
+            if (cv.width !== Math.round(w * r) || cv.height !== Math.round(h * r)) {
+                cv.width = Math.round(w * r);
+                cv.height = Math.round(h * r);
+            }
+            const ctx = cv.getContext("2d");
+            ctx.setTransform(r, 0, 0, r, 0, 0);
+            ctx.clearRect(0, 0, w, h);
+            
+            const larg = 3, gap = 2, passo = larg + gap;
+            const n = Math.max(1, Math.floor(w / passo));
+            const corBase = "#B79A78";
+            const corProg = "#1c4354";
+            
+            for (let i = 0; i < n; i++) {
+                const ini = Math.floor(i * picos.length / n);
+                const fim = Math.max(ini + 1, Math.floor((i + 1) * picos.length / n));
+                let m = 0;
+                for (let j = ini; j < fim; j++) if (picos[j] > m) m = picos[j];
+                const alt = Math.max(3, Math.sqrt(m) * h);
+                const x = i * passo;
+                ctx.fillStyle = (x / w) <= prog ? corProg : corBase;
+                ctx.fillRect(x, (h - alt) / 2, larg, alt);
+            }
+        }
+
+        function desenharOndas() {
+            const prog = audio.duration ? audio.currentTime / audio.duration : 0;
+            canvasesOnda.forEach(c => desenharOnda(c, prog));
+        }
+
+        function loopOnda() {
+            desenharOndas();
+            if (!audio.paused) requestAnimationFrame(loopOnda);
+        }
+
+        audio.addEventListener("play", () => requestAnimationFrame(loopOnda));
+        ["pause", "seeked", "ended", "loadedmetadata", "timeupdate"].forEach(ev => audio.addEventListener(ev, desenharOndas));
+        window.addEventListener("resize", desenharOndas);
+    </script>
+</body>
+</html>
