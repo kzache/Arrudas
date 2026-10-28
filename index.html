@@ -82,10 +82,10 @@
         }
         .titulo {
             position: absolute;
-            top: 80px; /* Descido para 80px conforme solicitado */
+            top: 80px;
             left: 60px;
             z-index: 20;
-            background-color: rgba(243, 240, 232, 0.75); /* Mantendo a transparência que você definiu */
+            background-color: rgba(243, 240, 232, 0.75);
             color: #1c3844;
             padding: 25px 40px;
             cursor: pointer;
@@ -151,7 +151,8 @@
         .audio {
             display: none;
             position: absolute;
-            left: 210px;
+            left: 50%;
+            transform: translateX(-50%); /* Centralizado na tela do PC */
             top: 400px;
             z-index: 30;
             width: 1500px;
@@ -165,14 +166,12 @@
         .player-flex {
             display: flex;
             align-items: center;
-            gap: 20px;
             background-color: transparent;
-            padding: 20px 40px;
-            border-radius: 60px;
-            box-shadow: none;
+            padding: 20px 0;
             position: relative;
             width: 100%;
         }
+        /* Botão Play no centro da onda */
         .botao-play {
             width: 65px;
             height: 65px;
@@ -185,13 +184,19 @@
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            flex-shrink: 0;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 10;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
         }
         .waveform-wrapper {
             flex-grow: 1;
             display: flex;
             flex-direction: column;
-            gap: 4px;
+            gap: 8px;
+            width: 100%;
         }
         .waveform-container {
             width: 100%;
@@ -233,6 +238,7 @@
             align-items: center;
             justify-content: center;
             box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+            z-index: 12;
         }
         .tempos-info {
             font-size: 18px;
@@ -378,12 +384,12 @@
             .audio-mob {
                 display: none;
                 position: relative;
-                width: calc(100% - 28px);
-                max-width: 560px;
+                width: min(92vw, 560px); /* Centralizado horizontalmente no celular */
+                margin: 0 auto;
             }
             .audio-mob.aberto { display: block; }
-            .audio-mob .fechar-audio { top: -16px; right: 6px; width: 32px; height: 32px; font-size: 20px; }
-            .audio-mob .player-flex { padding: 10px 14px; gap: 10px; border-radius: 40px; }
+            .audio-mob .fechar-audio { top: -16px; right: 0; width: 32px; height: 32px; font-size: 20px; }
+            .audio-mob .player-flex { padding: 0; }
             .audio-mob .botao-play { width: 46px; height: 46px; font-size: 18px; }
             .audio-mob .waveform-container { height: 110px; min-width: 0; }
             .audio-mob .tempos-info { font-size: 11px; }
@@ -414,9 +420,9 @@
         <div class="audio" id="audioPlayerPc">
             <button class="fechar-audio" id="fecharAudioPc">×</button>
             <div class="player-flex">
-                <button class="botao-play" id="botaoPlayPc">▶</button>
                 <div class="waveform-wrapper">
                     <div class="waveform-container">
+                        <button class="botao-play" id="botaoPlayPc">▶</button>
                         <div class="waveform-bg"></div>
                         <div class="progresso-onda" id="progressoOndaPc"></div>
                         <canvas class="waveform-canvas" id="ondaPc"></canvas>
@@ -459,9 +465,9 @@
                 <div class="audio-mob" id="audioPlayerMob">
                     <button class="fechar-audio" id="fecharAudioMob">×</button>
                     <div class="player-flex">
-                        <button class="botao-play" id="botaoPlayMob">▶</button>
                         <div class="waveform-wrapper">
                             <div class="waveform-container">
+                                <button class="botao-play" id="botaoPlayMob">▶</button>
                                 <div class="waveform-bg"></div>
                                 <div class="progresso-onda" id="progressoOndaMob"></div>
                                 <canvas class="waveform-canvas" id="ondaMob"></canvas>
@@ -622,7 +628,7 @@
             desenharOndas();
             avisoFonePc.classList.add("visivel");
             audio.play().then(() => { botaoPlayPc.textContent = "❚❚"; }).catch(e => console.log(e));
-            avisoTimer = setTimeout(() => avisoFonePc.classList.remove("visivel"), 15000);
+            avisoTimer = setTimeout(() => avisoFonePc.classList.remove("visivel"), 10000); /* 10s aqui */
         });
 
         escuteMob.addEventListener("click", () => {
@@ -631,7 +637,7 @@
             desenharOndas();
             avisoFoneMob.classList.add("visivel");
             audio.play().then(() => { botaoPlayMob.textContent = "❚❚"; }).catch(e => console.log(e));
-            avisoTimer = setTimeout(() => avisoFoneMob.classList.remove("visivel"), 15000);
+            avisoTimer = setTimeout(() => avisoFoneMob.classList.remove("visivel"), 10000); /* 10s aqui */
         });
 
         function alternarPlay() {
@@ -719,7 +725,7 @@
             const larg = 3, gap = 2, passo = larg + gap;
             const n = Math.max(1, Math.floor(w / passo));
             const corBase = "#B79A78";
-            const corProg = "#1c4354";
+            const corProg = "#d88190"; /* Nova cor da onda sonora ao carregar */
             
             for (let i = 0; i < n; i++) {
                 const ini = Math.floor(i * picos.length / n);
