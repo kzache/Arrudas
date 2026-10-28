@@ -176,7 +176,7 @@
             height: 65px;
             border-radius: 50%;
             background-color: var(--cor-arrudas);
-            color: #fff;
+            color: #fff8e8; /* Símbolo de play/pause alterado para #fff8e8 */
             border: none;
             font-size: 26px;
             display: flex;
@@ -226,7 +226,8 @@
             position: absolute;
             top: -20px;
             right: 0;
-            background: rgba(243, 240, 232, 0.95);
+            background: #1c4354;     /* Fundo do círculo do fechar alterado para #1c4354 */
+            color: #fff8e8;          /* Cor do "X" alterada para #fff8e8 */
             border: none;
             width: 38px;
             height: 38px;
@@ -599,3 +600,158 @@
         const escutePc = document.getElementById("escutePc");
         const audioPlayerPc = document.getElementById("audioPlayerPc");
         const avisoFonePc = document.getElementById("avisoFonePc");
+        const botaoPlayPc = document.getElementById("botaoPlayPc");
+        const barraProgressoPc = document.getElementById("barraProgressoPc");
+        const progressoOndaPc = document.getElementById("progressoOndaPc");
+        const tempoAtualPc = document.getElementById("tempoAtualPc");
+        const fecharAudioPc = document.getElementById("fecharAudioPc");
+        const escuteMob = document.getElementById("escuteMob");
+        const audioPlayerMob = document.getElementById("audioPlayerMob");
+        const avisoFoneMob = document.getElementById("avisoFoneMob");
+        const botaoPlayMob = document.getElementById("botaoPlayMob");
+        const barraProgressoMob = document.getElementById("barraProgressoMob");
+        const progressoOndaMob = document.getElementById("progressoOndaMob");
+        const tempoAtualMob = document.getElementById("tempoAtualMob");
+        const fecharAudioMob = document.getElementById("fecharAudioMob");
+        let avisoTimer = null;
+
+        function formatarTempo(segundos) {
+            if (isNaN(segundos)) return "00:00";
+            const min = Math.floor(segundos / 60);
+            const seg = Math.floor(segundos % 60);
+            return String(min).padStart(2, "0") + ":" + String(seg).padStart(2, "0");
+        }
+
+        escutePc.addEventListener("click", () => {
+            escutePc.classList.add("oculto");
+            audioPlayerPc.classList.add("aberto");
+            desenharOndas();
+            avisoFonePc.classList.add("visivel");
+            audio.play().then(() => { botaoPlayPc.textContent = "❚❚"; }).catch(e => console.log(e));
+            avisoTimer = setTimeout(() => avisoFonePc.classList.remove("visivel"), 10000);
+        });
+
+        escuteMob.addEventListener("click", () => {
+            escuteMob.classList.add("oculto");
+            audioPlayerMob.classList.add("aberto");
+            desenharOndas();
+            avisoFoneMob.classList.add("visivel");
+            audio.play().then(() => { botaoPlayMob.textContent = "❚❚"; }).catch(e => console.log(e));
+            avisoTimer = setTimeout(() => avisoFoneMob.classList.remove("visivel"), 10000);
+        });
+
+        function alternarPlay() {
+            if (audio.paused) {
+                audio.play();
+                botaoPlayPc.textContent = "❚❚";
+                botaoPlayMob.textContent = "❚❚";
+            } else {
+                audio.pause();
+                botaoPlayPc.textContent = "▶";
+                botaoPlayMob.textContent = "▶";
+            }
+        }
+        botaoPlayPc.addEventListener("click", alternarPlay);
+        botaoPlayMob.addEventListener("click", alternarPlay);
+
+        audio.addEventListener("timeupdate", () => {
+            if (audio.duration) {
+                const progresso = (audio.currentTime / audio.duration) * 100;
+                barraProgressoPc.value = progresso;
+                barraProgressoMob.value = progresso;
+                const textoTempo = formatarTempo(audio.currentTime) + " / " + formatarTempo(audio.duration);
+                tempoAtualPc.textContent = textoTempo;
+                tempoAtualMob.textContent = textoTempo;
+            }
+        });
+
+        barraProgressoPc.addEventListener("input", () => {
+            if (audio.duration) audio.currentTime = (barraProgressoPc.value / 100) * audio.duration;
+        });
+        barraProgressoMob.addEventListener("input", () => {
+            if (audio.duration) audio.currentTime = (barraProgressoMob.value / 100) * audio.duration;
+        });
+
+        fecharAudioPc.addEventListener("click", () => {
+            audio.pause(); audio.currentTime = 0;
+            botaoPlayPc.textContent = "▶";
+            audioPlayerPc.classList.remove("aberto"); escutePc.classList.remove("oculto");
+            avisoFonePc.classList.remove("visivel");
+            if (avisoTimer) clearTimeout(avisoTimer);
+        });
+        fecharAudioMob.addEventListener("click", () => {
+            audio.pause(); audio.currentTime = 0;
+            botaoPlayMob.textContent = "▶";
+            audioPlayerMob.classList.remove("aberto"); escuteMob.classList.remove("oculto");
+            avisoFoneMob.classList.remove("visivel");
+            if (avisoTimer) clearTimeout(avisoTimer);
+        });
+
+        audio.addEventListener("ended", () => {
+            botaoPlayPc.textContent = "▶"; botaoPlayMob.textContent = "▶";
+            audio.currentTime = 0;
+        });
+
+        const avisoGiro = document.getElementById("avisoGiro");
+        function esconderAvisoGiro() { avisoGiro.classList.remove("visivel"); }
+        if (window.matchMedia("(max-width: 850px) and (orientation: portrait)").matches) {
+            setTimeout(() => avisoGiro.classList.add("visivel"), 800);
+            setTimeout(esconderAvisoGiro, 7000);
+        }
+        avisoGiro.addEventListener("click", esconderAvisoGiro);
+        window.addEventListener("orientationchange", esconderAvisoGiro);
+
+        // ---- WAVEFORM REAL (a partir do peaks.json) ----
+        let picos = null;
+        const canvasesOnda = [document.getElementById("ondaPc"), document.getElementById("ondaMob")];
+        
+        fetch("peaks.json")
+            .then(r => r.json())
+            .then(p => { picos = p; desenharOndas(); })
+            .catch(() => { picos = new Array(200).fill(0.35); desenharOndas(); });
+
+        function desenharOnda(cv, prog) {
+            const w = cv.clientWidth, h = cv.clientHeight;
+            if (!w || !h || !picos) return;
+            const r = Math.max(2, window.devicePixelRatio || 1);
+            if (cv.width !== Math.round(w * r) || cv.height !== Math.round(h * r)) {
+                cv.width = Math.round(w * r);
+                cv.height = Math.round(h * r);
+            }
+            const ctx = cv.getContext("2d");
+            ctx.setTransform(r, 0, 0, r, 0, 0);
+            ctx.clearRect(0, 0, w, h);
+            
+            const larg = 3, gap = 2, passo = larg + gap;
+            const n = Math.max(1, Math.floor(w / passo));
+            const corBase = "#dfac99";
+            const corProg = "#1c4354";
+            
+            for (let i = 0; i < n; i++) {
+                const ini = Math.floor(i * picos.length / n);
+                const fim = Math.max(ini + 1, Math.floor((i + 1) * picos.length / n));
+                let m = 0;
+                for (let j = ini; j < fim; j++) if (picos[j] > m) m = picos[j];
+                const alt = Math.max(3, Math.sqrt(m) * h);
+                const x = i * passo;
+                ctx.fillStyle = (x / w) <= prog ? corProg : corBase;
+                ctx.fillRect(x, (h - alt) / 2, larg, alt);
+            }
+        }
+
+        function desenharOndas() {
+            const prog = audio.duration ? audio.currentTime / audio.duration : 0;
+            canvasesOnda.forEach(c => desenharOnda(c, prog));
+        }
+
+        function loopOnda() {
+            desenharOndas();
+            if (!audio.paused) requestAnimationFrame(loopOnda);
+        }
+
+        audio.addEventListener("play", () => requestAnimationFrame(loopOnda));
+        ["pause", "seeked", "ended", "loadedmetadata", "timeupdate"].forEach(ev => audio.addEventListener(ev, desenharOndas));
+        window.addEventListener("resize", desenharOndas);
+    </script>
+</body>
+</html>
