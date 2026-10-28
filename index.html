@@ -181,8 +181,15 @@
             cursor: pointer;
             flex-shrink: 0;
         }
-        .waveform-container {
+        /* Wrapper para empilhar onda e cronômetro */
+        .waveform-wrapper {
             flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        .waveform-container {
+            width: 100%;
             position: relative;
             height: 250px;
             cursor: pointer;
@@ -229,7 +236,7 @@
             font-size: 18px;
             font-weight: bold;
             color: #222;
-            min-width: 130px;
+            width: 100%;
             text-align: right;
         }
         /* ==========================================
@@ -376,7 +383,7 @@
             .audio-mob .player-flex { padding: 10px 14px; gap: 10px; border-radius: 40px; }
             .audio-mob .botao-play { width: 46px; height: 46px; font-size: 18px; }
             .audio-mob .waveform-container { height: 110px; min-width: 0; }
-            .audio-mob .tempos-info { font-size: 11px; min-width: 86px; }
+            .audio-mob .tempos-info { font-size: 11px; }
         }
     </style>
 </head>
@@ -405,13 +412,15 @@
             <button class="fechar-audio" id="fecharAudioPc">×</button>
             <div class="player-flex">
                 <button class="botao-play" id="botaoPlayPc">▶</button>
-                <div class="waveform-container">
-                    <div class="waveform-bg"></div>
-                    <div class="progresso-onda" id="progressoOndaPc"></div>
-                    <canvas class="waveform-canvas" id="ondaPc"></canvas>
-                    <input type="range" id="barraProgressoPc" value="0" max="100" step="0.1">
+                <div class="waveform-wrapper">
+                    <div class="waveform-container">
+                        <div class="waveform-bg"></div>
+                        <div class="progresso-onda" id="progressoOndaPc"></div>
+                        <canvas class="waveform-canvas" id="ondaPc"></canvas>
+                        <input type="range" id="barraProgressoPc" value="0" max="100" step="0.1">
+                    </div>
+                    <div class="tempos-info" id="tempoAtualPc">00:00 / 00:00</div>
                 </div>
-                <div class="tempos-info" id="tempoAtualPc">00:00 / 00:00</div>
             </div>
         </div>
     </div>
@@ -448,13 +457,15 @@
                     <button class="fechar-audio" id="fecharAudioMob">×</button>
                     <div class="player-flex">
                         <button class="botao-play" id="botaoPlayMob">▶</button>
-                        <div class="waveform-container">
-                            <div class="waveform-bg"></div>
-                            <div class="progresso-onda" id="progressoOndaMob"></div>
-                            <canvas class="waveform-canvas" id="ondaMob"></canvas>
-                            <input type="range" id="barraProgressoMob" value="0" max="100" step="0.1">
+                        <div class="waveform-wrapper">
+                            <div class="waveform-container">
+                                <div class="waveform-bg"></div>
+                                <div class="progresso-onda" id="progressoOndaMob"></div>
+                                <canvas class="waveform-canvas" id="ondaMob"></canvas>
+                                <input type="range" id="barraProgressoMob" value="0" max="100" step="0.1">
+                            </div>
+                            <div class="tempos-info" id="tempoAtualMob">00:00 / 00:00</div>
                         </div>
-                        <div class="tempos-info" id="tempoAtualMob">00:00 / 00:00</div>
                     </div>
                 </div>
             </div>
@@ -605,7 +616,7 @@
         escutePc.addEventListener("click", () => {
             escutePc.classList.add("oculto");
             audioPlayerPc.classList.add("aberto");
-            desenharOndas(); // Força o desenho imediato ao abrir
+            desenharOndas();
             avisoFonePc.classList.add("visivel");
             audio.play().then(() => { botaoPlayPc.textContent = "❚❚"; }).catch(e => console.log(e));
             avisoTimer = setTimeout(() => avisoFonePc.classList.remove("visivel"), 15000);
@@ -614,7 +625,7 @@
         escuteMob.addEventListener("click", () => {
             escuteMob.classList.add("oculto");
             audioPlayerMob.classList.add("aberto");
-            desenharOndas(); // Força o desenho imediato ao abrir
+            desenharOndas();
             avisoFoneMob.classList.add("visivel");
             audio.play().then(() => { botaoPlayMob.textContent = "❚❚"; }).catch(e => console.log(e));
             avisoTimer = setTimeout(() => avisoFoneMob.classList.remove("visivel"), 15000);
