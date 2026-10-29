@@ -750,4 +750,8 @@
         }
 
         audio.addEventListener("play", () => requestAnimationFrame(loopOnda));
-        ["pause", "seeked", "ended", "loadedmetadata", "timeupdate"].forEach(ev => audio.addEventListener(ev, desen
+        ["pause", "seeked", "ended", "loadedmetadata", "timeupdate"].forEach(ev => audio.addEventListener(ev, desenharOndas));
+        window.addEventListener("resize", desenharOndas);
+    </script>
+</body>
+</html>
