@@ -359,27 +359,32 @@
                 transition: opacity 1.5s ease;
             }
             .aviso-mob.visivel { opacity: 1; visibility: visible; }
-            .aviso-giro {
+               .aviso-giro {
                 position: absolute;
                 left: 50%;
                 top: 50%;
                 transform: translate(-50%, -50%);
-                width: min(80vw, 300px);
-                padding: 14px 18px;
-                background-color: rgba(28, 67, 84, 0.92);
+                width: min(80vw, 240px); /* Um pouco mais compacto já que a frase é curta */
+                padding: 12px 16px;
+                background-color: rgba(28, 67, 84, 0.94);
                 color: #e8e0cf;
                 text-align: center;
-                font-size: 14px;
-                line-height: 1.4;
+                font-size: 15px;
+                font-weight: bold;
+                line-height: 1.3;
                 border-radius: 12px;
                 opacity: 0;
                 visibility: hidden;
                 transition: opacity 0.8s ease, visibility 0.8s;
                 z-index: 40;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 8px; /* Espaço entre o ícone e o texto */
             }
-            .aviso-giro.visivel { opacity: 1; visibility: visible; }
-            @media (orientation: landscape) {
-                .aviso-giro { display: none; }
+            .icone-giro {
+                font-size: 20px;
+                display: inline-block;
             }
             .audio-mob {
                 display: none;
@@ -459,7 +464,7 @@
         </div>
         <div class="ui-mob">
             <div class="aviso-giro" id="avisoGiro">
-                Para uma melhor experiência, use o celular na horizontal. ↻
+                <span class="icone-giro">📱↺</span> Gire o seu telefone
             </div>
             <div class="titulo-mob" id="tituloMob">
                 <h1>Arrudas</h1>
