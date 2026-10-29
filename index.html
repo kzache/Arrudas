@@ -360,36 +360,6 @@
             }
             .aviso-mob.visivel { opacity: 1; visibility: visible; }
             
-            /* Aviso de giro compacto com ícone */
-            .aviso-giro {
-                position: absolute;
-                left: 50%;
-                top: 50%;
-                transform: translate(-50%, -50%);
-                width: min(80vw, 240px);
-                padding: 12px 16px;
-                background-color: rgba(28, 67, 84, 0.94);
-                color: #e8e0cf;
-                text-align: center;
-                font-size: 15px;
-                font-weight: bold;
-                line-height: 1.3;
-                border-radius: 12px;
-                opacity: 0;
-                visibility: hidden;
-                transition: opacity 0.8s ease, visibility 0.8s;
-                z-index: 40;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                gap: 8px;
-            }
-            .aviso-giro.visivel { opacity: 1; visibility: visible; }
-            .icone-giro {
-                font-size: 20px;
-                display: inline-block;
-            }
-
             .audio-mob {
                 display: none;
                 position: relative;
@@ -407,13 +377,13 @@
                AJUSTE EXCLUSIVO PARA A POSIÇÃO VERTICAL (PORTRAIT)
                ========================================== */
             @media (orientation: portrait) {
-                /* Sobe ou desce a onda sonora no modo vertical */
+                /* Sobe a onda sonora no modo vertical (mude o valor se necessário) */
                 .audio-mob {
-                    margin-top: -32px; /* Aumente o valor negativo se quiser subir mais */
+                    margin-top: -30px !important; 
                 }
-                /* Sobe ou desce o aviso de fones no modo vertical */
+                /* Sobe o aviso de fones no modo vertical (mude o valor se necessário) */
                 .aviso-mob {
-                    margin-bottom: 46px; /* Aumente o valor se quiser afastar mais o aviso do botão */
+                    margin-bottom: 30px !important; 
                 }
             }
         }
@@ -467,9 +437,6 @@
             </div>
         </div>
         <div class="ui-mob">
-            <div class="aviso-giro" id="avisoGiro">
-                <span class="icone-giro">📱↺</span> Gire o seu telefone
-            </div>
             <div class="titulo-mob" id="tituloMob">
                 <h1>Arrudas</h1>
                 <p>Memórias Sonoras de um Território-Rio</p>
@@ -714,15 +681,6 @@
             botaoPlayPc.textContent = "▶"; botaoPlayMob.textContent = "▶";
             audio.currentTime = 0;
         });
-
-        const avisoGiro = document.getElementById("avisoGiro");
-        function esconderAvisoGiro() { avisoGiro.classList.remove("visivel"); }
-        if (window.matchMedia("(max-width: 850px) and (orientation: portrait)").matches) {
-            setTimeout(() => avisoGiro.classList.add("visivel"), 800);
-            setTimeout(esconderAvisoGiro, 7000);
-        }
-        avisoGiro.addEventListener("click", esconderAvisoGiro);
-        window.addEventListener("orientationchange", esconderAvisoGiro);
 
         // ---- WAVEFORM REAL (a partir do peaks.json) ----
         let picos = null;
