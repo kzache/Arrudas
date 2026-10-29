@@ -339,7 +339,7 @@
                 z-index: 1;
                 margin-top: calc(var(--d) * -0.633);
                 color: #1c3844;
-                font-size: calc(var(--d) * 0.1867);
+                font-size: calc(var(--d) * 0.175); /* Fonte ligeiramente diminuída */
                 font-weight: bold;
             }
             .aviso-mob {
@@ -388,7 +388,7 @@
                 margin: 0 auto;
             }
             .audio-mob.aberto { display: block; }
-            .audio-mob .fechar-audio { top: -16px; right: 0; width: 32px; height: 32px; font-size: 20px; }
+            .audio-mob .fechar-audio { top: -22px; right: -4px; width: 32px; height: 32px; font-size: 20px; } /* Botão fechar mais afastado */
             .audio-mob .player-flex { padding: 0; }
             .audio-mob .botao-play { width: 46px; height: 46px; font-size: 18px; }
             .audio-mob .waveform-container { height: 110px; min-width: 0; }
@@ -724,7 +724,7 @@
             
             const larg = 3, gap = 2, passo = larg + gap;
             const n = Math.max(1, Math.floor(w / passo));
-            const corBase = "#9d7777"; /* Nova cor da onda carregada / padrão */
+            const corBase = "#9d7777"; /* Mantido com a última cor testada */
             const corProg = "#1c4354"; /* Cor que preenche durante a reprodução */
             
             for (let i = 0; i < n; i++) {
