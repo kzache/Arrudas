@@ -100,18 +100,25 @@
         }
         .menu-links {
             position: absolute;
-            top: 100%; /* Posiciona exatamente logo abaixo da caixa do título */
-            left: 0;   /* Alinha à esquerda, junto com o título */
-            margin-top: 10px; /* Um pequeno respiro de distância */
+            top: 100%;
+            left: 0;
+            margin-top: 10px;
             display: none;
-            width: 100%; /* Ocupa a mesma largura do título (ou você pode fixar se preferir) */
-            background-color: rgba(243, 240, 232, 0.94);
-            padding: 15px 20px;
-            border-radius: 12px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15); /* Opcional: dá um leve destaque em cima do mapa */
+            width: 100%;
+            /* Mesma cor e transparência da caixa do título (0.75): */
+            background-color: rgba(243, 240, 232, 0.75); 
+            padding: 15px 25px;
+            border-radius: 16px;
         }
         .titulo.aberto .menu-links { display: block; }
-        .menu-links a { display: block; text-decoration: none; color: #222; font-size: 20px; padding: 7px 0; }
+        .menu-links a { 
+            display: block; 
+            text-decoration: none; 
+            color: #1c3844; /* Mantém a cor padrão do título */
+            font-size: 24px; 
+            font-weight: bold;
+            padding: 5px 0; 
+        }
         .escute {
             position: absolute;
             left: 960px;
