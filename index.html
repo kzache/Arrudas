@@ -105,7 +105,6 @@
             margin-top: 10px;
             display: none;
             width: 100%;
-            /* Mesma cor e transparência da caixa do título (0.75): */
             background-color: rgba(243, 240, 232, 0.75); 
             padding: 15px 25px;
             border-radius: 16px;
@@ -114,7 +113,7 @@
         .menu-links a { 
             display: block; 
             text-decoration: none; 
-            color: #1c3844; /* Mantém a cor padrão do título */
+            color: #1c3844; 
             font-size: 24px; 
             font-weight: bold;
             padding: 5px 0; 
@@ -262,6 +261,14 @@
         .mobile { display: none; }
         @media (max-width: 850px), (max-height: 500px) {
             .mobile { display: block; position: fixed; inset: 0; overflow: hidden; background: var(--cor-fundo); }
+            
+            /* REMOVE OS CONTROLES/ICONES DO UMAP (COMO O "I" DO CANTO SUPERIOR ESQUERDO) */
+            .mobile .mapa iframe {
+                clip-path: inset(45px 0 0 0); /* Oculta a bordinha superior onde o uMap injeta os botões flutuantes */
+                margin-top: -45px;
+                height: calc(100% + 45px);
+            }
+
             .fundo-mob {
                 position: fixed;
                 top: 0;
@@ -395,11 +402,9 @@
                AJUSTE EXCLUSIVO PARA A POSIÇÃO VERTICAL (PORTRAIT)
                ========================================== */
             @media (orientation: portrait) {
-                /* Sobe a onda sonora no modo vertical usando transform */
                 .audio-mob {
                     transform: translateY(-180px) !important; 
                 }
-                /* Sobe o aviso de fones elevando a margem inferior */
                 .aviso-mob {
                     margin-bottom: 240px !important; 
                 }
@@ -410,7 +415,6 @@
                ========================================== */
             @media (orientation: landscape) {
                 .escute-mob {
-                    /* Sobe o botão ESCUTE na horizontal do celular */
                     margin-bottom: min(40vh, calc(100vh - var(--d) - 60px)) !important; 
                 }
             }
