@@ -732,11 +732,22 @@
             audio.currentTime = 0;
         });
 
+        // ---- PONTOS (QR codes) ----
+        // Quando editar o áudio de um ponto, descomente/adicione a linha dele.
+        // "picos" é o peaks.json daquele áudio (a onda desenhada).
+        // Enquanto um ponto não estiver aqui, o QR toca a peça completa.
+        const PONTOS = {
+            // 1: { audio: "https://pub-0c523da3e80b4a0ab591837050bc71cb.r2.dev/ponto1.m4a", picos: "peaks_ponto1.json" },
+            // 2: { audio: "https://pub-0c523da3e80b4a0ab591837050bc71cb.r2.dev/ponto2.m4a", picos: "peaks_ponto2.json" },
+        };
+        const nPonto = new URLSearchParams(location.search).get("ponto");
+        const ponto = PONTOS[nPonto] || null;
+
         // ---- WAVEFORM REAL (a partir do peaks.json) ----
         let picos = null;
         const canvasesOnda = [document.getElementById("ondaPc"), document.getElementById("ondaMob")];
         
-        fetch("peaks.json")
+        fetch(ponto ? ponto.picos : "peaks.json")
             .then(r => r.json())
             .then(p => { picos = p; desenharOndas(); })
             .catch(() => { picos = new Array(200).fill(0.35); desenharOndas(); });
@@ -783,6 +794,27 @@
         audio.addEventListener("play", () => requestAnimationFrame(loopOnda));
         ["pause", "seeked", "ended", "loadedmetadata", "timeupdate"].forEach(ev => audio.addEventListener(ev, desenharOndas));
         window.addEventListener("resize", desenharOndas);
+
+        // ---- ABRIR PELO QR CODE ----
+        if (ponto) {
+            audio.src = ponto.audio;
+            audio.load();
+        }
+        if (nPonto) {
+            escutePc.classList.add("oculto");
+            escuteMob.classList.add("oculto");
+            audioPlayerPc.classList.add("aberto");
+            audioPlayerMob.classList.add("aberto");
+            avisoFonePc.classList.add("visivel");
+            avisoFoneMob.classList.add("visivel");
+            avisoTimer = setTimeout(() => {
+                avisoFonePc.classList.remove("visivel");
+                avisoFoneMob.classList.remove("visivel");
+            }, 10000);
+            desenharOndas();
+            // limpa o ?ponto=N da barra de endereço
+            history.replaceState(null, "", location.pathname);
+        }
     </script>
 </body>
 </html>
