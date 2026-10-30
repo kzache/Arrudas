@@ -402,9 +402,16 @@
                AJUSTE EXCLUSIVO PARA A POSIÇÃO VERTICAL (PORTRAIT)
                ========================================== */
             @media (orientation: portrait) {
+                /* ADICIONE ESTE BLOCO ABAIXO PARA SUBIR O BOTÃO ESCUTE: */
+                .escute-mob {
+                    margin-bottom: min(65vh, calc(100vh - var(--d) - 60px)) !important; /* Aumente este número ou ajuste o cálculo para subir mais */
+                }
+
+                /* Sobe a onda sonora no modo vertical usando transform */
                 .audio-mob {
                     transform: translateY(-180px) !important; 
                 }
+                /* Sobe o aviso de fones elevando a margem inferior */
                 .aviso-mob {
                     margin-bottom: 240px !important; 
                 }
