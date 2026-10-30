@@ -261,13 +261,6 @@
         .mobile { display: none; }
         @media (max-width: 850px), (max-height: 500px) {
             .mobile { display: block; position: fixed; inset: 0; overflow: hidden; background: var(--cor-fundo); }
-            
-            /* REMOVE OS CONTROLES/ICONES DO UMAP (COMO O "I" DO CANTO SUPERIOR ESQUERDO) */
-            .mobile .mapa iframe {
-                clip-path: inset(45px 0 0 0); /* Oculta a bordinha superior onde o uMap injeta os botões flutuantes */
-                margin-top: -45px;
-                height: calc(100% + 45px);
-            }
 
             .fundo-mob {
                 position: fixed;
@@ -408,8 +401,8 @@
                 /* Botão ESCUTE: 60% da altura, mas nunca sobe além da base da caixa do título */
                 .escute-mob {
                     transform: translateY(+3px) !important;
-                    margin-bottom: min(70vh, calc(100vh - env(safe-area-inset-bottom) - 22px - var(--d) - var(--titulo-base, 150px)));
-                    margin-bottom: min(70dvh, calc(100dvh - env(safe-area-inset-bottom) - 22px - var(--d) - var(--titulo-base, 150px)));
+                    margin-bottom: min(60vh, calc(100vh - env(safe-area-inset-bottom) - 22px - var(--d) - var(--titulo-base, 150px)));
+                    margin-bottom: min(60dvh, calc(100dvh - env(safe-area-inset-bottom) - 22px - var(--d) - var(--titulo-base, 150px)));
                 }
                 
                 /* Sobe a onda sonora no modo vertical usando transform */
@@ -427,8 +420,8 @@
                ========================================== */
             @media (orientation: landscape) {
                 .escute-mob {
-                    margin-bottom: min(40vh, calc(100vh - var(--d) - 60px)) !important; 
-                    transform: translateX(20px);   /* linha nova: afasta para a direita */
+                    margin-bottom: min(40vh, calc(100vh - var(--d) - 60px)) !important;
+                    transform: translateX(20px);   /* afasta o botão para a direita */
                 }
             }
         }
@@ -438,7 +431,7 @@
     <!-- ================= DESKTOP HTML ================= -->
     <div class="tela-referencia" id="telaReferencia">
         <div class="mapa">
-            <iframe loading="lazy" src="//umap.openstreetmap.fr/pt-br/map/mapa_1471708?scaleControl=false&miniMapControl=false&scrollWheelZoom=false&zoomControl=false&editMode=disabled&moreControl=false&searchControl=false&tilelayersControl=false&embedControl=false&datalayersControl=false&onLoadPanel=none&captionBar=false&captionMenus=false&fullscreenControl=false&locateControl=false&printControl=false&measureControl=false&dragging=false"></iframe>
+            <iframe loading="lazy" src="//umap.openstreetmap.fr/pt-br/map/mapa_1471708?scaleControl=false&miniMapControl=false&scrollWheelZoom=false&zoomControl=false&editMode=disabled&moreControl=false&searchControl=false&tilelayersControl=false&embedControl=false&datalayersControl=false&onLoadPanel=none&captionBar=false&captionMenus=false&fullscreenControl=false&locateControl=false&captionControl=false&printControl=false&measureControl=false&dragging=false"></iframe>
             <div class="desenho-arrudas" aria-hidden="true"></div>
         </div>
         <div class="titulo" id="tituloPc">
@@ -476,7 +469,7 @@
         <div class="fundo-mob" id="fundoMob">
             <div class="palco-mob" id="palcoMob">
                 <div class="mapa">
-                    <iframe loading="lazy" src="//umap.openstreetmap.fr/pt-br/map/mapa_1471708?scaleControl=false&miniMapControl=false&scrollWheelZoom=false&zoomControl=false&editMode=disabled&moreControl=false&searchControl=false&tilelayersControl=false&embedControl=false&datalayersControl=false&onLoadPanel=none&captionBar=false&captionMenus=false&fullscreenControl=false&locateControl=false&printControl=false&measureControl=false&dragging=false"></iframe>
+                    <iframe loading="lazy" src="//umap.openstreetmap.fr/pt-br/map/mapa_1471708?scaleControl=false&miniMapControl=false&scrollWheelZoom=false&zoomControl=false&editMode=disabled&moreControl=false&searchControl=false&tilelayersControl=false&embedControl=false&datalayersControl=false&onLoadPanel=none&captionBar=false&captionMenus=false&fullscreenControl=false&locateControl=false&captionControl=false&printControl=false&measureControl=false&dragging=false"></iframe>
                     <div class="desenho-arrudas" aria-hidden="true"></div>
                 </div>
             </div>
