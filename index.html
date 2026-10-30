@@ -403,10 +403,12 @@
                ========================================== */
             @media (orientation: portrait) {
                 /* ADICIONE ESTE BLOCO ABAIXO PARA SUBIR O BOTÃO ESCUTE: */
+
+                /* Sobe o botão ESCUTE na vertical usando translateY (quanto mais negativo, mais ele sobe) */
                 .escute-mob {
-                    margin-bottom: min(65vh, calc(100vh - var(--d) +25px)) !important; /* Aumente este número ou ajuste o cálculo para subir mais */
+                    transform: translateY(-50px) !important; 
                 }
-             
+                
                 /* Sobe a onda sonora no modo vertical usando transform */
                 .audio-mob {
                     transform: translateY(-180px) !important; 
