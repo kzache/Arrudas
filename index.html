@@ -100,13 +100,15 @@
         }
         .menu-links {
             position: absolute;
-            top: 0;
-            left: 100%;
+            top: 100%; /* Posiciona exatamente logo abaixo da caixa do título */
+            left: 0;   /* Alinha à esquerda, junto com o título */
+            margin-top: 10px; /* Um pequeno respiro de distância */
             display: none;
-            width: 220px;
+            width: 100%; /* Ocupa a mesma largura do título (ou você pode fixar se preferir) */
             background-color: rgba(243, 240, 232, 0.94);
             padding: 15px 20px;
             border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15); /* Opcional: dá um leve destaque em cima do mapa */
         }
         .titulo.aberto .menu-links { display: block; }
         .menu-links a { display: block; text-decoration: none; color: #222; font-size: 20px; padding: 7px 0; }
