@@ -367,7 +367,16 @@
                 margin: 0 auto;
             }
             .audio-mob.aberto { display: block; }
-            .audio-mob .fechar-audio { top: -18px; right: 2px; width: 26px; height: 26px; font-size: 16px; }
+
+            /* BOTÃO "X" DE FECHAR MENOR (VERTICAL E HORIZONTAL) */
+            .audio-mob .fechar-audio { 
+                top: -26px !important; 
+                right: 2px; 
+                width: 20px !important; 
+                height: 20px !important; 
+                font-size: 12px !important; 
+            }
+
             .audio-mob .player-flex { padding: 0; }
             .audio-mob .botao-play { width: 46px; height: 46px; font-size: 18px; }
             .audio-mob .waveform-container { height: 110px; min-width: 0; }
@@ -384,6 +393,16 @@
                 /* Sobe o aviso de fones elevando a margem inferior */
                 .aviso-mob {
                     margin-bottom: 240px !important; 
+                }
+            }
+
+            /* ==========================================
+               AJUSTE EXCLUSIVO PARA A POSIÇÃO HORIZONTAL (LANDSCAPE)
+               ========================================== */
+            @media (orientation: landscape) {
+                .escute-mob {
+                    /* Sobe o botão ESCUTE na horizontal do celular */
+                    margin-bottom: min(40vh, calc(100vh - var(--d) - 60px)) !important; 
                 }
             }
         }
