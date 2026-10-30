@@ -262,9 +262,9 @@
         @media (max-width: 850px), (max-height: 500px) {
             .mobile { display: block; position: fixed; inset: 0; overflow: hidden; background: var(--cor-fundo); }
             
-            /* REMOVE OS CONTROLES/ICONES DO UMAP */
+            /* REMOVE OS CONTROLES/ICONES DO UMAP (COMO O "I" DO CANTO SUPERIOR ESQUERDO) */
             .mobile .mapa iframe {
-                clip-path: inset(45px 0 0 0);
+                clip-path: inset(45px 0 0 0); /* Oculta a bordinha superior onde o uMap injeta os botões flutuantes */
                 margin-top: -45px;
                 height: calc(100% + 45px);
             }
@@ -300,6 +300,7 @@
             .ui-mob > * { pointer-events: auto; }
             .titulo-mob {
                 position: absolute;
+                z-index: 3;
                 top: calc(env(safe-area-inset-top) + 14px);
                 left: 14px;
                 color: #1c3844;  
@@ -308,7 +309,6 @@
                 background-color: rgba(243, 240, 232, 0.75);
                 cursor: pointer;
                 border-radius: 16px;
-                z-index: 20; /* Garante que o título fique por cima se houver aproximação extrema */
             }
             .titulo-mob h1 { margin: 0; font-size: 24px; font-weight: bold; line-height: 1.1; }
             .titulo-mob p { margin: 3px 0 0; font-size: 16px; line-height: 1.1; }
@@ -385,6 +385,7 @@
             }
             .audio-mob.aberto { display: block; }
 
+            /* BOTÃO "X" DE FECHAR MENOR (VERTICAL E HORIZONTAL) */
             .audio-mob .fechar-audio { 
                 top: -26px !important; 
                 right: 2px; 
@@ -402,16 +403,18 @@
                AJUSTE EXCLUSIVO PARA A POSIÇÃO VERTICAL (PORTRAIT)
                ========================================== */
             @media (orientation: portrait) {
-                /* Mantém o tamanho original do círculo e aplica limite máximo de margem de segurança */
+                /* Botão ESCUTE: 55% da altura, mas nunca sobe além da base da caixa do título */
                 .escute-mob {
-                    --d: min(150px, 34vh); 
-                    margin-bottom: min(38vh, calc(100vh - var(--d) - 150px)) !important;
-                    transform: translateY(0px) !important; 
+                    transform: translateY(+3px) !important;
+                    margin-bottom: min(55vh, calc(100vh - env(safe-area-inset-bottom) - 22px - var(--d) - var(--titulo-base, 150px)));
+                    margin-bottom: min(55dvh, calc(100dvh - env(safe-area-inset-bottom) - 22px - var(--d) - var(--titulo-base, 150px)));
                 }
                 
+                /* Sobe a onda sonora no modo vertical usando transform */
                 .audio-mob {
                     transform: translateY(-180px) !important; 
                 }
+                /* Sobe o aviso de fones elevando a margem inferior */
                 .aviso-mob {
                     margin-bottom: 240px !important; 
                 }
@@ -624,6 +627,18 @@
         const tituloMob = document.getElementById("tituloMob");
         tituloPc.addEventListener("click", (e) => { if (e.target.tagName !== "A") tituloPc.classList.toggle("aberto"); });
         tituloMob.addEventListener("click", (e) => { if (e.target.tagName !== "A") tituloMob.classList.toggle("aberto"); });
+
+        // ---- Mede onde termina a caixa do título (para o botão ESCUTE nunca encostar nela) ----
+        function medirTitulo() {
+            const p = tituloMob.querySelector("p");
+            const b = p.getBoundingClientRect().bottom;
+            if (b > 0) document.documentElement.style.setProperty("--titulo-base", Math.ceil(b + 12 + 16) + "px");
+        }
+        if (window.ResizeObserver) new ResizeObserver(medirTitulo).observe(tituloMob);
+        window.addEventListener("resize", medirTitulo);
+        window.addEventListener("orientationchange", () => setTimeout(medirTitulo, 300));
+        if (document.fonts && document.fonts.ready) document.fonts.ready.then(medirTitulo);
+        medirTitulo();
 
         const audio = document.getElementById("meuAudio");
         const escutePc = document.getElementById("escutePc");
